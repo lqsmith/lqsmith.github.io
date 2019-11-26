@@ -972,6 +972,7 @@ function gmHandleEvent(cmd, data)
             {
                 gmSendToClients(cmd, data);
                 currentTurn.team = currentTurn.team == RED ? BLUE : RED;
+                currentTurn.state = STATE_CLUE;
                 uiRefreshBoardState(boardState, currentTurn);
                 gmSendToClients(SET_BOARD, {cards: boardState, turn: currentTurn});
                 break;
