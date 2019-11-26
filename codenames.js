@@ -228,6 +228,10 @@ function uiInit()
 	$('#menu').button();
 	$('#menu').click(uiMenuClicked);
 
+    $('#action').button();
+    $('#action').click(uiActionButtonClicked);
+    $('#action').hide();
+
 	for(let row = 0; row < 5; row++)
 	{
 		for(let col = 0; col < 5; col++)
@@ -294,8 +298,6 @@ function uiInit()
 
             clue = clue.toUpperCase();
             gmTriggerEvent(SEND_CLUE, {clue: clue, num: num});
-            $('#action').button('destroy');
-            $('#action').html('');
            	$('#clueEntry').val('');
            	$('#guessEntry').val('0');
             return true;
@@ -431,6 +433,18 @@ function uiGetPlayerName()
     	uiGetNameDialog.resolve = resolve;
     	uiGetNameDialog.reject = reject;
     });
+}
+
+function uiActionButtonClicked()
+{
+    if(uiState == UISTATE_GUESS)
+    {
+        uiPass();
+    }
+    else if(uiState == UISTATE_CLUE)
+    {
+        uiGetClue();
+    }
 }
 
 function uiGetClue()
@@ -627,6 +641,8 @@ function uiRefreshBoardState(board, turn)
         }
     }
 
+    $('#action').hide();
+
     if(gameOver)
     {
         $('#redRemain').text('0');
@@ -726,14 +742,14 @@ function uiWaitForClue()
 {
     uiState = UISTATE_CLUE;
     $('#action').text('Send Your Clue');
-    $('#action').button().click(uiGetClue);
+    $('#action').show();
 }
 
 function uiWaitForGuess()
 {
     uiState = UISTATE_GUESS;
     $('#action').text('Pass');
-    $('#action').button().click(uiPass);
+    $('#action').show();
 }
 
 function uiPass()
@@ -743,8 +759,6 @@ function uiPass()
 
 function uiShowPass()
 {
-    $('#action').button('destroy');
-    $('#action').html('');
 }
 
 function uiBlockInput()
@@ -767,7 +781,7 @@ const SEND_GUESS        = 4;
 const SEND_PASS         = 5;
 const GAME_OVER         = 6;
 
-const CMD_STR = ['setname', 'setrole', 'setboard', 'sendclue', 'sendguess', 'gameover'];
+const CMD_STR = ['setname', 'setrole', 'setboard', 'sendclue', 'sendguess', 'sendpass', 'gameover'];
 
 const STATE_CLUE        = 0;
 const STATE_GUESS       = 1;
@@ -797,6 +811,14 @@ function gmFindCard(word)
 	return null;
 }
 
+function gmHandlePass(word)
+{
+    currentTurn.guesses = '--';
+    currentTurn.clue = '--';
+    currentTurn.team = (currentTurn.team == RED) ? BLUE : RED;
+    currentTurn.state = STATE_CLUE;
+}
+
 function gmHandleGuess(word)
 {
     let card = gmFindCard(word);
@@ -812,6 +834,8 @@ function gmHandleGuess(word)
 	    }
 	    else if(currentTurn.guesses == 0 || card.color != currentTurn.team)
 	    {
+            currentTurn.guesses = '--';
+            currentTurn.clue = '--';
 	        currentTurn.team = (currentTurn.team == RED) ? BLUE : RED;
 	        currentTurn.state = STATE_CLUE;
 	    }
@@ -971,8 +995,7 @@ function gmHandleEvent(cmd, data)
             case SEND_PASS:
             {
                 gmSendToClients(cmd, data);
-                currentTurn.team = currentTurn.team == RED ? BLUE : RED;
-                currentTurn.state = STATE_CLUE;
+                gmHandlePass();
                 uiRefreshBoardState(boardState, currentTurn);
                 gmSendToClients(SET_BOARD, {cards: boardState, turn: currentTurn});
                 break;
