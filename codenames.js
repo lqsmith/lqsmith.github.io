@@ -84,7 +84,7 @@ function startHost()
 {
     return new Promise(function(resolve, reject) 
     {
-        peer = new Peer(CONN_ID, {key: 'lwjd5qra8257b9', config: peerConfig});
+        peer = new Peer(CONN_ID, {});
         peer.resolve = resolve;
         peer.reject = reject;
         peer.on('open', connectionOpenedHost);
@@ -99,7 +99,7 @@ function startClient()
 {
     return new Promise(function(resolve, reject) 
     {
-        peer = new Peer({key: 'lwjd5qra8257b9', config: peerConfig});
+        peer = new Peer({});
         peer.resolve = resolve;
         peer.reject = reject;
         peer.on('open', connectionOpenedClient);
@@ -116,7 +116,7 @@ function connectionOpenedHost(id)
 
 function connectionOpenedClient(id)
 {
-    channel = peer.connect(CONN_ID, {reliable: true});
+    channel = peer.connect(CONN_ID, {reliable: true, serialization: 'json'});
     channel.on('open', channelOpenedClient);
 }
 
