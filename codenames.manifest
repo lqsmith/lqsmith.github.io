@@ -1,0 +1,17 @@
+{
+    "name": "Codenames",
+    "short_name": "Codenames",
+    "theme_color": "#ffcbe4",
+    "background_color": "#000000",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "https://lqsmith.github.io/",
+    "description": "Multiplayer edition of Codenames board game.",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "https://lqsmith.github.io/avatar.png",
+            "sizes": "1024x1024"
+        }
+    ]
+}
