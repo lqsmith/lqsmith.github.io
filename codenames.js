@@ -836,8 +836,7 @@ function gmCreateBoard()
     for(let i = 0; i < 9; i++)
     {
         let word = {
-//            word: WORD_BANK[i][rand(2)],
-            word: 'SCUBA DIVER',
+            word: WORD_BANK[i][rand(2)],
             shown: true,
             color: firstTeam,
         };
