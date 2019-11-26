@@ -680,7 +680,7 @@ function uiRefreshBoardState(board, turn)
             }
             else
             {
-                $('#instructions').html(centerText + 'Your turn. You have up to ' + turn.guesses + ' guesses. Select the word you think matches your spymaster\'s clue.');
+                $('#instructions').html(centerText + 'You have up to ' + turn.guesses + ' guesses. Select the word you think matches your spymaster\'s clue.');
                 uiWaitForGuess();
             }
         }
@@ -732,6 +732,15 @@ function uiWaitForClue()
 function uiWaitForGuess()
 {
     uiState = UISTATE_GUESS;
+    $('#action').text('Pass');
+    $('#action').button().click(uiPass);
+}
+
+function uiPass()
+{
+    gmTriggerEvent(SEND_PASS, null);
+    $('#action').button('destroy');
+    $('#action').html('');
 }
 
 function uiBlockInput()
@@ -751,7 +760,8 @@ const SET_ROLE          = 1;
 const SET_BOARD         = 2;
 const SEND_CLUE         = 3;
 const SEND_GUESS        = 4;
-const GAME_OVER         = 5;
+const SEND_PASS         = 5;
+const GAME_OVER         = 6;
 
 const CMD_STR = ['setname', 'setrole', 'setboard', 'sendclue', 'sendguess', 'gameover'];
 
@@ -954,6 +964,14 @@ function gmHandleEvent(cmd, data)
             	}
             	break;
             }
+            case SEND_PASS:
+            {
+                gmSendToClients(cmd, data);
+                currentTurn.team = currentTurn.team == RED ? BLUE : RED;
+                uiRefreshBoardState(boardState, currentTurn);
+                gmSendToClients(SET_BOARD, {cards: boardState, turn: currentTurn});
+                break;
+            }
             case GAME_OVER:
             {
                 gameOver = true;
@@ -996,6 +1014,11 @@ function gmHandleEvent(cmd, data)
             {
             	uiShowGuess(data);
            		break;
+            }
+            case SEND_PASS:
+            {
+                // Nothing to do?
+                break;
             }
             case GAME_OVER:
             {
