@@ -1,0 +1,115 @@
+@media (orientation: landscape)
+{
+	#content {
+	    perspective: 500vh;
+	}
+
+	#instructions {
+		height: 11vh;
+		right: 7vh;
+		font-size: 4vh;
+	}
+
+	#menu {
+		width: 7vh;
+		height: 7vh;
+	}
+
+	#remainCenterWrap {
+		width: 25.25vh;
+		left: calc((100% - 25.25vh) / 2);
+		font-size: 4.5vh;
+	}
+
+	#redRemain {
+		width: 10.125vh;
+		border-radius: 1.5vh;
+	}
+
+	#blueRemain {
+		width: 10.125vh;
+		left: 5vh;
+		border-radius: 1.5vh;
+	}
+
+	.card {
+		width: 22.5vh;
+		height: 15vh;
+		position: fixed;
+		font-size: 2.8vh;
+		border-radius: 3vh;
+	}
+
+	.card-row-0 {
+		top: 16vh;
+	}
+
+	.card-row-1 {
+		top: 32vh;
+	}
+
+	.card-row-2 {
+		top: 48vh;
+	}
+
+	.card-row-3 {
+		top: 64vh;
+	}
+
+	.card-row-4 {
+		top: 80vh;
+	}
+
+	.card-col-0 {
+		left: 5vh;
+	}
+
+	.card-col-1 {
+		left: 28.5vh;
+	}
+
+	.card-col-2 {
+		left: 52vh;
+	}
+
+	.card-col-3 {
+		left: 75.5vh;
+	}
+
+	.card-col-4 {
+		left: 99vh;
+	}
+
+	#status {
+		left: 127.5vh;
+		right: 5vh;
+		height: 37.5vh;
+		position: fixed;
+		top: 30.5vh;
+	    border-radius: 5vh;
+	}
+
+	#action {
+		left: 127.5vh;
+		right: 5vh;
+		top: 73vh;
+		position: fixed;
+	}
+
+	#clueLabel {
+		font-size: 3vh;
+		padding-left: 5vh;
+	}
+
+	#clueText {
+		font-size: 6vh;
+	}
+
+	#guesses {
+		font-size: 3.7vh;
+	}
+
+	#roleText {
+		font-size: 3vh;
+	}
+}

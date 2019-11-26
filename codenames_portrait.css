@@ -1,0 +1,124 @@
+@media (orientation: portrait)
+{
+	:root {
+		--cardHeight: 11.33vw;
+		--cardsHeight: calc(var(--cardHeight) * 5 + 4vw);
+		--statusHeight: 20vh;
+		--actionHeight: 4vh;
+		--spacer: calc((93vh - (var(--cardsHeight) + var(--statusHeight) + var(--actionHeight) + 5vw)) / 3);
+		--cardsTop: calc(7vh + var(--spacer));
+	}
+
+	#content {
+	    perspective: 500vw;
+	}
+
+	#instructions {
+		height: 7vh;
+		right: 7vw;
+		font-size: 4vw;
+	}
+
+	#menu {
+		width: 7vw;
+		height: 7vw;
+	}
+
+	#remainCenterWrap {
+		width: calc(10.8vh + 5vw);
+		left: calc((100% - (10.8vh + 5vw)) / 2);
+		font-size: 2.25vh;
+	}
+
+	#redRemain {
+		width: 5.4vh;
+	    border-radius: 1.5vw;
+	}
+
+	#blueRemain {
+		width: 5.4vh;
+		left: 5vw;
+	    border-radius: 1.5vw;
+	}
+
+	.card {
+		width: 17vw;
+		height: 11.33vw;
+		position: fixed;
+		font-size: 2vw;
+		border-radius: 2vw;
+	}
+
+	.card-row-0 {
+		top: var(--cardsTop);
+	}
+
+	.card-row-1 {
+		top: calc(var(--cardsTop) + 1vw + var(--cardHeight));
+	}
+
+	.card-row-2 {
+		top: calc(var(--cardsTop) + 2vw + (var(--cardHeight) * 2));
+	}
+
+	.card-row-3 {
+		top: calc(var(--cardsTop) + 3vw + (var(--cardHeight) * 3))
+	}
+
+	.card-row-4 {
+		top: calc(var(--cardsTop) + 4vw + (var(--cardHeight) * 4))
+	}
+
+	.card-col-0 {
+		left: 5.5vw;
+	}
+
+	.card-col-1 {
+		left: 23.5vw;
+	}
+
+	.card-col-2 {
+		left: 41.5vw;
+	}
+
+	.card-col-3 {
+		left: 59.5vw;
+	}
+
+	.card-col-4 {
+		left: 77.5vw;
+	}
+
+	#status {
+		left: 10vw;
+		right: 10vw;
+		height: 20vh;
+		position: fixed;
+		top: calc((var(--spacer) * 2) + var(--cardsHeight) + 7vh);
+	    border-radius: 5vw;
+	}
+
+	#action {
+		left: 10vw;
+		right: 10vw;
+		position: fixed;
+		top: calc((var(--spacer) * 2) + var(--cardsHeight) + 7vh + 5vh + var(--statusHeight));
+	}
+
+	#clueLabel {
+		font-size: 1.5vh;
+		padding-left: 5vw;
+	}
+
+	#clueText {
+		font-size: 3vh;
+	}
+
+	#guesses {
+		font-size: 2.25vh;
+	}
+
+	#roleText {
+		font-size: 1.5vh;
+	}
+}

@@ -1,0 +1,181 @@
+* {
+  	box-sizing: border-box;
+  	text-align: center;
+
+	--backColor: 			black;
+
+	--redColor: 			rgb(204, 64, 74);
+	--redBorderColor:		rgb(226, 146, 152);
+	--blueColor:			rgb(63, 72, 204);
+	--blueBorderColor:		rgb(165, 170, 231);
+	--brownColor:			rgb(158, 103, 33);
+	--brownBorderColor:		rgb(214,150,54);
+	--blackColor:			rgb(0,0,0);
+	--blackBorderColor:		rgb(110,110,110);
+
+	--cardColor: 			rgb(158, 103, 33);
+	--cardBorderColor: 		rgb(214,150,54);
+
+	--statusColor:			/*rgb(0, 49, 71);*/black;
+	--statusBorderColor:	/*rgb(11, 147, 213);*/white;
+
+	--textColorLight:		white;
+	--textColorDark:		black;
+
+	--menuColor:			rgb(0, 49, 71);
+	--menuBorderColor:		rgb(11, 147, 213);
+}
+
+body {
+	margin: 0;
+	padding: 0;
+    color: var(--textColorLight);
+    background-image: url(images/ui-bg_loop_25_000000_21x21.png);
+    background-color: var(--backColor);
+	font-family: verdana,helvetica,arial;
+}
+
+.textalignment {
+	width: 0;
+	height: 100%;
+	vertical-align: middle;
+}
+
+#content div {
+	float: left;
+}
+
+#content {
+	width: 100%;
+	height: 100%;
+}
+
+#instructions {
+	left: 0;
+	position: fixed;
+}
+
+#menu {
+	right: 0;
+	position: fixed;
+}
+
+#clue {
+	width: 100%;
+	height: 40%;
+	position: static;
+}
+
+#clueLabel {
+	width: 100%;
+	height: 35%;
+	text-align: left;
+}
+
+#clueText {
+	width: 100%;
+	height: 65%;
+}
+
+#guesses {
+	width: 100%;
+	height: 20%;
+	position: static;
+	border-top: 1px solid var(--statusBorderColor);
+}
+
+#role {
+	width: 100%;
+	height: 40%;
+}
+
+#remainCenterWrap {
+	height: 45%;
+	position: relative;
+	top: 9%;
+}
+
+#redRemain {
+	height: 100%;
+    border: 1px solid var(--redBorderColor);
+    background-color: var(--redColor);
+}
+
+#blueRemain {
+	position: relative;
+	height: 100%;
+    border: 1px solid var(--blueBorderColor);
+    background-color: var(--blueColor);
+}
+
+#roleText {
+	height: 35%;
+	width: 100%;
+	position: relative;
+	top: 20%;
+}
+
+.card {
+    border: 1px solid var(--cardBorderColor);
+    background-image: none;
+    background-color: var(--cardColor);
+
+    transition-property: transform, background-color, border-color;
+    transition-duration: 1.5s;
+    transition-timing-function: linear;
+    transform-style: preserve-3d;
+}
+
+#playersDialog {
+	text-align: left;
+}
+
+#status {
+    border: 1px solid var(--statusBorderColor);
+    background-color: var(--statusColor);
+}
+
+.card.shown {
+	visibility: visible;
+}
+
+.card.hidden {
+	transform: rotateY(360deg);
+/*	visibility: hidden; */
+}
+
+.card.color-red {
+	background-color: var(--redColor);
+	border-color: var(--redBorderColor);
+}
+
+.card.color-blue {
+	background-color: var(--blueColor);
+	border-color: var(--blueBorderColor);
+}
+
+.card.color-black {
+	background-color: var(--blackColor);
+	border-color: var(--blackBorderColor);
+}
+
+.card.color-brown {
+	background-color: var(--brownColor);
+	border-color: var(--brownBorderColor);
+}
+
+.hidden.card.color-red {
+	color: var(--redColor);
+}
+
+.hidden.card.color-blue {
+	color: var(--blueColor);
+}
+
+.hidden.card.color-black {
+	color: var(--blackColor);
+}
+
+.hidden.card.color-brown {
+	color: var(--brownColor);
+}
