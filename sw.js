@@ -1,51 +1,52 @@
-
-
-
-
-
-        fulfill(response);
-        reject();
-       return cache.match("offline.html");
-       return matching;
-      console.log(response.url + " was cached");
-      if(response.status !== 404) {
-      return cache.put(request, response);
-      }
-      } else {
-     if(!matching || matching.status == 404) {
-     }
-     } else {
-    console.log("caching index and important routes");
-    fetch(request).then(function(response){
-    return cache.addAll(["/images/", "/avatar.png", "/codenames.js", "/codenames.manifest", "/codenames_common.css", "/codenames_landscape.css", "/codenames_portrait.css", "/index.html", "/jquery.js", "/jquery-ui.js", "/jquery-ui.min.css", "/offline.html", "/peer.min.js", "/sw.js", "/textalign.bmp" ]);
-    return cache.match(request).then(function (matching) {
-    return fetch(request).then(function (response) {
-    return returnFromCache(event.request);
-    });
-    });
-    }, reject);
-  console.log("Installing web app");
-  event.respondWith(checkResponse(event.request).catch(function() {
-  event.waitUntil(addToCache(event.request));
-  event.waitUntil(preLoad());
-  return caches.open("offline").then(function (cache) {
-  return caches.open("offline").then(function (cache) {
-  return caches.open("offline").then(function(cache) {
-  return new Promise(function(fulfill, reject) {
-  }));
-  });
-  });
-  });
-  });
-self.addEventListener("fetch", function(event) {
 self.addEventListener("install", function(event) {
-var addToCache = function(request){
-var checkResponse = function(request){
+  event.waitUntil(preLoad());
+});
+
 var preLoad = function(){
+  console.log("Installing web app");
+  return caches.open("offline").then(function(cache) {
+    console.log("caching index and important routes");
+    return cache.addAll(["/images/", "/avatar.png", "/codenames.js", "/codenames.manifest", "/codenames_common.css", "/codenames_landscape.css", "/codenames_portrait.css", "/index.html", "/jquery.js", "/jquery-ui.js", "/jquery-ui.min.css", "/offline.html", "/peer.min.js", "/sw.js", "/textalign.bmp" ]);
+  });
+};
+
+self.addEventListener("fetch", function(event) {
+  event.respondWith(checkResponse(event.request).catch(function() {
+    return returnFromCache(event.request);
+  }));
+  event.waitUntil(addToCache(event.request));
+});
+
+var checkResponse = function(request){
+  return new Promise(function(fulfill, reject) {
+    fetch(request).then(function(response){
+      if(response.status !== 404) {
+        fulfill(response);
+      } else {
+        reject();
+      }
+    }, reject);
+  });
+};
+
+var addToCache = function(request){
+  return caches.open("offline").then(function (cache) {
+    return fetch(request).then(function (response) {
+      console.log(response.url + " was cached");
+      return cache.put(request, response);
+    });
+  });
+};
+
 var returnFromCache = function(request){
-});
-});
+  return caches.open("offline").then(function (cache) {
+    return cache.match(request).then(function (matching) {
+     if(!matching || matching.status == 404) {
+       return cache.match("offline.html");
+     } else {
+       return matching;
+     }
+    });
+  });
 };
-};
-};
-};
+
