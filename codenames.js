@@ -16,6 +16,9 @@
 
 "use strict";
 
+const peerConfig = {'iceServers' : [{'urls':'stun:stun.l.google.com:19302'}, {'url':'stun:stun.l.google.com:19302'}],
+                    'sdpSemantics': 'unified-plan'},
+
 const CONN_ID = 'LQMS_CN_TEST';
 
 const MODE_HOST         = 0;
@@ -81,7 +84,7 @@ function startHost()
 {
     return new Promise(function(resolve, reject) 
     {
-        peer = new Peer(CONN_ID, {key: 'lwjd5qra8257b9'});
+        peer = new Peer(CONN_ID, {key: 'lwjd5qra8257b9', config: peerConfig});
         peer.resolve = resolve;
         peer.reject = reject;
         peer.on('open', connectionOpenedHost);
@@ -96,7 +99,7 @@ function startClient()
 {
     return new Promise(function(resolve, reject) 
     {
-        peer = new Peer({key: 'lwjd5qra8257b9'});
+        peer = new Peer({key: 'lwjd5qra8257b9', config: peerConfig});
         peer.resolve = resolve;
         peer.reject = reject;
         peer.on('open', connectionOpenedClient);
