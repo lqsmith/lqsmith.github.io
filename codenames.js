@@ -17,7 +17,7 @@
 "use strict";
 
 const peerConfig = {'iceServers' : [{'urls':'stun:stun.l.google.com:19302'}, {'url':'stun:stun.l.google.com:19302'}],
-                    'sdpSemantics': 'unified-plan'},
+                    'sdpSemantics': 'unified-plan'};
 
 const CONN_ID = 'LQMS_CN_TEST';
 
