@@ -739,6 +739,10 @@ function uiWaitForGuess()
 function uiPass()
 {
     gmTriggerEvent(SEND_PASS, null);
+}
+
+function uiShowPass()
+{
     $('#action').button('destroy');
     $('#action').html('');
 }
@@ -1017,7 +1021,7 @@ function gmHandleEvent(cmd, data)
             }
             case SEND_PASS:
             {
-                // Nothing to do?
+                uiShowPass();
                 break;
             }
             case GAME_OVER:
