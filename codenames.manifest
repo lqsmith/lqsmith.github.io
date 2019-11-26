@@ -2,7 +2,7 @@
     "name": "Codenames",
     "short_name": "Codenames",
     "theme_color": "#ffcbe4",
-    "background_color": "#000000",
+    "background_color": "#FFFFFF",
     "display": "standalone",
     "scope": "/",
     "start_url": "https://lqsmith.github.io/",
