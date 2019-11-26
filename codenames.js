@@ -437,7 +437,8 @@ function uiGetClue()
 
 function styleTextBox(input)
 {
-    input.css({
+/*    
+    input.button().css({
     	'font': 'inherit',
     	'color': 'inherit',
     	'text-align': 'left',
@@ -448,6 +449,7 @@ function styleTextBox(input)
     	'overflow' : 'hidden',
     	'width' : '90%',
     });
+*/    
 }
 
 function uiGetGameMode()
