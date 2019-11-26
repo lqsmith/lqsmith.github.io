@@ -885,7 +885,7 @@ function gmCreateBoard()
     for(let i = 9; i < 17; i++)
     {
         let word = {
-            word: WORD_BANK[i + 9][rand(2)],
+            word: WORD_BANK[i][rand(2)],
             shown: true,
             color: secondTeam
         };
@@ -896,7 +896,7 @@ function gmCreateBoard()
     for(let i = 17; i < 24; i++)
     {
         let word = {
-            word: WORD_BANK[i + 17][rand(2)],
+            word: WORD_BANK[i][rand(2)],
             shown: true,
             color: BROWN
         };
