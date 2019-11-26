@@ -437,7 +437,7 @@ function uiGetClue()
 
 function styleTextBox(input)
 {
-    input.button().css({
+    input.css({
     	'font': 'inherit',
     	'color': 'inherit',
     	'text-align': 'left',
