@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="codenames_common.css">
         <link rel="stylesheet" href="codenames_portrait.css">
         <link rel="stylesheet" href="codenames_landscape.css">
+        <link rel="manifest" href="codenames.manifest">
     </head>
 
     <body>
@@ -81,6 +82,13 @@
         <script src="jquery.js"></script>
         <script src="jquery-ui.js"></script>
         <script src="codenames.js"></script>
+		<script>
+ 			if (!navigator.serviceWorker.controller) {
+     			navigator.serviceWorker.register("/sw.js").then(function(reg) {
+         			console.log("Service worker has been registered for scope: " + reg.scope);
+    			});
+ 			}
+		</script>        	
 
     </body>
 </html>
