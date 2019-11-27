@@ -13,6 +13,8 @@
 	#menu {
 		width: 7vh;
 		height: 7vh;
+		right: 2vh;
+		top: 2vh;
 	}
 
 	#remainCenterWrap {

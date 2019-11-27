@@ -22,6 +22,8 @@
 	#menu {
 		width: 7vw;
 		height: 7vw;
+		right: 2vw;
+		top: 2vw;
 	}
 
 	#remainCenterWrap {

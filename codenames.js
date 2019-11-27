@@ -1,14 +1,10 @@
 /* TODO's
         Sequence Animations, dialog appearances
-        Use QR Codes or use unique ID per host
         Hide words after animation completes
         Implement menu
-        Disconnecting players
-        Check various screen sizes
         Add AI player
         Handle dropped players
         Only allow game start if each team has one spymaster and at least one agent
-        Use words from actual game
         Stylish fonts
         Make web app for mobile
         block selections
@@ -31,6 +27,7 @@ const BROWN             = 3;
 
 const centerText = '<img src="textalign.bmp" class="textalignment">';
 
+let firstNewPlayer = 0;
 let mode;
 let players = [];
 let boardState = [];
@@ -92,7 +89,6 @@ function startHost()
     return new Promise(function(resolve, reject) 
     {
         peerId = rand(10000);
-        console.log('opening ' + CONN_ID + peerId);
         peer = new Peer(CONN_ID + peerId, {debug: 3});
         peer.resolve = resolve;
         peer.reject = reject;
@@ -125,7 +121,6 @@ function connectionOpenedHost(id)
 
 function connectionOpenedClient(id)
 {
-    console.log('connecting to ' + CONN_ID + peerId);
     channel = peer.connect(CONN_ID + peerId, {reliable: true, serialization: 'json'});
     channel.on('open', channelOpenedClient);
 }
@@ -151,21 +146,27 @@ function channelOpenedClient()
 function channelError()
 {
     // TODO
+	console.log('channel error');
 }
 
 function channelClosed()
 {
     // TODO
+	console.log('channel closed');
 }
 
 function connectionClosed()
 {
+	console.log('disconnected, trying to reconnect');
+	peer.reconnect();
     // TODO
 }
 
 function connectionError()
 {
     // TODO
+	console.log('ERROR, trying to reconnect');
+	peer.reconnect();
 }
 
 function getPlayerName()
@@ -190,6 +191,7 @@ function setPlayerRoles(getPlayerData)
     for(let i = 0; i < players.length; i++)
     {
         let data = getPlayerData(i + 1);
+        players[i].name = data.name;
         players[i].team = data.team;
         players[i].spymaster = data.spymaster;
     }
@@ -233,10 +235,11 @@ let uiGetGameIDDialog;
 let uiMessageOutDialog;
 let uiMessageInDialog;
 let uiAlertDialog;
+let uiHostMenu;
+let uiClientMenu;
 
 function uiInit()
 {
-	$('#menu').button();
 	$('#menu').click(uiMenuClicked);
 
     $('#action').button();
@@ -387,6 +390,39 @@ function uiInit()
     });
 	uiGetModeDialog.parent().find('.ui-dialog-titlebar-close').css('display', 'none');
 
+	uiHostMenu = $('<div title="Begin Game?">What would you like to do?</div>');
+	uiHostMenu.dialog(
+    {
+        modal: true,
+        buttons: 
+        [
+            {
+                text: 'Begin a new game',
+                click: function() 
+                {
+                    $(this).dialog('close');
+				    uiConnectPlayers().then(() =>
+        			gmStartGame());
+                },
+            },
+            {
+                text: 'Manage players',
+                click: function() 
+                {
+                    $(this).dialog('close');
+				    uiConnectPlayers().then(() =>
+				    {
+				    	gmSetRoles(false);
+						gmTriggerEvent(SET_BOARD, {cards: boardState, turn: currentTurn});
+				    });
+                },
+            },
+        ],
+        closeOnEscape: true,
+        autoOpen: false,
+    });
+	uiGetModeDialog.parent().find('.ui-dialog-titlebar-close').css('display', 'none');
+
 	uiGetPlayersDialog = $('<div title="Players"><div id="peerid"></div><br>' +
         		'<table width="100%" id="users" class="ui-widget ui-widget-content">' +
         			'<thead>' +
@@ -412,6 +448,7 @@ function uiInit()
                     {
                         let listItem = $('#users > tbody');
                         let role = {};
+                        role.name = listItem.find('.nameCell').slice(idx, idx+1).text();
                         role.team = listItem.find('.teamCell').slice(idx, idx+1).text() == "Red" ? RED : BLUE;
                         role.spymaster = listItem.find('.roleCell').slice(idx, idx+1).text() == "Spymaster";
                         return role;
@@ -466,8 +503,11 @@ function uiMenuClicked(event)
 {
     if(mode == MODE_HOST)
     {
-        uiConnectPlayers().then(() =>
-        gmStartGame());
+    	uiHostMenu.dialog('open');
+    }
+    else
+    {
+    	uiClientMenu.dialog('open');
     }
 }
 
@@ -530,9 +570,10 @@ function uiAddPlayer(name, team, spymaster)
 {
     let cells = $('#users > tbody');
     cells.append(	'<tr class="playerRow">' +
-                               		'<td>' + name + '</td>' +
+                               		'<td class="nameCell">' + name + '</td>' +
                                 	'<td class="teamCell">' + (team == RED ? 'Red' : 'Blue') + '</td>' +
                                 	'<td class="roleCell">' + (spymaster ? 'Spymaster' : 'Agent') + '</td>' +
+                                	'<td class="dropCell">x</td>' +
                             	'</tr>');
     cells.css('cursor', 'default');
     $('.teamCell').unbind('click');
@@ -541,7 +582,25 @@ function uiAddPlayer(name, team, spymaster)
     $('.roleCell').unbind('click');
     $('.roleCell').click(uiToggleRole);   
     $('.roleCell').css('cursor', 'pointer');
+    $('.dropCell').unbind('click');
+    $('.dropCell').click(uiDropPlayer);   
+    $('.dropCell').css('cursor', 'pointer');
 
+}
+
+function uiDropPlayer(event)
+{
+	let row = event.target.parentNode.rowIndex - 2; 
+	if(row >= 0)
+	{
+		if(row < firstNewPlayer);
+		{
+			firstNewPlayer--;
+		}
+		players[row].channel.close();
+		players.splice(row, 1);
+		document.getElementById("users").deleteRow(row + 2);
+	}
 }
 
 function uiToggleRole(event)
@@ -580,6 +639,18 @@ function uiConnectPlayers()
     	uiGetPlayersDialog.resolve = resolve;
     	uiGetPlayersDialog.reject = reject;
         $('#peerid').html(centerText + 'Game ID: ' + peerId);
+        firstNewPlayer = players.length;
+
+
+
+    	let cells = $('#users > tbody');
+    	cells.html('');
+    	uiAddPlayer(playerName, playerTeam, playerSpymaster);
+    	for(let i = 0; i < players.length; i++)
+    	{
+    		uiAddPlayer(players[i].name, players[i].team, players[i].spymaster);
+    	}
+
         uiGetPlayersDialog.dialog('open');
         uiGetPlayersDialog.parent().focus();
     });
@@ -840,7 +911,7 @@ function gmStartGame()
         foundAssassin = BLACK;
         gameOver = false;
 	    gmCreateBoard();
-	    gmSetRoles();
+	    gmSetRoles(true);
 	    gmTriggerEvent(SET_BOARD, {cards: boardState, turn: currentTurn});
 	}
 }
@@ -893,10 +964,16 @@ function gmHandleGuess(word)
     
 }
 
-function gmSetRoles()
+function gmSetRoles(reportAll)
 {
 	uiAnnounceRole(playerTeam, playerSpymaster);
-    for(let i = 0; i < players.length; i++)
+	
+	if(reportAll)
+	{
+		firstNewPlayer = 0;
+	}
+
+    for(let i = firstNewPlayer; i < players.length; i++)
     {
     	console.log('TX: ' + CMD_STR[SET_ROLE] + ' to ' + i);
         players[i].channel.send({cmd: SET_ROLE, data: {

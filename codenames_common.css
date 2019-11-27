@@ -22,8 +22,8 @@
 	--textColorLight:		white;
 	--textColorDark:		black;
 
-	--menuColor:			rgb(0, 49, 71);
-	--menuBorderColor:		rgb(11, 147, 213);
+	--menuColor:			rgb(0, 0, 0);
+	--menuBorderColor:		rgb(0, 0, 0);
 }
 
 body {
@@ -56,8 +56,8 @@ body {
 }
 
 #menu {
-	right: 0;
 	position: fixed;
+
 }
 
 #clue {
