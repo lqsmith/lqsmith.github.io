@@ -44,16 +44,23 @@ let foundAssassin = BLACK;
 let gameOver = false;
 let peer = null;
 let channel = null;
+let peerId;
 
 $(main);
 
 function main()
 {
+    $(window).unload(closeAllConnections);
 	uiInit();
     getPlayerName().then(() => 
     getGameMode()).then(() =>
 	connectPlayers()).then(() => 
     gmStartGame());
+}
+
+function closeAllConnections()
+{
+    peer.destroy();
 }
 
 function getGameMode()
@@ -84,7 +91,9 @@ function startHost()
 {
     return new Promise(function(resolve, reject) 
     {
-        peer = new Peer(CONN_ID, {});
+        peerId = rand(10000);
+        console.log('opening ' + CONN_ID + peerId);
+        peer = new Peer(CONN_ID + peerId, {debug: 3});
         peer.resolve = resolve;
         peer.reject = reject;
         peer.on('open', connectionOpenedHost);
@@ -99,7 +108,7 @@ function startClient()
 {
     return new Promise(function(resolve, reject) 
     {
-        peer = new Peer({});
+        peer = new Peer({debug: 3});
         peer.resolve = resolve;
         peer.reject = reject;
         peer.on('open', connectionOpenedClient);
@@ -116,7 +125,8 @@ function connectionOpenedHost(id)
 
 function connectionOpenedClient(id)
 {
-    channel = peer.connect(CONN_ID, {reliable: true, serialization: 'json'});
+    console.log('connecting to ' + CONN_ID + peerId);
+    channel = peer.connect(CONN_ID + peerId, {reliable: true, serialization: 'json'});
     channel.on('open', channelOpenedClient);
 }
 
@@ -219,6 +229,7 @@ let uiGetNameDialog;
 let uiGetClueDialog;
 let uiGetModeDialog;
 let uiGetPlayersDialog;
+let uiGetGameIDDialog;
 let uiMessageOutDialog;
 let uiMessageInDialog;
 let uiAlertDialog;
@@ -312,6 +323,41 @@ function uiInit()
 	});
 	spinner.css('width', '90%');
 
+
+    uiGetGameIDDialog = $('<div title="Find Game">Enter the ID of the game you want to join.<br><br><input id="gameId" placeholder="Enter ID"></input></div>');
+    uiGetGameIDDialog.dialog(
+    {
+        modal: true,
+        buttons: [{
+            text: 'OK',
+            click: function() {
+                $(this).dialog("close");
+            },
+        }],
+        beforeClose: function(event, ui) 
+        {
+            let name = $('#gameId').val();
+            if(name == "")
+            {
+                return false;
+            }
+            else
+            {
+                peerId = $('#gameId').val();
+                $('#gameId').val('');
+                uiGetModeDialog.resolve(MODE_CLIENT);
+                return true;
+            }
+        },
+        closeOnEscape: false,
+        autoOpen: false,
+    });
+    
+    styleTextBox($('#nameEntry'));
+    uiGetNameDialog.parent().find('.ui-dialog-titlebar-close').css('display', 'none');
+    $('#nameEntry').val('Player' + rand(1000));
+
+
 	uiGetModeDialog = $('<div title="Begin Game?">What would you like to do?</div>');
 	uiGetModeDialog.dialog(
     {
@@ -324,15 +370,15 @@ function uiInit()
                 click: function() 
                 {
                     uiGetModeDialog.resolve(MODE_HOST);
-                    $(this).dialog("close");
+                    $(this).dialog('close');
                 },
             },
             {
                 text: 'Join an existing game',
                 click: function() 
                 {
-                    uiGetModeDialog.resolve(MODE_CLIENT);
-                    $(this).dialog("close");
+                    $(this).dialog('close');
+                    uiGetGameIDDialog.dialog('open');
                 },
             },
         ],
@@ -341,7 +387,7 @@ function uiInit()
     });
 	uiGetModeDialog.parent().find('.ui-dialog-titlebar-close').css('display', 'none');
 
-	uiGetPlayersDialog = $('<div title="Players"><br>' +
+	uiGetPlayersDialog = $('<div title="Players"><div id="peerid"></div><br>' +
         		'<table width="100%" id="users" class="ui-widget ui-widget-content">' +
         			'<thead>' +
         				'<tr class="ui-widget-header ">' +
@@ -533,6 +579,7 @@ function uiConnectPlayers()
     {
     	uiGetPlayersDialog.resolve = resolve;
     	uiGetPlayersDialog.reject = reject;
+        $('#peerid').html(centerText + 'Game ID: ' + peerId);
         uiGetPlayersDialog.dialog('open');
         uiGetPlayersDialog.parent().focus();
     });
