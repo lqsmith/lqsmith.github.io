@@ -1271,7 +1271,7 @@ this.wordle = this.wordle ||
     {
         return Na(Ha, e)
     }
-    var Ba = "abcdefghijklmnopqrstuvwxyz",
+    var Ba = "abcdefghijklmnopqrstuvwxyz ",
         Fa = [].concat(g(Ba.split("").slice(13)), g(Ba.split("").slice(0, 13)));
 
     function Wa(e)
@@ -1709,7 +1709,8 @@ this.wordle = this.wordle ||
     var ds = [
             ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
             ["-", "a", "s", "d", "f", "g", "h", "j", "k", "l", "-"],
-            ["â†µ", "z", "x", "c", "v", "b", "n", "m", "â†"]
+            ["â†µ", "z", "x", "c", "v", "b", "n", "m", "â†"],
+            [" "]
         ],
         us = function(e)
         {
@@ -1764,7 +1765,7 @@ this.wordle = this.wordle ||
                             var s = a.key,
                                 t = a.metaKey,
                                 o = a.ctrlKey;
-                            t || o || (Ba.includes(s.toLowerCase()) || "Backspace" === s || "Enter" === s) && e.dispatchKeyPressEvent(s)
+                            t || o || (s.includes(s.toLowerCase()) || "Backspace" === s || "Enter" === s || " " === s) && e.dispatchKeyPressEvent(s)
                         }
                     })), this.$keyboard.addEventListener("transitionend", (function(a)
                     {
@@ -1776,10 +1777,11 @@ this.wordle = this.wordle ||
                         s.classList.add("row"), a.forEach((function(e)
                         {
                             var a;
-                            if (e >= "a" && e <= "z" || "â†" === e || "â†µ" === e)
+                            if (e >= "a" && e <= "z" || "â†" === e || "â†µ" === e || " " === e)
                             {
                                 if ((a = is.content.cloneNode(!0).firstElementChild).dataset.key = e, a.textContent = e, "â†" === e)
                                 {
+                                    alert("adding " + e);
                                     var t = document.createElement("game-icon");
                                     t.setAttribute("icon", "backspace"), a.textContent = "", a.appendChild(t), a.classList.add("one-and-a-half")
                                 }
@@ -2089,7 +2091,7 @@ this.wordle = this.wordle ||
     var Is = document.createElement("template");
 // LQMS    Is.innerHTML = '\n  <div class="countdown">\n    <h1>Next WORDLE</h1>\n    <div id="timer">\n      <div class="statistic-container">\n        <div class="statistic timer">\n          <countdown-timer></countdown-timer>\n        </div>\n      </div>\n    </div>\n  </div>\n  <div class="share">\n    <button id="share-button">\n      Share <game-icon icon="share"></game-icon>\n    </button>\n  </div>\n';
 
-Is.innerHTML = '<div class="share">\n    <button id="share-button">\n      Share <game-icon icon="share"></game-icon>\n    </button>\n  </div>\n<div class="share">\n    <button id="next-button">\n      Play Next Word \n    </button>\n  </div>\n  ';
+Is.innerHTML = '<div class="share">\n    <button id="share-button">\n      Share <game-icon icon="share"></game-icon>\n    </button>\n  </div>\n<div class="share">\n    <button id="next-button">\n      Next Word\n    </button>\n  </div>\n  ';
  
     var Ms = {
             currentStreak: "Current Streak",
