@@ -1781,7 +1781,7 @@ this.wordle = this.wordle ||
                             {
                                 if ((a = is.content.cloneNode(!0).firstElementChild).dataset.key = e, a.textContent = e, "â†" === e)
                                 {
-                                    alert("adding " + e);
+//                                    alert("adding " + e);
                                     var t = document.createElement("game-icon");
                                     t.setAttribute("icon", "backspace"), a.textContent = "", a.appendChild(t), a.classList.add("one-and-a-half")
                                 }
