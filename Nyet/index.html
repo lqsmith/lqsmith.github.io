@@ -15,6 +15,10 @@
         font-size: 2.6vw;
       }
 
+      h1 {
+        font-size: 12vh;
+      }
+
       .page-area {
         height: 100vh;
         width: 100vw;
@@ -150,6 +154,7 @@
         if(currstyle.backgroundImage.includes('none')) {
           style.setProperty('background-image', str);
         } else {
+          style.setProperty('background-color', 'gray');
           style.setProperty('background-image', str + ', ' + currstyle.backgroundImage);
         }
       }
@@ -203,7 +208,7 @@
 
   <body>
     <div class="page-area">
-      <div class="header-area"></div>
+      <div class="header-area"><h1>NYET</h1></div>
       <div class="main-area">
         <div class="rows-container">
           <div class="line-element line-player1">
