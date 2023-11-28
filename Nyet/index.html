@@ -152,6 +152,7 @@
 
       function addBackground(currstyle, style, str) {
         if(currstyle.backgroundImage.includes('none')) {
+          style.setProperty('background-color', 'gray');
           style.setProperty('background-image', str);
         } else {
           style.setProperty('background-color', 'gray');
