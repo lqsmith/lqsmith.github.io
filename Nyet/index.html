@@ -12,6 +12,7 @@
         text-align: center;
         word-wrap: break-word;
         word-break: break-word;
+        font-size: 2.6vw;
       }
 
       .page-area {
@@ -41,7 +42,7 @@
         border: 1px solid black;
         border-radius: 1vh;
         display: grid;
-        grid-template-columns: auto auto auto auto auto auto;
+        grid-template-columns: 0.1fr 0.18fr 0.18fr 0.18fr 0.18fr 0.18fr;
         padding: 2vh 2vw;
         grid-column-gap: 2vh;
       }
@@ -78,6 +79,15 @@
         background-position: center;
       }
 
+      .points {
+        font-size: 9vh;
+      }
+
+      .points-neg {
+        font-size: 9vh;
+        color: red;
+      }
+
       .image-heart {
         background-image: url("img/heart.svg");
       }
@@ -95,23 +105,23 @@
       }
 
       .image-st-heart {
-        background-image: url("img/crown-heart.svg"), url("img/crown.svg");
+        background-image: url("img/crown-heart.svg");
       }
 
       .image-st-spade {
-        background-image: url("img/crown-spade.svg"), url("img/crown.svg");
+        background-image: url("img/crown-spade.svg");
       }
 
       .image-st-diamond {
-        background-image: url("img/crown-diamond.svg"), url("img/crown.svg");
+        background-image: url("img/crown-diamond.svg");
       }
 
       .image-st-club {
-        background-image: url("img/crown-club.svg"), url("img/crown.svg");
+        background-image: url("img/crown-club.svg");
       }
 
       .image-st-none {
-        background-image: url("img/none.svg");
+        background-image: url("img/na.svg");
       }
 
       .image-dis-one {
@@ -126,7 +136,68 @@
         background-image: url("img/back-left.svg");
       }
 
+      .image-dis-no-loot {
+        background-image: url("img/back-crown.svg");
+      }
+
     </style>
+
+    <script>
+      var currPlayer = 1;
+      var playerCnt = 5;
+
+      function addBackground(currstyle, style, str) {
+        if(currstyle.backgroundImage.includes('none')) {
+          style.setProperty('background-image', str);
+        } else {
+          style.setProperty('background-image', str + ', ' + currstyle.backgroundImage);
+        }
+      }
+
+      function addNyet(elem) {
+        style = elem.currentStyle || window.getComputedStyle(elem, false);
+        if(!style.backgroundImage.includes("nyet-")) {
+          if(currPlayer == 1) {
+            addBackground(style, elem.style, 'url("img/nyet-blue.svg")');
+            currPlayer = 2;
+          } else if(currPlayer == 2) {
+            addBackground(style, elem.style, 'url("img/nyet-red.svg")');
+            if(playerCnt > 2) {
+              currPlayer = 3;
+            } else {
+              currPlayer = 1;
+            }
+          } else if(currPlayer == 3) {
+            addBackground(style, elem.style, 'url("img/nyet-green.svg")');
+            if(playerCnt > 3) {
+              currPlayer = 4;
+            } else {
+              currPlayer = 1;
+            }
+          } else if(currPlayer == 4) {
+            addBackground(style, elem.style, 'url("img/nyet-pink.svg")');
+            if(playerCnt > 4) {
+              currPlayer = 5;
+            } else {
+              currPlayer = 1;
+            }
+          } else {
+            addBackground(style, elem.style, 'url("img/nyet-yellow.svg")');
+            currPlayer = 1;
+          }
+        }
+      };
+
+      window.addEventListener('load', function() {
+        currPlayer = 1;
+        const elems = document.querySelectorAll('.row-element');
+        elems.forEach(elem => {
+          elem.addEventListener('click', function handleClick(e) {
+            addNyet(e.target);
+          });
+        });
+      });
+    </script>
 
   </head>
 
@@ -137,14 +208,14 @@
         <div class="rows-container">
           <div class="line-element line-player1">
             <div class="row-title">First Player</div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
+            <div class="row-element points">1</div>
+            <div class="row-element points">2</div>
+            <div class="row-element points">3</div>
+            <div class="row-element points">4</div>
+            <div class="row-element points">5</div>
           </div>
           <div class="line-element line-trump">
-            <div class="row-title">Trump Suit</div>
+            <div class="row-title">Trump</div>
             <div class="row-element image-heart"></div>
             <div class="row-element image-spade"></div>
             <div class="row-element image-diamond"></div>
@@ -162,17 +233,17 @@
             <div class="row-title">Discard or Pass</div>
             <div class="row-element image-dis-one"></div>
             <div class="row-element image-dis-two"></div>
+            <div class="row-element image-dis-no-loot"></div>
             <div class="row-element image-dis-left"></div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
+            <div class="row-element image-st-none"></div>
           </div>
           <div class="line-element line-points">
             <div class="row-title">Points</div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
-            <div class="row-element"></div>
+            <div class="row-element points-neg">-2</div>
+            <div class="row-element points">1</div>
+            <div class="row-element points">2</div>
+            <div class="row-element points">3</div>
+            <div class="row-element points">4</div>
         </div>
         </div>
       </div>
