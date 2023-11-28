@@ -1,0 +1,178 @@
+<!doctype html>
+
+<html>
+
+  <head>
+    <title>NYET</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        text-align: center;
+        word-wrap: break-word;
+        word-break: break-word;
+      }
+
+      .page-area {
+        height: 100vh;
+        width: 100vw;
+        padding: 1vh 1vw;
+        background: lightblue;
+      }
+
+      .header-area {
+        height: 14vh;
+      }
+
+      .main-area {
+        height: 84vh;
+        padding: 0;
+      }
+
+      .rows-container {
+        display: grid;
+        grid-template-columns: auto;
+        grid-gap: 1vh;
+        grid-template-rows: 16vh 16vh 16vh 16vh 16vh;
+      }
+
+      .line-element {
+        border: 1px solid black;
+        border-radius: 1vh;
+        display: grid;
+        grid-template-columns: auto auto auto auto auto auto;
+        padding: 2vh 2vw;
+        grid-column-gap: 2vh;
+      }
+
+      .line-player1 {
+        background: rgb(124, 193, 216);
+      }
+
+      .line-trump {
+        background: rgb(100, 182, 208);
+      }
+
+      .line-supertrump {
+        background: rgb(74, 170, 202);
+      }
+
+      .line-discard {
+        background: rgb(55, 156, 189);
+      }
+
+      .line-points {
+        background: rgb(48, 136, 165);
+      }
+
+      .row-title {
+      }
+
+      .row-element {
+        border: 1px solid black;
+        border-radius: 1vh;
+        background: white;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      .image-heart {
+        background-image: url("img/heart.svg");
+      }
+
+      .image-spade {
+        background-image: url("img/spade.svg");
+      }
+
+      .image-diamond {
+        background-image: url("img/diamond.svg");
+      }
+
+      .image-club {
+        background-image: url("img/club.svg");
+      }
+
+      .image-st-heart {
+        background-image: url("img/heart.svg"), url("img/crown.svg");
+        background-size: 50%, contain;
+        background-position-y: 60%, center;
+      }
+
+      .image-st-spade {
+        background-image: url("img/spade.svg"), url("img/crown.svg");
+        background-size: 50%, contain;
+        background-position-y: 60%, center;
+      }
+
+      .image-st-diamond {
+        background-image: url("img/diamond.svg"), url("img/crown.svg");
+        background-size: 50%, contain;
+        background-position-y: 60%, center;
+      }
+
+      .image-st-club {
+        background-image: url("img/club.svg"), url("img/crown.svg");
+        background-size: 50%, contain;
+        background-position-y: 60%, center;
+      }
+
+      .image-st-none {
+        background-image: url("img/none.svg");
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+    <div class="page-area">
+      <div class="header-area"></div>
+      <div class="main-area">
+        <div class="rows-container">
+          <div class="line-element line-player1">
+            <div class="row-title">First Player</div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+          </div>
+          <div class="line-element line-trump">
+            <div class="row-title">Trump Suit</div>
+            <div class="row-element image-heart"></div>
+            <div class="row-element image-spade"></div>
+            <div class="row-element image-diamond"></div>
+            <div class="row-element image-club"></div>
+          </div>
+          <div class="line-element line-supertrump">
+            <div class="row-title">Super Trump</div>
+            <div class="row-element image-st-heart"></div>
+            <div class="row-element image-st-spade"></div>
+            <div class="row-element image-st-diamond"></div>
+            <div class="row-element image-st-club"></div>
+            <div class="row-element image-st-none"></div>
+          </div>
+          <div class="line-element line-discard">
+            <div class="row-title">Discard or Pass</div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+          </div>
+          <div class="line-element line-points">
+            <div class="row-title">Points</div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+            <div class="row-element"></div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>
