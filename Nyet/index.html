@@ -13,6 +13,9 @@
         word-wrap: break-word;
         word-break: break-word;
         font-size: 2.6vw;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
       }
 
       h1 {
@@ -144,64 +147,149 @@
         background-image: url("img/back-crown.svg");
       }
 
+      .reset-button {
+        background-color: rgb(210, 139, 14);
+        color: white;
+        border: 3px solid black;
+        border-radius: 2vh;
+        float: right;
+        clearfix
+      }
+
     </style>
 
     <script>
+      var prevElement = null;
       var currPlayer = 1;
       var playerCnt = 4;
 
-      function addBackground(currstyle, style, str) {
-        if(currstyle.backgroundImage.includes('none')) {
-          style.setProperty('background-color', 'gray');
-          style.setProperty('background-image', str);
-        } else {
-          style.setProperty('background-color', 'gray');
-          style.setProperty('background-image', str + ', ' + currstyle.backgroundImage);
+      function getNyetForPlayer()
+      {
+        switch (currPlayer) {
+          case 1: return 'url("img/nyet-blue.svg")';
+          case 2: return 'url("img/nyet-red.svg")';
+          case 3: return 'url("img/nyet-green.svg")';
+          case 4: return 'url("img/nyet-pink.svg")';
+          case 5: return 'url("img/nyet-yellow.svg")';
         }
       }
 
-      function addNyet(elem) {
+      function removeNyet(elem) {
         style = elem.currentStyle || window.getComputedStyle(elem, false);
-        if(!style.backgroundImage.includes("nyet-")) {
-          if(currPlayer == 1) {
-            addBackground(style, elem.style, 'url("img/nyet-blue.svg")');
-            currPlayer = 2;
-          } else if(currPlayer == 2) {
-            addBackground(style, elem.style, 'url("img/nyet-red.svg")');
-            if(playerCnt > 2) {
-              currPlayer = 3;
-            } else {
-              currPlayer = 1;
-            }
-          } else if(currPlayer == 3) {
-            addBackground(style, elem.style, 'url("img/nyet-green.svg")');
-            if(playerCnt > 3) {
-              currPlayer = 4;
-            } else {
-              currPlayer = 1;
-            }
-          } else if(currPlayer == 4) {
-            addBackground(style, elem.style, 'url("img/nyet-pink.svg")');
-            if(playerCnt > 4) {
-              currPlayer = 5;
-            } else {
-              currPlayer = 1;
-            }
+        if(style.backgroundImage.includes('nyet-')) {
+          elem.style.setProperty('background-color', 'white');
+          if(style.backgroundImage.includes(',')) {
+            elem.style.setProperty('background-image', style.backgroundImage.replace(/^[^,]*, /g, ''));
           } else {
-            addBackground(style, elem.style, 'url("img/nyet-yellow.svg")');
-            currPlayer = 1;
+            elem.style.setProperty('background-image', '');
           }
         }
-      };
+      }
 
-      window.addEventListener('load', function() {
-        currPlayer = 1;
+      function hasNyet(elem) {
+        style = elem.currentStyle || window.getComputedStyle(elem, false);
+        return style.backgroundImage.includes('nyet-');
+      }
+
+      function addNyet(elem) {
+        if(!hasNyet(elem)) {
+          style = elem.currentStyle || window.getComputedStyle(elem, false);
+          elem.style.setProperty('background-color', 'gray');
+          if(style.backgroundImage.includes('none')) {
+            elem.style.setProperty('background-image', getNyetForPlayer());
+          } else {
+            elem.style.setProperty('background-image', getNyetForPlayer() + ', ' + style.backgroundImage);
+          }
+        }
+      }
+
+      function decCurrPlayer() {
+        currPlayer--;
+        if(currPlayer < 1)
+        {
+          currPlayer = playerCnt;
+        }
+      }
+
+      function incCurrPlayer() {
+        currPlayer++;
+        if(currPlayer > playerCnt)
+        {
+          currPlayer = 1;
+        }
+      }
+
+      function addListenersOnRow(elem) {
+        const elems = elem.parentElement.children;
+        for(let i = 1; i < elems.length; i++) {
+          if(!hasNyet(elems[i]) && (elems[i].getAttribute('listener') !== 'true')) {
+            elems[i].addEventListener('click', elementClicked);
+            elems[i].setAttribute('listener', 'true');
+          }
+        }
+      }
+
+      function removeListenersOnRow(elem) {
+        const elems = elem.parentElement.children;
+        for(let i = 1; i < elems.length; i++) {
+          if(elems[i] !== prevElement) {
+            removeListenerOnElement(elems[i]);
+          }
+        }
+      }
+
+      function removeListenerOnElement(elem) {
+        elem.removeEventListener('click', elementClicked);
+        elem.setAttribute('listener', 'false');
+      }
+
+      function rowComplete(elem) {
+        cnt = 0;
+        visCnt = 0;
+        const elems = elem.parentElement.children;
+        for(let i = 1; i < elems.length; i++) {
+          if(hasNyet(elems[i])) {
+            cnt++;
+          }
+          if(elems[i].offsetParent !== null) {
+            visCnt++;
+          }
+        }
+        return (cnt == (visCnt - 1));
+      }
+
+      function elementClicked(evt) {
+        elem = evt.target;
+        if((elem == prevElement) && hasNyet(elem)) {
+          removeNyet(elem);
+          decCurrPlayer();
+          addListenersOnRow(elem);
+          prevElement = null;
+        } else {
+          addNyet(elem);
+          incCurrPlayer();
+          if(prevElement && (elem != prevElement)) {
+            removeListenerOnElement(prevElement);
+          }
+          prevElement = elem;
+          if(rowComplete(elem)) {
+            removeListenersOnRow(elem);
+          }
+        }
+      }
+
+      function resetBoard() {
+        prevElement = null;
         const elems = document.querySelectorAll('.row-element');
         elems.forEach(elem => {
-          elem.addEventListener('click', function handleClick(e) {
-            addNyet(e.target);
-          });
+          removeNyet(elem);
+          elem.addEventListener('click', elementClicked);
+          elem.setAttribute('listener', 'true');
         });
+      }
+
+      window.addEventListener('load', function(){
+        resetBoard();
       });
     </script>
 
@@ -209,7 +297,7 @@
 
   <body>
     <div class="page-area">
-      <div class="header-area"><h1>NYET</h1></div>
+      <div class="header-area"><h1>NYET</h1><div class="reset-button">reset</div></div>
       <div class="main-area">
         <div class="rows-container">
           <div class="line-element line-player1">
