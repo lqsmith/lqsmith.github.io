@@ -1,0 +1,188 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  text-align: center;
+  word-wrap: normal;
+  word-break: normal;
+  font-size: 2.3vw;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  font-family: Arial, sans-serif;
+}
+
+.button {
+  background-color: rgb(48, 136, 165);
+  border: 3px solid black;
+  border-radius: 4vh;
+  font-size: 4vh;
+  line-height: 5vh;
+  padding: 1vh;
+  color: white;
+}
+
+.left {
+  float: left;
+  display: inline-block;
+}
+
+.right {
+  float: right;
+  display: inline-block;
+}
+
+.title {
+  display: inline-block;
+  font-size: 6vh;
+  line-height: 7vh;
+}
+
+.page-area {
+  height: 100vh;
+  width: 100vw;
+  padding: 1vh 1vw;
+  background: lightblue;
+}
+
+.header-area {
+  height: 9vh;
+}
+
+.bottom-line {
+  border-bottom: 1px solid black;
+  margin-bottom: 2vh;
+}
+
+.main-area {
+  height: 89vh;
+  padding: 0;
+}
+
+.rows-container {
+  display: grid;
+  grid-template-columns: auto;
+  grid-gap: 1vh;
+  grid-template-rows: 17vh 17vh 17vh 17vh 17vh;
+}
+
+.line-element {
+  border: 1px solid black;
+  border-radius: 1vh;
+  display: grid;
+  grid-template-columns: 0.1fr 0.18fr 0.18fr 0.18fr 0.18fr 0.18fr;
+  padding: 2vh 2vw;
+  grid-column-gap: 2vh;
+}
+
+.line-player1 {
+  background: rgb(124, 193, 216);
+}
+
+.line-trump {
+  background: rgb(100, 182, 208);
+}
+
+.line-supertrump {
+  background: rgb(74, 170, 202);
+}
+
+.line-discard {
+  background: rgb(55, 156, 189);
+}
+
+.line-points {
+  background: rgb(48, 136, 165);
+}
+
+.row-title {
+  /*transform: rotate(-90deg);*/
+  overflow: hidden;
+}
+
+.row-element {
+  border: 1px solid black;
+  border-radius: 1vh;
+  background: white;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  line-height: 13vh;
+}
+
+.points {
+  font-size: 7vh;
+}
+
+.points-neg {
+  font-size: 7vh;
+  color: red;
+}
+
+.image-heart {
+  background-image: url("img/heart.svg");
+}
+
+.image-spade {
+  background-image: url("img/spade.svg");
+}
+
+.image-diamond {
+  background-image: url("img/diamond.svg");
+}
+
+.image-club {
+  background-image: url("img/club.svg");
+}
+
+.image-st-heart {
+  background-image: url("img/crown-heart.svg");
+}
+
+.image-st-spade {
+  background-image: url("img/crown-spade.svg");
+}
+
+.image-st-diamond {
+  background-image: url("img/crown-diamond.svg");
+}
+
+.image-st-club {
+  background-image: url("img/crown-club.svg");
+}
+
+.image-st-none {
+  background-image: url("img/na.svg");
+}
+
+.image-dis-one {
+  background-image: url("img/back-one.svg");
+}
+
+.image-dis-two {
+  background-image: url("img/back-two.svg");
+}
+
+.image-dis-left {
+  background-image: url("img/back-left.svg");
+}
+
+.image-dis-no-loot {
+  background-image: url("img/back-crown.svg");
+}
+
+ul {
+  list-style-type: none;  
+  margin-bottom: 0.2vh;
+}
+
+li {
+  margin-bottom: 1vh;
+}
+
+label {
+  font-size: 4vw;
+}
+
+input {
+  font-size: 4vw;
+}

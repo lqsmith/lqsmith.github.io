@@ -3,194 +3,24 @@
 <html manifest="nyet.manifest">
 
   <head>
+    
  <!-- Add these lines for offline mobile app
-  	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/> 
-  	<meta name="apple-mobile-web-app-capable" content="yes" /> 
-  	<meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
-  	<link rel="apple-touch-icon" href="img/nyet_icon.png"/> 
-  	<link rel="apple-touch-startup-image" href="img/nyetstartup.png" /> 
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/> 
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+    <link rel="apple-touch-icon" href="img/nyet_icon.png"/> 
+    <link rel="apple-touch-startup-image" href="img/nyetstartup.png" /> 
   -->
+    <link rel="stylesheet" href="nyet.css">
 
-    <title>NYET</title>
-
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        text-align: center;
-        word-wrap: normal;
-        word-break: normal;
-        font-size: 2.3vw;
-        -ms-user-select: none;
-        -webkit-user-select: none;
-        user-select: none;
-        font-family: Arial, sans-serif;
-      }
-
-      .button {
-      	background-color: rgb(48, 136, 165);
-      	border: 3px solid black;
-        border-radius: 4vh;
-        font-size: 4vh;
-        line-height: 5vh;
-        padding: 1vh;
-        color: white;
-      }
-
-      .left {
-      	float: left;
-        display: inline-block;
-        visibility: hidden;
-      }
-
-      .right {
-      	float: right;
-        display: inline-block;
-      }
-
-      .title {
-        display: inline-block;
-        font-size: 6vh;
-        line-height: 7vh;
-      }
-
-      .page-area {
-        height: 100vh;
-        width: 100vw;
-        padding: 1vh 1vw;
-        background: lightblue;
-      }
-
-      .header-area {
-        height: 9vh;
-      }
-
-      .main-area {
-        height: 89vh;
-        padding: 0;
-      }
-
-      .rows-container {
-        display: grid;
-        grid-template-columns: auto;
-        grid-gap: 1vh;
-        grid-template-rows: 17vh 17vh 17vh 17vh 17vh;
-      }
-
-      .line-element {
-        border: 1px solid black;
-        border-radius: 1vh;
-        display: grid;
-        grid-template-columns: 0.1fr 0.18fr 0.18fr 0.18fr 0.18fr 0.18fr;
-        padding: 2vh 2vw;
-        grid-column-gap: 2vh;
-      }
-
-      .line-player1 {
-        background: rgb(124, 193, 216);
-      }
-
-      .line-trump {
-        background: rgb(100, 182, 208);
-      }
-
-      .line-supertrump {
-        background: rgb(74, 170, 202);
-      }
-
-      .line-discard {
-        background: rgb(55, 156, 189);
-      }
-
-      .line-points {
-        background: rgb(48, 136, 165);
-      }
-
-      .row-title {
-      	/*transform: rotate(-90deg);*/
-      	overflow: hidden;
-      }
-
-      .row-element {
-        border: 1px solid black;
-        border-radius: 1vh;
-        background: white;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        line-height: 13vh;
-      }
-
-      .points {
-        font-size: 7vh;
-      }
-
-      .points-neg {
-        font-size: 7vh;
-        color: red;
-      }
-
-      .image-heart {
-        background-image: url("img/heart.svg");
-      }
-
-      .image-spade {
-        background-image: url("img/spade.svg");
-      }
-
-      .image-diamond {
-        background-image: url("img/diamond.svg");
-      }
-
-      .image-club {
-        background-image: url("img/club.svg");
-      }
-
-      .image-st-heart {
-        background-image: url("img/crown-heart.svg");
-      }
-
-      .image-st-spade {
-        background-image: url("img/crown-spade.svg");
-      }
-
-      .image-st-diamond {
-        background-image: url("img/crown-diamond.svg");
-      }
-
-      .image-st-club {
-        background-image: url("img/crown-club.svg");
-      }
-
-      .image-st-none {
-        background-image: url("img/na.svg");
-      }
-
-      .image-dis-one {
-        background-image: url("img/back-one.svg");
-      }
-
-      .image-dis-two {
-        background-image: url("img/back-two.svg");
-      }
-
-      .image-dis-left {
-        background-image: url("img/back-left.svg");
-      }
-
-      .image-dis-no-loot {
-        background-image: url("img/back-crown.svg");
-      }
-
-    </style>
+    <title>Nyet</title>
 
     <script>
       var prevElement = null;
       var currPlayer = 1;
       var playerCnt = 3;
 
-      function getNyetForPlayer()
-      {
+      function getNyetForPlayer() {
         switch (currPlayer) {
           case 1: return 'url("img/nyet-blue.svg")';
           case 2: return 'url("img/nyet-red.svg")';
@@ -231,16 +61,14 @@
 
       function decCurrPlayer() {
         currPlayer--;
-        if(currPlayer < 1)
-        {
+        if(currPlayer < 1) {
           currPlayer = playerCnt;
         }
       }
 
       function incCurrPlayer() {
         currPlayer++;
-        if(currPlayer > playerCnt)
-        {
+        if(currPlayer > playerCnt) {
           currPlayer = 1;
         }
       }
@@ -305,18 +133,18 @@
       }
 
       function setName(params, idx, id) {
-      	name = params.get(idx);
-      	if(name && name !== 'null') {
+        name = params.get(idx);
+        if(name && name !== 'null') {
           elem = document.getElementById(id);
           elem.innerHTML = name;
-      	}
+        }
       }
 
       function resetBoard() {
-      	const urlParams = new URLSearchParams(window.location.search);
-      	pCntTxt = urlParams.get('p');
-      	if(pCntTxt && pCntTxt !== 'null') {
-      	  playerCnt = parseInt(pCntTxt);
+        const urlParams = new URLSearchParams(window.location.search);
+        pCntTxt = urlParams.get('p');
+        if(pCntTxt && pCntTxt !== 'null') {
+          playerCnt = parseInt(pCntTxt);
         }
         prevElement = null;
 
@@ -334,20 +162,31 @@
         });
         const ply = document.querySelectorAll('.points');
         for(let i = 0; i < 5; i++){
-        	if(i >= playerCnt) {
-        		ply[i].style.setProperty('visibility', 'hidden');
-        	} else {
-        		ply[i].style.setProperty('visibility', 'visible');
-        	}
+            if(i >= playerCnt) {
+                ply[i].style.setProperty('visibility', 'hidden');
+            } else {
+                ply[i].style.setProperty('visibility', 'visible');
+            }
         }
       }
 
+      function startNew() {
+        p1Name = document.getElementById('p1').innerHTML;
+        p2Name = document.getElementById('p2').innerHTML;
+        p3Name = document.getElementById('p3').innerHTML;
+        p4Name = document.getElementById('p4').innerHTML;
+        p5Name = document.getElementById('p5').innerHTML;
+        url = "start.html?p=" + playerCnt + '&a=' + p1Name + '&b=' + p2Name + '&c=' + p3Name + '&d=' + p4Name + '&e=' + p5Name;
+          window.open(url, "_self");
+      }
+
       window.addEventListener('load', function() {
-/*      	screen.orientation.lock('landscape')
-      	.then(tmp => {})
-      	.catch(err =>{});*/
+/*          screen.orientation.lock('landscape')
+        .then(tmp => {})
+        .catch(err =>{});*/
         resetBoard();
         document.getElementById('button-reset').addEventListener('click', resetBoard);
+        document.getElementById('button-new').addEventListener('click', startNew);
       });
     </script>
 
@@ -356,9 +195,9 @@
   <body>
     <div class="page-area">
       <div class="header-area">
-      	<div class="button left" id="button-new">new</div>
-      	<div class="title">NYET</div>
-      	<div class="button right" id="button-reset">reset</div>
+        <div class="button left" id="button-new">new</div>
+        <div class="title">Nyet!</div>
+        <div class="button right" id="button-reset">reset</div>
       </div>
       <div class="main-area">
         <div class="rows-container">

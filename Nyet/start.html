@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html manifest="nyet.manifest">
+
+  <head>
+    
+    <link rel="stylesheet" href="nyet.css">
+
+    <title>Nyet</title>
+
+    <script>
+
+      function beginGame() {
+        val = parseInt(document.getElementById('pCnt').value);
+        p1Name = document.getElementById('p1Name').value;
+        p2Name = document.getElementById('p2Name').value;
+        p3Name = document.getElementById('p3Name').value;
+        p4Name = document.getElementById('p4Name').value;
+        p5Name = document.getElementById('p5Name').value;
+        if((val < 6) && (val > 1)) {
+          url = "board.html?p=" + val + '&a=' + p1Name + '&b=' + p2Name + '&c=' + p3Name + '&d=' + p4Name + '&e=' + p5Name;
+          window.open(url, "_self");
+        } else {
+          // TODO - highlight pcount input as an error
+        }
+      }
+
+      function pCntChanged() {
+        val = parseInt(document.getElementById('pCnt').value);
+        if((val < 6) && (val > 1)) {
+          elems = document.getElementById('inputs').children;
+          for(let i = 1; i < 6; i++) {
+            if(i <= val) {
+              elems[i + 1].style.setProperty('visibility','visible');
+            } else {
+              elems[i + 1].style.setProperty('visibility','hidden');
+            }
+          }
+        }
+      }
+
+      function setName(params, idx, id) {
+        name = params.get(idx);
+        if(name && name !== 'null') {
+          elem = document.getElementById(id);
+          elem.value = name;
+        }
+      }
+
+      window.addEventListener('load', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        pCntTxt = urlParams.get('p');
+        if(pCntTxt && pCntTxt !== 'null') {
+          document.getElementById('pCnt').value = parseInt(pCntTxt);
+        }
+
+        setName(urlParams, 'a', 'p1Name');
+        setName(urlParams, 'b', 'p2Name');
+        setName(urlParams, 'c', 'p3Name');
+        setName(urlParams, 'd', 'p4Name');
+        setName(urlParams, 'e', 'p5Name');
+
+
+        document.getElementById('pCnt').addEventListener('change', pCntChanged);
+        document.getElementById('button-begin').addEventListener('click', beginGame);
+
+        pCntChanged();
+      });
+    </script>
+
+  </head>
+
+  <body>
+    <div class="page-area">
+      <div class="header-area">
+        <div class="title bottom-line">Nyet!</div>
+      </div>
+      <div class="main-area">
+        <ul id="inputs">
+          <li><label for="pCnt">Player Count (between 2 and 5):</label>
+          <input type="number" id="pCnt" name="pCnt" min="2" max="5" value="5"></li>
+          <li>&nbsp</li>
+          <li><label for="p1Name">Player 1:</label>
+          <input type="text" id="p1Name" name="p1Name"></li>
+          <li><label for="p2Name">Player 2:</label>
+          <input type="text" id="p2Name" name="p2Name"></li>
+          <li><label for="p3Name">Player 3:</label>
+          <input type="text" id="p3Name" name="p3Name"></li>
+          <li><label for="p4Name">Player 4:</label>
+          <input type="text" id="p4Name" name="p4Name"></li>
+          <li><label for="p5Name">Player 5:</label>
+          <input type="text" id="p5Name" name="p5Name"></li>
+          <li>&nbsp</li>
+          <li><div class="button" id="button-begin">Begin</div></li>
+        </ul>
+      </div>
+    </div>
+  </body>
+
+</html>
