@@ -10,16 +10,39 @@
         box-sizing: border-box;
         margin: 0;
         text-align: center;
-        word-wrap: break-word;
-        word-break: break-word;
-        font-size: 2.6vw;
+        word-wrap: normal;
+        word-break: normal;
+        font-size: 2.5vw;
         -ms-user-select: none;
         -webkit-user-select: none;
         user-select: none;
+        font-family: Arial, sans-serif;
       }
 
-      h1 {
-        font-size: 12vh;
+      .button {
+      	background-color: rgb(48, 136, 165);
+      	border: 3px solid black;
+        border-radius: 4vh;
+        font-size: 4vh;
+        line-height: 5vh;
+        padding: 1vh;
+        color: white;
+      }
+
+      .left {
+      	float: left;
+        display: inline-block;
+      }
+
+      .right {
+      	float: right;
+        display: inline-block;
+      }
+
+      .title {
+        display: inline-block;
+        font-size: 6vh;
+        line-height: 7vh;
       }
 
       .page-area {
@@ -30,11 +53,11 @@
       }
 
       .header-area {
-        height: 14vh;
+        height: 9vh;
       }
 
       .main-area {
-        height: 84vh;
+        height: 89vh;
         padding: 0;
       }
 
@@ -42,7 +65,7 @@
         display: grid;
         grid-template-columns: auto;
         grid-gap: 1vh;
-        grid-template-rows: 16vh 16vh 16vh 16vh 16vh;
+        grid-template-rows: 17vh 17vh 17vh 17vh 17vh;
       }
 
       .line-element {
@@ -75,6 +98,8 @@
       }
 
       .row-title {
+      	/*transform: rotate(-90deg);*/
+      	overflow: hidden;
       }
 
       .row-element {
@@ -84,6 +109,7 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
+        line-height: 13vh;
       }
 
       .points {
@@ -147,21 +173,12 @@
         background-image: url("img/back-crown.svg");
       }
 
-      .reset-button {
-        background-color: rgb(210, 139, 14);
-        color: white;
-        border: 3px solid black;
-        border-radius: 2vh;
-        float: right;
-        clearfix
-      }
-
     </style>
 
     <script>
       var prevElement = null;
       var currPlayer = 1;
-      var playerCnt = 4;
+      var playerCnt = 3;
 
       function getNyetForPlayer()
       {
@@ -251,7 +268,7 @@
           if(hasNyet(elems[i])) {
             cnt++;
           }
-          if(elems[i].offsetParent !== null) {
+          if(window.getComputedStyle(elems[i]).visibility !== 'hidden') {
             visCnt++;
           }
         }
@@ -286,10 +303,19 @@
           elem.addEventListener('click', elementClicked);
           elem.setAttribute('listener', 'true');
         });
+        const ply = document.querySelectorAll('.points');
+        for(let i = 0; i < 5; i++){
+        	if(i >= playerCnt) {
+        		ply[i].style.setProperty('visibility', 'hidden');
+        	} else {
+        		ply[i].style.setProperty('visibility', 'visible');
+        	}
+        }
       }
 
       window.addEventListener('load', function(){
         resetBoard();
+        document.getElementById('button-reset').addEventListener('click', resetBoard);
       });
     </script>
 
@@ -297,7 +323,11 @@
 
   <body>
     <div class="page-area">
-      <div class="header-area"><h1>NYET</h1><div class="reset-button">reset</div></div>
+      <div class="header-area">
+      	<div class="button left" id="button-new">new</div>
+      	<div class="title">NYET</div>
+      	<div class="button right" id="button-reset">reset</div>
+      </div>
       <div class="main-area">
         <div class="rows-container">
           <div class="line-element line-player1">
