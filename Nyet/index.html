@@ -306,7 +306,10 @@
 
       function resetBoard() {
       	const urlParams = new URLSearchParams(window.location.search);
-      	playerCnt = parseInt(urlParams.get('p'));
+      	pCntTxt = urlParams.get('p');
+      	if(pCntTxt && pCntTxt !== 'null') {
+      	  playerCnt = parseInt(pCntTxt);
+        }
         prevElement = null;
 
         setName(urlParams, 'a', 'p1');
