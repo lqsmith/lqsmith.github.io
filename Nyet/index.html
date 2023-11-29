@@ -32,6 +32,7 @@
       .left {
       	float: left;
         display: inline-block;
+        visibility: hidden;
       }
 
       .right {
@@ -295,8 +296,25 @@
         }
       }
 
+      function setName(params, idx, id) {
+      	name = params.get(idx);
+      	if(name && name !== 'null') {
+          elem = document.getElementById(id);
+          elem.innerHTML = name;
+      	}
+      }
+
       function resetBoard() {
+      	const urlParams = new URLSearchParams(window.location.search);
+      	playerCnt = parseInt(urlParams.get('p'));
         prevElement = null;
+
+        setName(urlParams, 'a', 'p1');
+        setName(urlParams, 'b', 'p2');
+        setName(urlParams, 'c', 'p3');
+        setName(urlParams, 'd', 'p4');
+        setName(urlParams, 'e', 'p5');
+
         const elems = document.querySelectorAll('.row-element');
         elems.forEach(elem => {
           removeNyet(elem);
@@ -332,11 +350,11 @@
         <div class="rows-container">
           <div class="line-element line-player1">
             <div class="row-title">First Player</div>
-            <div class="row-element points">1</div>
-            <div class="row-element points">2</div>
-            <div class="row-element points">3</div>
-            <div class="row-element points">4</div>
-            <div class="row-element points">5</div>
+            <div class="row-element points" id="p1">1</div>
+            <div class="row-element points" id="p2">2</div>
+            <div class="row-element points" id="p3">3</div>
+            <div class="row-element points" id="p4">4</div>
+            <div class="row-element points" id="p5">5</div>
           </div>
           <div class="line-element line-trump">
             <div class="row-title">Trump</div>
