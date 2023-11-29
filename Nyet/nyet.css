@@ -185,7 +185,7 @@ label {
 
 input {
   font-size: 4vw;
-  -ms-user-select: auto;
-  -webkit-user-select: auto;
-  user-select: auto;
+  -ms-user-select: text;
+  -webkit-user-select: text;
+  user-select: text;
 }
