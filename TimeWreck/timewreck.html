@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html>
 
+<head>
+</head>
+
+<body>
+<canvas id="background" width="1500" height="1500"></canvas>
+
+<script>
+const distCentToObj = 500;
+const distCentToSpace = 240;
+const distObjToSpace = 100;
+const radiusCent = 150;
+const radiusObj = 50;
+const radiusSpace = 20;
+const xOffset = 617;
+const yOffset = 650;
+
+const colCent = "SaddleBrown";
+const colCentSpace = "Tan";
+const colObjA = "SteelBlue";
+const colObjASpace = "LightSteelBlue";
+const colObjB = "DarkOliveGreen";
+const colObjBSpace = "DarkSeaGreen";
+const colObjC = "IndianRed";
+const colObjCSpace = "LightSalmon";
+
+const colPath = "Silver";
+const colOutline = "Black";
+
+function drawCircle(x, y, r, c)
+{
+  c.beginPath();
+  c.arc(x, y, r, 0, 2 * Math.PI);
+  c.strokeStyle = colPath;
+  c.stroke();
+}
+
+function fillCircle(x, y, r, col, ctx)
+{
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = col;
+  ctx.strokeStyle = colOutline;
+  ctx.fill();
+  ctx.stroke();
+}
+
+function drawBackground()
+{
+  const rad60 = 60 * Math.PI / 180;
+  const cos60 = Math.cos(rad60);
+  const sin60 = Math.sin(rad60);
+
+            // x, y, ap x, ap y
+  const loc = [/* 00: Center */        [xOffset, yOffset],     
+               /* 01: Obj A */         [xOffset, yOffset - distCentToObj], 
+               /* 02: Obj B */         [xOffset - sin60 * distCentToObj, yOffset + cos60 * distCentToObj], 
+               /* 03: Obj C */         [xOffset + sin60 * distCentToObj, yOffset + cos60 * distCentToObj], 
+
+               /* 04: Cen Space 1 */   [xOffset - cos60 * distCentToSpace, yOffset - sin60 * distCentToSpace], 
+               /* 05: Cen Space 2 */   [xOffset + cos60 * distCentToSpace, yOffset - sin60 * distCentToSpace], 
+               /* 06: Cen Space 3 */   [xOffset - cos60 * distCentToSpace, yOffset + sin60 * distCentToSpace], 
+               /* 07: Cen Space 4 */   [xOffset + cos60 * distCentToSpace, yOffset + sin60 * distCentToSpace], 
+               /* 08: Cen Space 5 */   [xOffset - distCentToSpace, yOffset], 
+               /* 09: Cen Space 6 */   [xOffset + distCentToSpace, yOffset], 
+
+               /* 10: Obj A Space 1 */ [xOffset - distObjToSpace, yOffset - distCentToObj], 
+               /* 11: Obj A Space 2 */ [xOffset + distObjToSpace, yOffset - distCentToObj], 
+
+               /* 12: Obj B Space 1 */ [xOffset - sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
+               /* 13: Obj B Space 2 */ [xOffset - sin60 * distCentToObj - sin60 * distObjToSpace, yOffset + cos60 * distCentToObj + cos60 * distObjToSpace], 
+               /* 14: Obj B Space 3 */ [xOffset - sin60 * distCentToObj + sin60 * distObjToSpace, yOffset + cos60 * distCentToObj - cos60 * distObjToSpace], 
+               /* 15: Obj B Space 4 */ [xOffset - sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
+
+               /* 16: Obj C Space 1 */ [xOffset + sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
+               /* 17: Obj C Space 2 */ [xOffset + sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
+               /* 18: Obj C Space 3 */ [xOffset + sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
+               /* 19: Obj C Space 4 */ [xOffset + sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
+               /* 20: Obj C Space 5 */ [xOffset + sin60 * distCentToObj - distObjToSpace, yOffset + cos60 * distCentToObj], 
+               /* 21: Obj C Space 6 */ [xOffset + sin60 * distCentToObj + distObjToSpace, yOffset + cos60 * distCentToObj]]; 
+
+  const canvas = document.getElementById("background");
+  const ctx = canvas.getContext("2d");
+
+  ctx.strokeStyle = colPath;
+
+  ctx.beginPath();
+  ctx.moveTo(loc[8][0], loc[8][1]);
+  ctx.bezierCurveTo(loc[8][0], loc[8][1] - distCentToSpace, loc[10][0], loc[10][1] + distObjToSpace * 2, loc[10][0], loc[10][1]);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(loc[9][0], loc[9][1]);
+  ctx.bezierCurveTo(loc[9][0], loc[9][1] - distCentToSpace, loc[11][0], loc[11][1] + distObjToSpace * 2, loc[11][0], loc[11][1]);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(loc[4][0], loc[4][1]);
+  ctx.bezierCurveTo(loc[4][0] - sin60 * distCentToSpace, loc[4][1] + cos60 * distCentToSpace, loc[12][0] + sin60 * distObjToSpace * 2, loc[12][1] - cos60 * distObjToSpace * 2, loc[12][0], loc[12][1]);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(loc[7][0], loc[7][1]);
+  ctx.bezierCurveTo(loc[7][0] - sin60 * distCentToSpace, loc[7][1] + cos60 * distCentToSpace, 
+                    loc[15][0] + sin60 * distObjToSpace * 2, loc[15][1] - cos60 * distObjToSpace * 2, 
+                    loc[15][0], loc[15][1]);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(loc[5][0], loc[5][1]);
+  ctx.bezierCurveTo(loc[5][0] + sin60 * distCentToSpace, loc[5][1] + cos60 * distCentToSpace, 
+                    loc[18][0] - sin60 * distObjToSpace * 2, loc[18][1] - cos60 * distObjToSpace * 2, 
+                    loc[18][0], loc[18][1]);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(loc[6][0], loc[6][1]);
+  ctx.bezierCurveTo(loc[6][0] + sin60 * distCentToSpace, loc[6][1] + cos60 * distCentToSpace, 
+                    loc[17][0] - sin60 * distObjToSpace * 2, loc[17][1] - cos60 * distObjToSpace * 2, 
+                    loc[17][0], loc[17][1]);
+  ctx.stroke();
+
+  ctx.strokeStyle = colOutline;
+
+  // Draw Center
+  fillCircle(loc[0][0], loc[0][1], radiusCent, colCent, ctx);
+  drawCircle(loc[0][0], loc[0][1], distCentToSpace, ctx);
+  fillCircle(loc[4][0], loc[4][1], radiusSpace, colCentSpace, ctx);
+  fillCircle(loc[5][0], loc[5][1], radiusSpace, colCentSpace, ctx);
+  fillCircle(loc[6][0], loc[6][1], radiusSpace, colCentSpace, ctx);
+  fillCircle(loc[7][0], loc[7][1], radiusSpace, colCentSpace, ctx);
+  fillCircle(loc[8][0], loc[8][1], radiusSpace, colCentSpace, ctx);
+  fillCircle(loc[9][0], loc[9][1], radiusSpace, colCentSpace, ctx);
+
+  // Draw Obj A
+  fillCircle(loc[1][0],  loc[1][1],  radiusObj, colObjA, ctx);
+  drawCircle(loc[1][0],  loc[1][1],  distObjToSpace, ctx);
+  fillCircle(loc[10][0], loc[10][1], radiusSpace, colObjASpace, ctx);
+  fillCircle(loc[11][0], loc[11][1], radiusSpace, colObjASpace, ctx);
+
+  // Draw Obj B
+  fillCircle(loc[2][0],  loc[2][1],  radiusObj, colObjB, ctx);
+  drawCircle(loc[2][0],  loc[2][1],  distObjToSpace, ctx);
+  fillCircle(loc[12][0], loc[12][1], radiusSpace, colObjBSpace, ctx);  // The swap of dx and dy is intentional
+  fillCircle(loc[13][0], loc[13][1], radiusSpace, colObjBSpace, ctx);
+  fillCircle(loc[14][0], loc[14][1], radiusSpace, colObjBSpace, ctx);
+  fillCircle(loc[15][0], loc[15][1], radiusSpace, colObjBSpace, ctx);  // The swap of dx and dy is intentional
+
+  // Draw Obj C
+  fillCircle(loc[3][0],  loc[3][1],  radiusObj, colObjC, ctx);
+  drawCircle(loc[3][0],  loc[3][1],  distObjToSpace, ctx);
+  fillCircle(loc[16][0], loc[16][1], radiusSpace, colObjCSpace, ctx);
+  fillCircle(loc[17][0], loc[17][1], radiusSpace, colObjCSpace, ctx);
+  fillCircle(loc[18][0], loc[18][1], radiusSpace, colObjCSpace, ctx);
+  fillCircle(loc[19][0], loc[19][1], radiusSpace, colObjCSpace, ctx);
+  fillCircle(loc[20][0], loc[20][1], radiusSpace, colObjCSpace, ctx);
+  fillCircle(loc[21][0], loc[21][1], radiusSpace, colObjCSpace, ctx);
+}
+
+drawBackground();
+
+</script>
+</body>
+</html>
