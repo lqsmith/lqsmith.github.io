@@ -5,7 +5,28 @@
 </head>
 
 <body>
-<canvas id="background" width="1500" height="1500"></canvas>
+<canvas id="background" style="position:fixed; top:0; left:0;" width="1500px" height="1500px"></canvas>
+
+<div style="position:fixed; top:150px; left:50px; width:75px; height:20px;">Player 1</div>
+<button style="position:fixed; top:150px; left:130px; width:80px; height:20px;" onclick="moveP1()">Place Ship</button>
+
+<div style="position:fixed; top:200px; left:50px; width:75px; height:20px;">Player 2</div>
+<button style="position:fixed; top:200px; left:130px; width:80px; height:20px;" onclick="moveP2()">Place Ship</button>
+
+<div style="position:fixed; top:250px; left:50px; width:75px; height:20px;">Player 3</div>
+<button style="position:fixed; top:250px; left:130px; width:80px; height:20px;" onclick="moveP3()">Place Ship</button>
+
+<div style="position:fixed; top:300px; left:50px; width:75px; height:20px;">Player 4</div>
+<button style="position:fixed; top:300px; left:130px; width:80px; height:20px;" onclick="moveP4()">Place Ship</button>
+
+<button style="position:fixed; top:350px; left:50px; width:160px; height:20px;" onclick="stepTime()">Step Time</button>
+
+<div id="instr" style="position:fixed; top:50px; left:50px; width:1500px; height:20px;"></div>
+
+<div id="p1" style="color:white; display:flex; justify-content:center; align-items:center; border:1px solid black; background:#F70D1A;    position:fixed; top:0;    left:0; min-width:45px; min-height:45px;">P1</div>
+<div id="p2" style="display:flex; justify-content:center; align-items:center; border:1px solid black; background:#00FF00;  position:fixed; top:20px; left:0; min-width:45px; min-height:45px;">P2</div>
+<div id="p3" style="color:white; display:flex; justify-content:center; align-items:center; border:1px solid black; background:#0059FF;   position:fixed; top:40px; left:0; min-width:45px; min-height:45px;">P3</div>
+<div id="p4" style="display:flex; justify-content:center; align-items:center; border:1px solid black; background:yellow; position:fixed; top:60px; left:0; min-width:45px; min-height:45px;">P4</div>
 
 <script>
 const distCentToObj = 500;
@@ -16,6 +37,10 @@ const radiusObj = 50;
 const radiusSpace = 20;
 const xOffset = 617;
 const yOffset = 650;
+const radiusPlayerX = 23;
+const radiusPlayerY = 23;
+
+const cargoSize = 20;
 
 const colCent = "SaddleBrown";
 const colCentSpace = "Tan";
@@ -25,9 +50,200 @@ const colObjB = "DarkOliveGreen";
 const colObjBSpace = "DarkSeaGreen";
 const colObjC = "IndianRed";
 const colObjCSpace = "LightSalmon";
+const colCargo = "#FFBF00";
 
 const colPath = "Silver";
 const colOutline = "Black";
+
+let p = null;
+let pIdx = 0;
+
+const onSpace = [-1, -1, -1, -1];
+
+function stepTime()
+{
+  let i;
+  let pl;
+
+  for(i = 0; i < 4; i++)
+  {
+    switch(i)
+    {
+      case 0:
+      {
+        pl = document.getElementById("p1");
+        break;
+      }
+      case 1:
+      {
+        pl = document.getElementById("p2");
+        break;
+      }
+      case 2:
+      {
+        pl = document.getElementById("p3");
+        break;
+      }
+      case 3:
+      {
+        pl = document.getElementById("p4");
+        break;
+      }
+    }
+
+    switch(onSpace[i])
+    {
+      case 4:
+      {
+        console.log(i + ": moving 4 to 5");
+        movePlayerTo(pl, 5, i);
+        break;
+      }
+      case 5:
+      {
+        movePlayerTo(pl, 9, i);
+        break;
+      }
+      case 6:
+      {
+        movePlayerTo(pl, 8, i);
+        break;
+      }
+      case 7:
+      {
+        movePlayerTo(pl, 6, i);
+        break;
+      }
+      case 8:
+      {
+        movePlayerTo(pl, 4, i);
+        break;
+      }
+      case 9:
+      {
+        movePlayerTo(pl, 7, i);
+        break;
+      }
+      case 10:
+      {
+        movePlayerTo(pl, 11, i);
+        break;
+      }
+      case 11:
+      {
+        movePlayerTo(pl, 10, i);
+        break;
+      }
+      case 12:
+      {
+        movePlayerTo(pl, 14, i);
+        break;
+      }
+      case 13:
+      {
+        movePlayerTo(pl, 12, i);
+        break;
+      }
+      case 14:
+      {
+        movePlayerTo(pl, 15, i);
+        break;
+      }
+      case 15:
+      {
+        movePlayerTo(pl, 13, i);
+        break;
+      }
+      case 16:
+      {
+        movePlayerTo(pl, 18, i);
+        break;
+      }
+      case 17:
+      {
+        movePlayerTo(pl, 20, i);
+        break;
+      }
+      case 18:
+      {
+        movePlayerTo(pl, 21, i);
+        break;
+      }
+      case 19:
+      {
+        movePlayerTo(pl, 17, i);
+        break;
+      }
+      case 20:
+      {
+        movePlayerTo(pl, 16, i);
+        break;
+      }
+      case 21:
+      {
+        movePlayerTo(pl, 19, i);
+        break;
+      }
+    }
+  }
+}
+
+function setInstr(txt)
+{
+  let i = document.getElementById("instr");
+  i.innerHTML = txt;
+}
+
+function moveP1()
+{
+  p = document.getElementById("p1");
+  pIdx = 0;
+  setInstr("Pick Location for Player 1");
+}
+
+function moveP2()
+{
+  p = document.getElementById("p2");
+  pIdx = 1;
+  setInstr("Pick Location for Player 2");
+}
+
+function moveP3()
+{
+  p = document.getElementById("p3");
+  pIdx = 2;
+  setInstr("Pick Location for Player 3");
+}
+
+function moveP4()
+{
+  p = document.getElementById("p4");
+  pIdx = 3;
+  setInstr("Pick Location for Player 4");
+}
+
+function movePlayerTo(pl, l, plIdx)
+{
+  pl.style.left = (loc[l][0] - radiusPlayerX).toString() + "px";
+  pl.style.top = (loc[l][1] - radiusPlayerY).toString() + "px";
+  onSpace[plIdx] = l;
+}
+
+function positionPlayer(ev)
+{
+  if(p != null)
+  {
+    let x = parseInt(ev.clientX);
+    let y = parseInt(ev.clientY);
+    let l = findSpace(x, y);
+    if(l != -1)
+    {
+      movePlayerTo(p, l, pIdx);
+      p = null;
+      setInstr("");
+    }
+  }
+}
 
 function drawCircle(x, y, r, c)
 {
@@ -47,39 +263,53 @@ function fillCircle(x, y, r, col, ctx)
   ctx.stroke();
 }
 
+const rad60 = 60 * Math.PI / 180;
+const cos60 = Math.cos(rad60);
+const sin60 = Math.sin(rad60);
+
+const loc = [/* 00: Center */        [xOffset, yOffset],     
+             /* 01: Obj A */         [xOffset, yOffset - distCentToObj], 
+             /* 02: Obj B */         [xOffset - sin60 * distCentToObj, yOffset + cos60 * distCentToObj], 
+             /* 03: Obj C */         [xOffset + sin60 * distCentToObj, yOffset + cos60 * distCentToObj], 
+
+             /* 04: Cen Space 1 */   [xOffset - cos60 * distCentToSpace, yOffset - sin60 * distCentToSpace], 
+             /* 05: Cen Space 2 */   [xOffset + cos60 * distCentToSpace, yOffset - sin60 * distCentToSpace], 
+             /* 06: Cen Space 3 */   [xOffset - cos60 * distCentToSpace, yOffset + sin60 * distCentToSpace], 
+             /* 07: Cen Space 4 */   [xOffset + cos60 * distCentToSpace, yOffset + sin60 * distCentToSpace], 
+             /* 08: Cen Space 5 */   [xOffset - distCentToSpace, yOffset], 
+             /* 09: Cen Space 6 */   [xOffset + distCentToSpace, yOffset], 
+
+             /* 10: Obj A Space 1 */ [xOffset - distObjToSpace, yOffset - distCentToObj], 
+             /* 11: Obj A Space 2 */ [xOffset + distObjToSpace, yOffset - distCentToObj], 
+
+             /* 12: Obj B Space 1 */ [xOffset - sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
+             /* 13: Obj B Space 2 */ [xOffset - sin60 * distCentToObj - sin60 * distObjToSpace, yOffset + cos60 * distCentToObj + cos60 * distObjToSpace], 
+             /* 14: Obj B Space 3 */ [xOffset - sin60 * distCentToObj + sin60 * distObjToSpace, yOffset + cos60 * distCentToObj - cos60 * distObjToSpace], 
+             /* 15: Obj B Space 4 */ [xOffset - sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
+
+             /* 16: Obj C Space 1 */ [xOffset + sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
+             /* 17: Obj C Space 2 */ [xOffset + sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
+             /* 18: Obj C Space 3 */ [xOffset + sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
+             /* 19: Obj C Space 4 */ [xOffset + sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
+             /* 20: Obj C Space 5 */ [xOffset + sin60 * distCentToObj - distObjToSpace, yOffset + cos60 * distCentToObj], 
+             /* 21: Obj C Space 6 */ [xOffset + sin60 * distCentToObj + distObjToSpace, yOffset + cos60 * distCentToObj]
+       		]; 
+
+function findSpace(x, y)
+{
+  let i;
+  for(i = 0; i < 22; i++)
+  {
+    if((x > (loc[i][0] - radiusSpace)) && (x < (loc[i][0] + radiusSpace)) && (y > (loc[i][1] - radiusSpace)) && (y < (loc[i][1] + radiusSpace)))
+    {
+      return i;
+    }
+  }
+  return -1;
+}
+
 function drawBackground()
 {
-  const rad60 = 60 * Math.PI / 180;
-  const cos60 = Math.cos(rad60);
-  const sin60 = Math.sin(rad60);
-
-            // x, y, ap x, ap y
-  const loc = [/* 00: Center */        [xOffset, yOffset],     
-               /* 01: Obj A */         [xOffset, yOffset - distCentToObj], 
-               /* 02: Obj B */         [xOffset - sin60 * distCentToObj, yOffset + cos60 * distCentToObj], 
-               /* 03: Obj C */         [xOffset + sin60 * distCentToObj, yOffset + cos60 * distCentToObj], 
-
-               /* 04: Cen Space 1 */   [xOffset - cos60 * distCentToSpace, yOffset - sin60 * distCentToSpace], 
-               /* 05: Cen Space 2 */   [xOffset + cos60 * distCentToSpace, yOffset - sin60 * distCentToSpace], 
-               /* 06: Cen Space 3 */   [xOffset - cos60 * distCentToSpace, yOffset + sin60 * distCentToSpace], 
-               /* 07: Cen Space 4 */   [xOffset + cos60 * distCentToSpace, yOffset + sin60 * distCentToSpace], 
-               /* 08: Cen Space 5 */   [xOffset - distCentToSpace, yOffset], 
-               /* 09: Cen Space 6 */   [xOffset + distCentToSpace, yOffset], 
-
-               /* 10: Obj A Space 1 */ [xOffset - distObjToSpace, yOffset - distCentToObj], 
-               /* 11: Obj A Space 2 */ [xOffset + distObjToSpace, yOffset - distCentToObj], 
-
-               /* 12: Obj B Space 1 */ [xOffset - sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
-               /* 13: Obj B Space 2 */ [xOffset - sin60 * distCentToObj - sin60 * distObjToSpace, yOffset + cos60 * distCentToObj + cos60 * distObjToSpace], 
-               /* 14: Obj B Space 3 */ [xOffset - sin60 * distCentToObj + sin60 * distObjToSpace, yOffset + cos60 * distCentToObj - cos60 * distObjToSpace], 
-               /* 15: Obj B Space 4 */ [xOffset - sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
-
-               /* 16: Obj C Space 1 */ [xOffset + sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
-               /* 17: Obj C Space 2 */ [xOffset + sin60 * distCentToObj - cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
-               /* 18: Obj C Space 3 */ [xOffset + sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj - sin60 * distObjToSpace], 
-               /* 19: Obj C Space 4 */ [xOffset + sin60 * distCentToObj + cos60 * distObjToSpace, yOffset + cos60 * distCentToObj + sin60 * distObjToSpace], 
-               /* 20: Obj C Space 5 */ [xOffset + sin60 * distCentToObj - distObjToSpace, yOffset + cos60 * distCentToObj], 
-               /* 21: Obj C Space 6 */ [xOffset + sin60 * distCentToObj + distObjToSpace, yOffset + cos60 * distCentToObj]]; 
 
   const canvas = document.getElementById("background");
   const ctx = canvas.getContext("2d");
@@ -157,6 +387,24 @@ function drawBackground()
   fillCircle(loc[19][0], loc[19][1], radiusSpace, colObjCSpace, ctx);
   fillCircle(loc[20][0], loc[20][1], radiusSpace, colObjCSpace, ctx);
   fillCircle(loc[21][0], loc[21][1], radiusSpace, colObjCSpace, ctx);
+
+  ctx.fillStyle = colCargo;
+  ctx.fillRect(loc[1][0] - cargoSize / 2, loc[1][1] - cargoSize / 2, cargoSize, cargoSize);
+  ctx.strokeRect(loc[1][0] - cargoSize / 2, loc[1][1] - cargoSize / 2, cargoSize, cargoSize);
+
+  ctx.fillRect(loc[2][0] - cargoSize - 2, loc[2][1] - cargoSize / 2, cargoSize, cargoSize);
+  ctx.strokeRect(loc[2][0] - cargoSize - 2, loc[2][1] - cargoSize / 2, cargoSize, cargoSize);
+  ctx.fillRect(loc[2][0] + 2, loc[2][1] - cargoSize / 2, cargoSize, cargoSize);
+  ctx.strokeRect(loc[2][0] + 2, loc[2][1] - cargoSize / 2, cargoSize, cargoSize);
+
+  ctx.fillRect(loc[3][0] - cargoSize / 2, loc[3][1] - cargoSize - 2, cargoSize, cargoSize);
+  ctx.strokeRect(loc[3][0] - cargoSize / 2, loc[3][1] - cargoSize - 2, cargoSize, cargoSize);
+  ctx.fillRect(loc[3][0] - cargoSize - 2, loc[3][1] + 2, cargoSize, cargoSize);
+  ctx.strokeRect(loc[3][0] - cargoSize - 2, loc[3][1] + 2, cargoSize, cargoSize);
+  ctx.fillRect(loc[3][0] + 2, loc[3][1] + 2, cargoSize, cargoSize);
+  ctx.strokeRect(loc[3][0] + 2, loc[3][1] + 2, cargoSize, cargoSize);
+
+  canvas.addEventListener("click", positionPlayer);
 }
 
 drawBackground();
