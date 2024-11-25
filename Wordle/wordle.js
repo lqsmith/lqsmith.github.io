@@ -436,7 +436,8 @@ this.wordle = this.wordle ||
                 value: function(e)
                 {
                     var a = document.querySelector("body");
-// LQMS        	alert("1. adding t local strorage:  name = " + j + " value = " + JSON.stringify(e));
+// LQMS        
+	alert("1. adding t local strorage:  name = " + j + " value = " + JSON.stringify(e));
                     e && !a.classList.contains("nightmode") ? a.classList.add("nightmode") : a.classList.remove("nightmode"), this.isDarkTheme = e, window.localStorage.setItem(j, JSON.stringify(e))
                 }
             },
@@ -445,7 +446,8 @@ this.wordle = this.wordle ||
                 value: function(e)
                 {
                     var a = document.querySelector("body");
-// LQMS        	alert("2. adding t local strorage:  name = " + S + " value = " + JSON.stringify(e));
+// LQMS  
+      	alert("2. adding t local strorage:  name = " + S + " value = " + JSON.stringify(e));
                     e && !a.classList.contains("colorblind") ? a.classList.add("colorblind") : a.classList.remove("colorblind"), this.isColorBlindTheme = e, window.localStorage.setItem(S, JSON.stringify(e))
                 }
             },
@@ -1100,7 +1102,8 @@ this.wordle = this.wordle ||
         var a = za();
         ! function(e)
         {
-//LQMS        	alert("3. adding t local strorage:  name = " + wa + " value = " + JSON.stringify(e));
+//LQMS   
+     	alert("3. adding t local strorage:  name = " + wa + " value = " + JSON.stringify(e));
             window.localStorage.setItem(wa, JSON.stringify(e))
         }(va(a, e))
     }
@@ -1458,7 +1461,8 @@ this.wordle = this.wordle ||
                         }
                         var r = function(e, a)
                         {
-                            for (var s = Array(a.length).fill(Oa), t = Array(a.length).fill(!0), o = Array(a.length).fill(!0), n = 0; n < e.length; n++) e[n] === a[n] && o[n] && (s[n] = Ma, t[n] = !1, o[n] = !1);
+//LQMS - check overflows                            
+                            for (var s = Array(a.length).fill(Oa), t = Array(a.length).fill(!0), o = Array(a.length).fill(!0), n = 0; n < e.length; n++) e[n] === a[n] && o[n] && (s[n] = Ma, s[n+1]=Ma, t[n] = !1, o[n] = !1);
                             for (var r = 0; r < e.length; r++)
                             {
                                 var i = e[r];
@@ -1481,6 +1485,7 @@ this.wordle = this.wordle ||
                             {
                                 return "correct" === e
                             }));
+
                         if (i || l) Va(
                         {
                             isWin: l,
