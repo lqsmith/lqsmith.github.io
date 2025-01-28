@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       .container
       {
@@ -64,6 +65,54 @@
       }
 
     </style>
+
+    <script>
+      screen.orientation.lock("landscape");
+      function getNum(str)
+      {
+        let ret = parseInt(str);
+        if(isNaN(ret))
+        {
+          return 0;
+        }
+        return ret;
+      }
+
+      function updateTotals()
+      {
+        let elem;
+        let totalTasks = 0;
+        let totalFlags = 0;
+        let totalUnlocks = 0;
+        
+        elem = document.getElementsByClassName("task");
+        for(let i = 0; i < elem.length; i++)
+        {
+          totalTasks += getNum(elem[i].value);
+        }
+        elem = document.getElementById("taskTotal");
+        elem.innerHTML = totalTasks;
+
+        elem = document.getElementsByClassName("flag");
+        for(let i = 0; i < elem.length; i++)
+        {
+          totalFlags += getNum(elem[i].value);
+        }
+        elem = document.getElementById("flagTotal");
+        elem.innerHTML = totalFlags;
+
+        elem = document.getElementsByClassName("unlock");
+        for(let i = 0; i < elem.length; i++)
+        {
+          totalUnlocks += getNum(elem[i].value);
+        }
+        elem = document.getElementById("unlockTotal");
+        elem.innerHTML = totalUnlocks;
+
+        elem = document.getElementById("total");
+        elem.innerHTML = totalTasks + totalFlags + totalUnlocks;
+      }
+    </script>
   </head>
 
   <body>
@@ -78,40 +127,41 @@
           <th class="w14 outline">Stream</th>
           <th class="w14 outline">Total</th>
         </tr>
-        <tr class="h10"><th class="outline">Tasks</th><td class="outline"><input type="number" id="ft" value="0" min="0" max="37"></td>
-                                                      <td class="outline"><input type="number" id="gt" value="0" min="0" max="37"></td>
-                                                      <td class="outline"><input type="number" id="vt" value="0" min="0" max="37"></td>
-                                                      <td class="outline"><input type="number" id="tt" value="0" min="0" max="30"></td>
-                                                      <td class="outline"><input type="number" id="st" value="0" min="0" max="30"></td>
-                                                      <td class="outline">0</td></tr>
-        <tr class="h10"><th class="outline">Flags/Longest</th><td class="outline"><input type="number" id="ff" value="0" min="0"></td>
-                                                              <td class="outline"><input type="number" id="gf" value="0" min="0"></td>
-                                                              <td class="outline"><input type="number" id="vf" value="0" min="0"></td>
-                                                              <td class="outline"><input type="number" id="tf" value="0" min="0"></td>
-                                                              <td class="outline"><input type="number" id="sf" value="0" min="0"></td>
-                                                              <td class="outline">0</td></tr>
+        <tr class="h10"><th class="outline">Tasks</th><td class="outline"><input class="task" type="number" id="ft" value="0" min="0" max="37" oninput="updateTotals()"></td>
+                                                      <td class="outline"><input class="task" type="number" id="gt" value="0" min="0" max="37" oninput="updateTotals()"></td>
+                                                      <td class="outline"><input class="task" type="number" id="vt" value="0" min="0" max="37" oninput="updateTotals()"></td>
+                                                      <td class="outline"><input class="task" type="number" id="tt" value="0" min="0" max="30" oninput="updateTotals()"></td>
+                                                      <td class="outline"><input class="task" type="number" id="st" value="0" min="0" max="30" oninput="updateTotals()"></td>
+                                                      <td class="outline" id="taskTotal">0</td></tr>
+        <tr class="h10"><th class="outline">Flags/Longest</th><td class="outline"><input class="flag" type="number" id="ff" value="0" min="0" oninput="updateTotals()"></td>
+                                                              <td class="outline"><input class="flag" type="number" id="gf" value="0" min="0" oninput="updateTotals()"></td>
+                                                              <td class="outline"><input class="flag" type="number" id="vf" value="0" min="0" oninput="updateTotals()"></td>
+                                                              <td class="outline"><input class="flag" type="number" id="tf" value="0" min="0" oninput="updateTotals()"></td>
+                                                              <td class="outline"><input class="flag" type="number" id="sf" value="0" min="0" oninput="updateTotals()"></td>
+                                                              <td class="outline" id="flagTotal">0</td></tr>
         <tr class="h60 outline"><td colspan="6">
           <table>
             <tr><th class="w33 lj">Unlocked</th><th class="w17"></th><th class="w33"></th><th class="w17"></th></tr>
-            <tr><td class="lj">Red Hearts (1/matching edge)            </td><td><input type="number" id="rh" value="0" min="0" max="24"></td>
-                <td class="lj">Forest Cabin                            </td><td><input type="number" id="fc" value="0" min="0" max="37"></td></tr>
-            <tr><td class="lj">Circus (completely surrounded = 10)     </td><td><input type="number" id="ci" value="0" min="0" max="10" step="10"></td>
-                <td class="lj">Harvest Festival                        </td><td><input type="number" id="hf" value="0" min="0" max="37"></td></tr>
-            <tr><td class="lj">Signalman (2/Grade Crossing)            </td><td><input type="number" id="si" value="0" min="0" step="2"></td>
-                <td class="lj">Watchtower                              </td><td><input type="number" id="wt" value="0" min="0" max="37"></td></tr>
-            <tr><td class="lj">Shepherdess (1/Sheep)                   </td><td><input type="number" id="sh" value="0" min="0"></td>
-                <td class="lj">Locomotive                              </td><td><input type="number" id="lo" value="0" min="0" max="30"></td></tr>
-            <tr><td class="lj">Hill (at distance 2 = 2/Task tile)      </td><td><input type="number" id="hi" value="0" min="0" step="2"></td>
-                <td class="lj">Ship                                    </td><td><input type="number" id="bo" value="0" min="0" max="30"></td></tr>
-            <tr><td class="lj">Construction Site (per territory 7+ = 7)</td><td><input type="number" id="cs" value="0" min="0" max="21" step="7"></td>
-                <td class="lj">Train Station (closed off = 1/tile)     </td><td><input type="number" id="ts" value="0" min="0"></td></tr>
-            <tr><td class="lj">Balloon Launch Site (2/distance)        </td><td><input type="number" id="bl" value="0" min="0" step="2"></td>
-                <td class="lj">Harbor (closed off = 1/tile)            </td><td><input type="number" id="ha" value="0" min="0"></td></tr>
-            <tr><td class="lj">Golden Heart (2/matching edge)          </td><td><input type="number" id="gh" value="0" min="0" max="12" step="2"></td></tr>
+            <tr><td class="lj">Red Hearts (1/matching edge)            </td><td><input class="unlock" type="number" id="rh" value="0" min="0" max="24" oninput="updateTotals()"></td>
+                <td class="lj">Forest Cabin                            </td><td><input class="unlock" type="number" id="fc" value="0" min="0" max="37" oninput="updateTotals()"></td></tr>
+            <tr><td class="lj">Circus (completely surrounded = 10)     </td><td><input class="unlock" type="number" id="ci" value="0" min="0" max="10" step="10" oninput="updateTotals()"></td>
+                <td class="lj">Harvest Festival                        </td><td><input class="unlock" type="number" id="hf" value="0" min="0" max="37" oninput="updateTotals()"></td></tr>
+            <tr><td class="lj">Signalman (2/Grade Crossing)            </td><td><input class="unlock" type="number" id="si" value="0" min="0" step="2" oninput="updateTotals()"></td>
+                <td class="lj">Watchtower                              </td><td><input class="unlock" type="number" id="wt" value="0" min="0" max="37" oninput="updateTotals()"></td></tr>
+            <tr><td class="lj">Shepherdess (1/Sheep)                   </td><td><input class="unlock" type="number" id="sh" value="0" min="0" oninput="updateTotals()"></td>
+                <td class="lj">Locomotive                              </td><td><input class="unlock" type="number" id="lo" value="0" min="0" max="30" oninput="updateTotals()"></td></tr>
+            <tr><td class="lj">Hill (at distance 2 = 2/Task tile)      </td><td><input class="unlock" type="number" id="hi" value="0" min="0" step="2" oninput="updateTotals()"></td>
+                <td class="lj">Ship                                    </td><td><input class="unlock" type="number" id="bo" value="0" min="0" max="30" oninput="updateTotals()"></td></tr>
+            <tr><td class="lj">Construction Site (per territory 7+ = 7)</td><td><input class="unlock" type="number" id="cs" value="0" min="0" max="21" step="7" oninput="updateTotals()"></td>
+                <td class="lj">Train Station (closed off = 1/tile)     </td><td><input class="unlock" type="number" id="ts" value="0" min="0" oninput="updateTotals()"></td></tr>
+            <tr><td class="lj">Balloon Launch Site (2/distance)        </td><td><input class="unlock" type="number" id="bl" value="0" min="0" step="2" oninput="updateTotals()"></td>
+                <td class="lj">Harbor (closed off = 1/tile)            </td><td><input class="unlock" type="number" id="ha" value="0" min="0" oninput="updateTotals()"></td></tr>
+            <tr><td class="lj">Golden Heart (2/matching edge)          </td><td><input class="unlock" type="number" id="gh" value="0" min="0" max="12" step="2" oninput="updateTotals()"></td></tr>
           </table>
-        </td><td class="outline">23</td></tr>
-        <tr class="h10 outline"><th colspan="6" class="rj">Result:</th><td class="outline">24</td></tr>
+        </td><td class="outline" id="unlockTotal">0</td></tr>
+        <tr class="h10 outline"><th colspan="6" class="rj">Result:</th><td class="outline" id="total">0</td></tr>
       </table>
     </div>
   </body>
 </html>
+
