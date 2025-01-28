@@ -10,7 +10,7 @@
     }
   ],
   "display": "standalone",
-  "orientation": "landscape"
-  "background_color": "#eeffee";
+  "orientation": "landscape",
+  "background_color": "#eeffee"
 
 }
