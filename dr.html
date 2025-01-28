@@ -1,120 +1,13 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en-US">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href='data:application/manifest+json,{"display": "standalone", "orientation": "landscape"}'/>
-    <style>
-      .container
-      {
-        position: absolute;
-        left: 1%;
-        right: 1%;
-        top: 1%;
-        bottom: 1%;
-        font-size: 3vh;
-      }
-      table
-      {
-        width: 100%;
-        height: 100%;
-        vertical-align: center;
-      }
-      table, td, th
-      {
-        border-collapse: collapse;
-        text-align: center;
-        padding: 1%;
-      }
-      .outline
-      {
-        border: 1px solid black;
-      }
-      .lj
-      {
-        text-align: left;
-      }
-      .rj
-      {
-        text-align: right;
-      }
-      .h10
-      {
-        height: 10%;
-      }
-      .h60
-      {
-        height: 60%;
-      }
-      .w14
-      {
-        width: 14%;
-      }
-      .w17
-      {
-        width: 17%;
-      }
-      .w33
-      {
-        width: 33%;
-      }
-      input
-      {
-        border: none;
-        height: 100%;
-        width: 100%;
-        font-size: 3vh;
-      }
-
-    </style>
-
-    <script>
-      function getNum(str)
-      {
-        let ret = parseInt(str);
-        if(isNaN(ret))
-        {
-          return 0;
-        }
-        return ret;
-      }
-
-      function updateTotals()
-      {
-        let elem;
-        let totalTasks = 0;
-        let totalFlags = 0;
-        let totalUnlocks = 0;
-        
-        elem = document.getElementsByClassName("task");
-        for(let i = 0; i < elem.length; i++)
-        {
-          totalTasks += getNum(elem[i].value);
-        }
-        elem = document.getElementById("taskTotal");
-        elem.innerHTML = totalTasks;
-
-        elem = document.getElementsByClassName("flag");
-        for(let i = 0; i < elem.length; i++)
-        {
-          totalFlags += getNum(elem[i].value);
-        }
-        elem = document.getElementById("flagTotal");
-        elem.innerHTML = totalFlags;
-
-        elem = document.getElementsByClassName("unlock");
-        for(let i = 0; i < elem.length; i++)
-        {
-          totalUnlocks += getNum(elem[i].value);
-        }
-        elem = document.getElementById("unlockTotal");
-        elem.innerHTML = totalUnlocks;
-
-        elem = document.getElementById("total");
-        elem.innerHTML = totalTasks + totalFlags + totalUnlocks;
-      }
-    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Dorfromantik Score Sheet</title>
+    <link rel="stylesheet" href="dr.css" />
+    <link rel="manifest" href="dr.json" />
+    <link rel="icon" href="dr.png" />
   </head>
-
   <body>
     <div class="container">
       <table>
@@ -162,5 +55,6 @@
         <tr class="h10 outline"><th colspan="6" class="rj">Result:</th><td class="outline" id="total">0</td></tr>
       </table>
     </div>
+    <script src="dr.js" defer></script>
   </body>
 </html>
