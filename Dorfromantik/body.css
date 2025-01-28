@@ -1,0 +1,66 @@
+body 
+{
+  margin: 1vh 1vw;
+  background-color: #efe;
+}
+
+.container
+{
+  position: absolute;
+  left: 1%;
+  right: 1%;
+  top: 1%;
+  bottom: 1%;
+  font-size: 3vh;
+}
+table
+{
+  width: 100%;
+  height: 100%;
+  vertical-align: center;
+}
+table, td, th
+{
+  border-collapse: collapse;
+  text-align: center;
+  padding: 1%;
+}
+.outline
+{
+  border: 1px solid black;
+}
+.lj
+{
+  text-align: left;
+}
+.rj
+{
+  text-align: right;
+}
+.h10
+{
+  height: 10%;
+}
+.h60
+{
+  height: 60%;
+}
+.w14
+{
+  width: 14%;
+}
+.w17
+{
+  width: 17%;
+}
+.w33
+{
+  width: 33%;
+}
+input
+{
+  border: none;
+  height: 100%;
+  width: 100%;
+  font-size: 3vh;
+}
