@@ -1,66 +1,586 @@
-body 
+body
 {
-  margin: 1vh 1vw;
-  background-color: #efe;
+  background-color: white;
+  color: white;
 }
 
-.container
-{
-  position: absolute;
-  left: 1%;
-  right: 1%;
-  top: 1%;
-  bottom: 1%;
-  font-size: 3vh;
-}
-table
-{
-  width: 100%;
-  height: 100%;
-  vertical-align: center;
-}
-table, td, th
-{
-  border-collapse: collapse;
-  text-align: center;
-  padding: 1%;
-}
-.outline
-{
-  border: 1px solid black;
-}
-.lj
-{
-  text-align: left;
-}
-.rj
-{
-  text-align: right;
-}
-.h10
-{
-  height: 10%;
-}
-.h60
-{
-  height: 60%;
-}
-.w14
-{
-  width: 14%;
-}
-.w17
-{
-  width: 17%;
-}
-.w33
-{
-  width: 33%;
-}
 input
 {
-  border: none;
-  height: 100%;
-  width: 100%;
-  font-size: 3vh;
+  min-width: 0;
+}
+
+.cell
+{
+  background-color: #858A49;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dark
+{
+  background-color: #515C2A;
+}
+
+.lj
+{
+  justify-content: left;
+  padding-left: 1%;
+}
+
+.rj
+{
+  justify-content: right;
+  padding-left: 1%;
+}
+
+
+@media (orientation: landscape)
+{
+  .container
+  {
+    position: absolute;
+    left: 1%;
+    right: 1%;
+    top: 2%;
+    bottom: 2%;
+    display: grid;
+    grid-template-rows: 13fr 10fr 3fr 7fr 9fr repeat(9, 5fr) 3fr 10fr;
+    grid-template-columns: 4fr 10fr 14fr 4fr 10fr 4fr 10fr 7fr 7fr 4fr 10fr 16fr;
+    background-color: #858A49;
+  }
+  
+  .gameID
+  {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .forestHdr
+  {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .grainHdr
+  {
+    grid-column-start: 4;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .villageHdr
+  {
+    grid-column-start: 6;
+    grid-column-end: 8;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .trackHdr
+  {
+    grid-column-start: 8;
+    grid-column-end: 10;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .streamHdr
+  {
+    grid-column-start: 10;
+    grid-column-end: 12;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .totHdr
+  {
+    grid-column-start: 12;
+    grid-column-end: 13;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .taskHdr
+  {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  .forestTask
+  {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  .grainTask
+  {
+    grid-column-start: 4;
+    grid-column-end: 6;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  .villageTask
+  {
+    grid-column-start: 6;
+    grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  .trackTask
+  {
+    grid-column-start: 8;
+    grid-column-end: 10;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  .streamTask
+  {
+    grid-column-start: 10;
+    grid-column-end: 12;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  .totTask
+  {
+    grid-column-start: 12;
+    grid-column-end: 13;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  .flagHdr
+  {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 5;
+  }
+  .forestFlags
+  {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 4;
+    grid-row-end: 5;
+  }
+  .grainFlags
+  {
+    grid-column-start: 4;
+    grid-column-end: 6;
+    grid-row-start: 4;
+    grid-row-end: 5;
+  }
+  .villageFlags
+  {
+    grid-column-start: 6;
+    grid-column-end: 8;
+    grid-row-start: 4;
+    grid-row-end: 5;
+  }
+  .trackLongHdr
+  {
+    grid-column-start: 8;
+    grid-column-end: 10;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  .trackLong
+  {
+    grid-column-start: 8;
+    grid-column-end: 10;
+    grid-row-start: 4;
+    grid-row-end: 5;
+  }
+  .streamLongHdr
+  {
+    grid-column-start: 10;
+    grid-column-end: 12;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  .streamLong
+  {
+    grid-column-start: 10;
+    grid-column-end: 12;
+    grid-row-start: 4;
+    grid-row-end: 5;
+  }
+  .totFlags
+  {
+    grid-column-start: 12;
+    grid-column-end: 13;
+    grid-row-start: 3;
+    grid-row-end: 5;
+  }
+  .unlockHdr
+  {
+    grid-column-start: 1;
+    grid-column-end: 12;
+    grid-row-start: 5;
+    grid-row-end: 6;
+  }
+  .totUnlocks
+  {
+    grid-column-start: 12;
+    grid-column-end: 13;
+    grid-row-start: 5;
+    grid-row-end: 15;
+  }
+  .redHeartsChk
+  {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 6;
+    grid-row-end: 7;
+  }
+  .redHeartsHdr
+  {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 6;
+    grid-row-end: 7;
+  }
+  .redHeartsTot
+  {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 6;
+    grid-row-end: 7;
+  }
+  .circusChk
+  {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 7;
+    grid-row-end: 8;
+  }
+  .circusHdr
+  {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 7;
+    grid-row-end: 8;
+  }
+  .circusTot
+  {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 7;
+    grid-row-end: 8;
+  }
+  .signalmanChk
+  {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 8;
+    grid-row-end: 9;
+  }
+  .signalmanHdr
+  {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 8;
+    grid-row-end: 9;
+  }
+  .signalmanTot
+  {
+    grid-column-start: 5;
+    grid-column-end: 4;
+    grid-row-start: 8;
+    grid-row-end: 9;
+  }
+  .shepherdessChk
+  {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 9;
+    grid-row-end: 10;
+  }
+  .shepherdessHdr
+  {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 9;
+    grid-row-end: 10;
+  }
+  .shepherdessTot
+  {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 9;
+    grid-row-end: 10;
+  }
+  .hillChk
+  {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 10;
+    grid-row-end: 11;
+  }
+  .hillHdr
+  {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 10;
+    grid-row-end: 11;
+  }
+  .hillTot
+  {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 10;
+    grid-row-end: 11;
+  }
+  .constructionSiteChk
+  {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 11;
+    grid-row-end: 12;
+  }
+  .constructionSiteHdr
+  {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 11;
+    grid-row-end: 12;
+  }
+  .constructionSiteTot
+  {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 11;
+    grid-row-end: 12;
+  }
+  .balloonLaunchSiteChk
+  {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 12;
+    grid-row-end: 13;
+  }
+  .balloonLaunchSiteHdr
+  {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 12;
+    grid-row-end: 13;
+  }
+  .balloonLaunchSiteTot
+  {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 12;
+    grid-row-end: 13;
+  }
+  .goldenHeartChk
+  {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 13;
+    grid-row-end: 14;
+  }
+  .goldenHeartHdr
+  {
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 13;
+    grid-row-end: 14;
+  }
+  .goldenHeartTot
+  {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 13;
+    grid-row-end: 14;
+  }
+  .forestCabinChk
+  {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 6;
+    grid-row-end: 7;
+  }
+  .forestCabinHdr
+  {
+    grid-column-start: 7;
+    grid-column-end: 10;
+    grid-row-start: 6;
+    grid-row-end: 7;
+  }
+  .forestCabinTot
+  {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    grid-row-start: 6;
+    grid-row-end: 7;
+  }
+  .harvestFestivalChk
+  {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 7;
+    grid-row-end: 8;
+  }
+  .harvestFestivalHdr
+  {
+    grid-column-start: 7;
+    grid-column-end: 10;
+    grid-row-start: 7;
+    grid-row-end: 8;
+  }
+  .harvestFestivalTot
+  {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    grid-row-start: 7;
+    grid-row-end: 8;
+  }
+  .watchtowerChk
+  {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 8;
+    grid-row-end: 9;
+  }
+  .watchtowerHdr
+  {
+    grid-column-start: 7;
+    grid-column-end: 10;
+    grid-row-start: 8;
+    grid-row-end: 9;
+  }
+  .watchtowerTot
+  {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    grid-row-start: 8;
+    grid-row-end: 9;
+  }
+  .locomotiveChk
+  {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 9;
+    grid-row-end: 10;
+  }
+  .locomotiveHdr
+  {
+    grid-column-start: 7;
+    grid-column-end: 10;
+    grid-row-start: 9;
+    grid-row-end: 10;
+  }
+  .locomotiveTot
+  {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    grid-row-start: 9;
+    grid-row-end: 10;
+  }
+  .shipChk
+  {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 10;
+    grid-row-end: 11;
+  }
+  .shipHdr
+  {
+    grid-column-start: 7;
+    grid-column-end: 10;
+    grid-row-start: 10;
+    grid-row-end: 11;
+  }
+  .shipTot
+  {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    grid-row-start: 10;
+    grid-row-end: 11;
+  }
+  .trainStationChk
+  {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 11;
+    grid-row-end: 12;
+  }
+  .trainStationHdr
+  {
+    grid-column-start: 7;
+    grid-column-end: 10;
+    grid-row-start: 11;
+    grid-row-end: 12;
+  }
+  .trainStationTot
+  {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    grid-row-start: 11;
+    grid-row-end: 12;
+  }
+  .harborChk
+  {
+    grid-column-start: 6;
+    grid-column-end: 7;
+    grid-row-start: 12;
+    grid-row-end: 13;
+  }
+  .harborHdr
+  {
+    grid-column-start: 7;
+    grid-column-end: 10;
+    grid-row-start: 12;
+    grid-row-end: 13;
+  }
+  .harborTot
+  {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    grid-row-start: 12;
+    grid-row-end: 13;
+  }
+  .playersHdr
+  {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 15;
+    grid-row-end: 16;
+  }
+  .playerNames
+  {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 16;
+    grid-row-end: 17;
+  }
+  .dateHdr
+  {
+    grid-column-start: 6;
+    grid-column-end: 9;
+    grid-row-start: 15;
+    grid-row-end: 16;
+  }
+  .date
+  {
+    grid-column-start: 6;
+    grid-column-end: 9;
+    grid-row-start: 16;
+    grid-row-end: 17;
+  }
+  .resultHdr
+  {
+    grid-column-start: 9;
+    grid-column-end: 12;
+    grid-row-start: 15;
+    grid-row-end: 17;
+  }
+  .resultTot
+  {
+    grid-column-start: 12;
+    grid-column-end: 13;
+    grid-row-start: 15;
+    grid-row-end: 17;
+  }
 }
