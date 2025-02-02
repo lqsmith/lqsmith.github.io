@@ -40,6 +40,7 @@ input:focus
   outline: none;
 }
 
+/*
 .chkContainer
 {
   display: block;
@@ -54,7 +55,6 @@ input:focus
   user-select: none;
 }
 
-/* Hide the browser's default checkbox */
 .chkContainer input {
   position: absolute;
   opacity: 0;
@@ -63,7 +63,6 @@ input:focus
   width: 0;
 }
 
-/* Create a custom checkbox */
 .checkmark {
   position: absolute;
   top: 0;
@@ -73,29 +72,24 @@ input:focus
   background-color: #eee;
 }
 
-/* On mouse-over, add a grey background color */
 .chkContainer:hover input ~ .checkmark {
   background-color: #ccc;
 }
 
-/* When the checkbox is checked, add a blue background */
 .chkContainer input:checked ~ .checkmark {
   background-color: #2196F3;
 }
 
-/* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
 
-/* Show the checkmark when checked */
 .chkContainer input:checked ~ .checkmark:after {
   display: block;
 }
 
-/* Style the checkmark/indicator */
 .chkContainer .checkmark:after {
   left: 9px;
   top: 5px;
@@ -107,7 +101,7 @@ input:focus
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-
+*/
 .forestFlags:focus ~ .forestFlagHdr,
 .grainFlags:focus ~ .grainFlagHdr,
 .villageFlags:focus ~ .villageFlagHdr,
