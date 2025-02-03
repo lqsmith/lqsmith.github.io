@@ -173,33 +173,58 @@ input[type='checkbox']
   margin-right: 5%;
 }
 
+.font-mw
+{
+  font-size: 2.5vw;
+}
+
+.font-lw
+{
+  font-size: 3.8vw;
+}
+
+.img-sm
+{
+  width: 3vh;
+  height: 3vh;
+}
+
+.img-med
+{
+  width: 3vw;
+  height: 3vw;
+}
+
+.font-m
+{
+  font-size: 3vh;
+}
+
+.font-l
+{
+  font-size: 4vh;
+}
+
+.font-xl
+{
+  font-size: 5vh;
+}
+
 @media (orientation: landscape)
 {
-  .font-s
+  .font-sh
   {
     font-size: 2vh;
   }
-  
-  .font-m
+
+  .font-mh
   {
-    font-size: 4vh;
-  }
-  
-  .font-l
-  {
-    font-size: 6vh;
+    font-size: 2vh;
   }
 
-  .img-sm
+  .chkLabel, .font-s
   {
-    height: 3vh;
-    width: 3vh;
-  }
-
-  .img-med
-  {
-    height: 6vh;
-    width: 6vh;
+    font-size: 1.3vw;
   }
 
   .container
@@ -841,31 +866,19 @@ input[type='checkbox']
 
 @media (orientation: portrait)
 {
-  .font-s
+  .font-sh
   {
-    font-size: 1.7vw;
-  }
-  
-  .font-m
-  {
-    font-size: 2.6vw;
-  }
-  
-  .font-l
-  {
-    font-size: 4vw;
+    font-size: 2vw;
   }
 
-  .img-sm
+  .font-mh
   {
-    height: 3vw;
-    width: 3vw;
+    font-size: 2vw;
   }
 
-  .img-med
+  .chkLabel, .font-s
   {
-    height: 5vw;
-    width: 5vw;
+    font-size: 1.7vh;
   }
 
   .container
@@ -877,7 +890,7 @@ input[type='checkbox']
     bottom: 2%;
     display: grid;
     grid-template-rows: 8fr 7fr 2fr 5fr 6fr repeat(18, 4fr);
-    grid-template-columns: 4fr 10fr 14fr 14fr 14fr 14fr 7fr 7fr 16fr;
+    grid-template-columns: 4fr 10fr 4fr 10fr 14fr 14fr 14fr 7fr 7fr 16fr;
     background-color: #858A49;
   }
   
@@ -892,7 +905,7 @@ input[type='checkbox']
   .forestHdr
   {
     grid-column-start: 3;
-    grid-column-end: 4;
+    grid-column-end: 5;
     grid-row-start: 1;
     grid-row-end: 2;
     background-image: url("forest.png");
@@ -900,8 +913,8 @@ input[type='checkbox']
   }
   .grainHdr
   {
-    grid-column-start: 4;
-    grid-column-end: 5;
+    grid-column-start: 5;
+    grid-column-end: 6;
     grid-row-start: 1;
     grid-row-end: 2;
     background-image: url("grain.png");
@@ -909,8 +922,8 @@ input[type='checkbox']
   }
   .villageHdr
   {
-    grid-column-start: 5;
-    grid-column-end: 6;
+    grid-column-start: 6;
+    grid-column-end: 7;
     grid-row-start: 1;
     grid-row-end: 2;
     background-image: url("village.png");
@@ -918,8 +931,8 @@ input[type='checkbox']
   }
   .trackHdr
   {
-    grid-column-start: 6;
-    grid-column-end: 7;
+    grid-column-start: 7;
+    grid-column-end: 8;
     grid-row-start: 1;
     grid-row-end: 2;
     background-image: url("track.png");
@@ -927,8 +940,8 @@ input[type='checkbox']
   }
   .streamHdr
   {
-    grid-column-start: 7;
-    grid-column-end: 9;
+    grid-column-start: 8;
+    grid-column-end: 10;
     grid-row-start: 1;
     grid-row-end: 2;
     background-image: url("stream.png");
@@ -936,8 +949,8 @@ input[type='checkbox']
   }
   .totHdr
   {
-    grid-column-start: 9;
-    grid-column-end: 10;
+    grid-column-start: 10;
+    grid-column-end: 11;
     grid-row-start: 1;
     grid-row-end: 2;
     border-left: 3px solid white;
@@ -953,22 +966,13 @@ input[type='checkbox']
   .forestTask
   {
     grid-column-start: 3;
-    grid-column-end: 4;
-    grid-row-start: 2;
-    grid-row-end: 3;
-    border-top: 3px solid white;
-    border-left: 3px solid white;
-  }
-  .grainTask
-  {
-    grid-column-start: 4;
     grid-column-end: 5;
     grid-row-start: 2;
     grid-row-end: 3;
     border-top: 3px solid white;
     border-left: 3px solid white;
   }
-  .villageTask
+  .grainTask
   {
     grid-column-start: 5;
     grid-column-end: 6;
@@ -977,7 +981,7 @@ input[type='checkbox']
     border-top: 3px solid white;
     border-left: 3px solid white;
   }
-  .trackTask
+  .villageTask
   {
     grid-column-start: 6;
     grid-column-end: 7;
@@ -986,10 +990,19 @@ input[type='checkbox']
     border-top: 3px solid white;
     border-left: 3px solid white;
   }
-  .streamTask
+  .trackTask
   {
     grid-column-start: 7;
-    grid-column-end: 9;
+    grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+  }
+  .streamTask
+  {
+    grid-column-start: 8;
+    grid-column-end: 10;
     grid-row-start: 2;
     grid-row-end: 3;
     border-top: 3px solid white;
@@ -997,8 +1010,8 @@ input[type='checkbox']
   }
   .totTask
   {
-    grid-column-start: 9;
-    grid-column-end: 10;
+    grid-column-start: 10;
+    grid-column-end: 11;
     grid-row-start: 2;
     grid-row-end: 3;
     border-top: 3px solid white;
@@ -1015,7 +1028,7 @@ input[type='checkbox']
   .forestFlagHdr
   {
     grid-column-start: 3;
-    grid-column-end: 4;
+    grid-column-end: 5;
     grid-row-start: 3;
     grid-row-end: 4;
     border-top: 3px solid white;
@@ -1024,15 +1037,15 @@ input[type='checkbox']
   .forestFlags
   {
     grid-column-start: 3;
-    grid-column-end: 4;
+    grid-column-end: 5;
     grid-row-start: 4;
     grid-row-end: 5;
     border-left: 3px solid white;
   }
   .grainFlagHdr
   {
-    grid-column-start: 4;
-    grid-column-end: 5;
+    grid-column-start: 5;
+    grid-column-end: 6;
     grid-row-start: 3;
     grid-row-end: 4;
     border-top: 3px solid white;
@@ -1040,16 +1053,16 @@ input[type='checkbox']
   }
   .grainFlags
   {
-    grid-column-start: 4;
-    grid-column-end: 5;
+    grid-column-start: 5;
+    grid-column-end: 6;
     grid-row-start: 4;
     grid-row-end: 5;
     border-left: 3px solid white;
   }
   .villageFlagHdr
   {
-    grid-column-start: 5;
-    grid-column-end: 6;
+    grid-column-start: 6;
+    grid-column-end: 7;
     grid-row-start: 3;
     grid-row-end: 4;
     border-top: 3px solid white;
@@ -1057,16 +1070,16 @@ input[type='checkbox']
   }
   .villageFlags
   {
-    grid-column-start: 5;
-    grid-column-end: 6;
+    grid-column-start: 6;
+    grid-column-end: 7;
     grid-row-start: 4;
     grid-row-end: 5;
     border-left: 3px solid white;
   }
   .trackLongHdr
   {
-    grid-column-start: 6;
-    grid-column-end: 7;
+    grid-column-start: 7;
+    grid-column-end: 8;
     grid-row-start: 3;
     grid-row-end: 4;
     border-top: 3px solid white;
@@ -1074,16 +1087,16 @@ input[type='checkbox']
   }
   .trackLong
   {
-    grid-column-start: 6;
-    grid-column-end: 7;
+    grid-column-start: 7;
+    grid-column-end: 8;
     grid-row-start: 4;
     grid-row-end: 5;
     border-left: 3px solid white;
   }
   .streamLongHdr
   {
-    grid-column-start: 7;
-    grid-column-end: 9;
+    grid-column-start: 8;
+    grid-column-end: 10;
     grid-row-start: 3;
     grid-row-end: 4;
     border-top: 3px solid white;
@@ -1091,16 +1104,16 @@ input[type='checkbox']
   }
   .streamLong
   {
-    grid-column-start: 7;
-    grid-column-end: 9;
+    grid-column-start: 8;
+    grid-column-end: 10;
     grid-row-start: 4;
     grid-row-end: 5;
     border-left: 3px solid white;
   }
   .totFlags
   {
-    grid-column-start: 9;
-    grid-column-end: 10;
+    grid-column-start: 10;
+    grid-column-end: 11;
     grid-row-start: 3;
     grid-row-end: 5;
     border-top: 3px solid white;
@@ -1109,15 +1122,15 @@ input[type='checkbox']
   .unlockHdr
   {
     grid-column-start: 1;
-    grid-column-end: 9;
+    grid-column-end: 10;
     grid-row-start: 5;
     grid-row-end: 6;
     border-top: 3px solid white;
   }
   .totUnlocks
   {
-    grid-column-start: 9;
-    grid-column-end: 10;
+    grid-column-start: 10;
+    grid-column-end: 11;
     grid-row-start: 5;
     grid-row-end: 22;
     border-top: 3px solid white;
@@ -1133,14 +1146,14 @@ input[type='checkbox']
   .redHeartsHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 6;
     grid-row-end: 7;
   }
   .redHeartsTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 6;
     grid-row-end: 7;
     border-bottom: 3px solid white;
@@ -1155,14 +1168,14 @@ input[type='checkbox']
   .circusHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 7;
     grid-row-end: 8;
   }
   .circusTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 7;
     grid-row-end: 8;
     border-bottom: 3px solid white;
@@ -1177,14 +1190,14 @@ input[type='checkbox']
   .signalmanHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 8;
     grid-row-end: 9;
   }
   .signalmanTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 8;
     grid-row-end: 9;
     border-bottom: 3px solid white;
@@ -1199,14 +1212,14 @@ input[type='checkbox']
   .shepherdessHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 9;
     grid-row-end: 10;
   }
   .shepherdessTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 9;
     grid-row-end: 10;
     border-bottom: 3px solid white;
@@ -1221,14 +1234,14 @@ input[type='checkbox']
   .hillHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 10;
     grid-row-end: 11;
   }
   .hillTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 10;
     grid-row-end: 11;
     border-bottom: 3px solid white;
@@ -1243,14 +1256,14 @@ input[type='checkbox']
   .constructionSiteHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 11;
     grid-row-end: 12;
   }
   .constructionSiteTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 11;
     grid-row-end: 12;
     border-bottom: 3px solid white;
@@ -1265,14 +1278,14 @@ input[type='checkbox']
   .balloonLaunchSiteHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 12;
     grid-row-end: 13;
   }
   .balloonLaunchSiteTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 12;
     grid-row-end: 13;
     border-bottom: 3px solid white;
@@ -1287,14 +1300,14 @@ input[type='checkbox']
   .goldenHeartHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 13;
     grid-row-end: 14;
   }
   .goldenHeartTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 13;
     grid-row-end: 14;
     border-bottom: 3px solid white;
@@ -1309,14 +1322,14 @@ input[type='checkbox']
   .forestCabinHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 14;
     grid-row-end: 15;
   }
   .forestCabinTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 14;
     grid-row-end: 15;
     border-bottom: 3px solid white;
@@ -1331,14 +1344,14 @@ input[type='checkbox']
   .harvestFestivalHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 15;
     grid-row-end: 16;
   }
   .harvestFestivalTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 15;
     grid-row-end: 16;
     border-bottom: 3px solid white;
@@ -1353,14 +1366,14 @@ input[type='checkbox']
   .watchtowerHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 16;
     grid-row-end: 17;
   }
   .watchtowerTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 16;
     grid-row-end: 17;
     border-bottom: 3px solid white;
@@ -1375,14 +1388,14 @@ input[type='checkbox']
   .locomotiveHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 17;
     grid-row-end: 18;
   }
   .locomotiveTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 17;
     grid-row-end: 18;
     border-bottom: 3px solid white;
@@ -1397,14 +1410,14 @@ input[type='checkbox']
   .shipHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 18;
     grid-row-end: 19;
   }
   .shipTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 18;
     grid-row-end: 19;
     border-bottom: 3px solid white;
@@ -1419,14 +1432,14 @@ input[type='checkbox']
   .trainStationHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 19;
     grid-row-end: 20;
   }
   .trainStationTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 19;
     grid-row-end: 20;
     border-bottom: 3px solid white;
@@ -1441,14 +1454,14 @@ input[type='checkbox']
   .harborHdr
   {
     grid-column-start: 2;
-    grid-column-end: 7;
+    grid-column-end: 8;
     grid-row-start: 20;
     grid-row-end: 21;
   }
   .harborTot
   {
-    grid-column-start: 7;
-    grid-column-end: 8;
+    grid-column-start: 8;
+    grid-column-end: 9;
     grid-row-start: 20;
     grid-row-end: 21;
     border-bottom: 3px solid white;
@@ -1456,15 +1469,15 @@ input[type='checkbox']
   .playersHdr
   {
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 4;
     grid-row-start: 22;
     grid-row-end: 23;
     border-top: 3px solid white;
   }
   .playerNames
   {
-    grid-column-start: 3;
-    grid-column-end: 6;
+    grid-column-start: 4;
+    grid-column-end: 7;
     grid-row-start: 22;
     grid-row-end: 23;
     border-top: 3px solid white;
@@ -1480,15 +1493,15 @@ input[type='checkbox']
   .date
   {
     grid-column-start: 3;
-    grid-column-end: 6;
+    grid-column-end: 7;
     grid-row-start: 23;
     grid-row-end: 24;
     border-top: 3px solid white;
   }
   .resultHdr
   {
-    grid-column-start: 6;
-    grid-column-end: 9;
+    grid-column-start: 7;
+    grid-column-end: 10;
     grid-row-start: 22;
     grid-row-end: 24;
     border-left: 3px solid white;
@@ -1496,8 +1509,8 @@ input[type='checkbox']
   }
   .resultTot
   {
-    grid-column-start: 9;
-    grid-column-end: 10;
+    grid-column-start: 10;
+    grid-column-end: 11;
     grid-row-start: 22;
     grid-row-end: 24;
     border-left: 3px solid white;
