@@ -5,12 +5,12 @@ body
   font-family: Tohoma, Verdana, sans-serif;
   font-weight: bold;
   box-sizing: border-box;
+  font-size: 1px;
 }
 
 div
 {
   border: 1px solid black;
-  margin: 1%; 
   background-color: #858A49;
 }
 
@@ -21,10 +21,15 @@ svg
   fill: white;
 }
 
-svg > text
+.jc > text
 {
-  color: white;
   text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.jl > text
+{
+  stext-anchor: start;
   dominant-baseline: middle;
 }
 
@@ -113,6 +118,10 @@ img
   grid-column-end: span 1;
   grid-row-start: 2;
   grid-row-end: span 1;
+  background-image: url(./tasks.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right;
 }
 
 .forestTasks
@@ -271,6 +280,7 @@ img
     display: grid;
     grid-template-rows: 2fr repeat(16, 6fr) 2fr;
     grid-template-columns: 85fr 15fr;
+    margin: 0 1% 0 1%;
   }
 
   .unlocksHdr
@@ -534,6 +544,7 @@ img
     display: grid;
     grid-template-rows: 12fr repeat(8, 11fr);
     grid-template-columns: 40fr 7fr 6fr 40fr 7fr;
+    margin: 1%;
   }
 
   .unlocksHdr
