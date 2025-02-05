@@ -6,65 +6,141 @@
     <link rel="stylesheet" href="dr.css" />
   </head>
   <body>
-    <div class="sheet">
-        <div class="gameId"          ></div>
-        <div class="forestHdr"       ></div>
-        <div class="grainHdr"        ></div>
-        <div class="villageHdr"      ></div>
-        <div class="trackHdr"        ></div>
-        <div class="streamHdr"       ></div>
-        <div class="totalHdr"        ><svg viewBox="0 0 4 1" class="jc"><text x="50%" y="50%">Totals</text></svg></div>
-        <div class="tasksHdr"        ><svg viewBox="0 0 6 1" class="jl"><text x="5%" y="50%">Tasks </text></svg><!--img src="./tasks.png"/--></div>
-        <div class="forestTasks"     ></div>
-        <div class="grainTasks"      ></div>
-        <div class="villageTasks"    ></div>
-        <div class="trackTasks"      ></div>
-        <div class="streamTasks"     ></div>
-        <div class="tasksTotal"      ><svg viewBox="0 0 4 1" class="jc"><text x="50%" y="50%">0</text></svg></div>
-        <div class="flagsHdr"        ><svg viewBox="0 0 6 1" class="jl"><text x="5%" y="50%">Flags </text></svg><!--img src="./flags.png"/--></div>
-        <div class="forestFlagsBox"  ></div>
-        <div class="grainFlagsBox"   ></div>
-        <div class="villageFlagsBox" ></div>
-        <div class="longestTrackBox" ></div>
-        <div class="longestStreamBox"></div>
-        <div class="flagsTotal"      ><svg viewBox="0 0 4 1" class="jc"><text x="50%" y="50%">0</text></svg></div>
-        <div class="unlocksBox"      >
-            <div class="unlocksHdr"          ><svg viewBox="0 0 25 1" class="jl"><text x="0%" y="50%">Unlocked</text></svg></div>
-            <div class="redHeartsChk"        ></div>
-            <div class="redHearts"           ></div>
-            <div class="circusChk"           ></div>
-            <div class="circus"              ></div>
-            <div class="signalmanChk"        ></div>
-            <div class="signalman"           ></div>
-            <div class="shepherdessChk"      ></div>
-            <div class="shepherdess"         ></div>
-            <div class="hillChk"             ></div>
-            <div class="hill"                ></div>
-            <div class="constructionSiteChk" ></div>
-            <div class="constructionSite"    ></div>
-            <div class="balloonLaunchSiteChk"></div>
-            <div class="balloonLaunchSite"   ></div>
-            <div class="goldenHeartChk"      ></div>
-            <div class="goldenHeart"         ></div>
-            <div class="forestCabinChk"      ></div>
-            <div class="forestCabin"         ></div>
-            <div class="harvestFestivalChk"  ></div>
-            <div class="harvestFestival"     ></div>
-            <div class="watchtowerChk"       ></div>
-            <div class="watchtower"          ></div>
-            <div class="locomotiveChk"       ></div>
-            <div class="locomotive"          ></div>
-            <div class="shipChk"             ></div>
-            <div class="ship"                ></div>
-            <div class="trainStationChk"     ></div>
-            <div class="trainStation"        ></div>
-            <div class="harborChk"           ></div>
-            <div class="harbor"              ></div>
-                                        </div>
-        <div class="unlocksTotal"    >0</div>
-        <div class="miscBox"         ></div>
-        <div class="resultsHdr"      >Result:</div>
-        <div class="results"         >0</div>
+    <div class="sheet font-md">
+        <div class="gameId"            ></div>
+        <div class="forestHdr"         ></div>
+        <div class="grainHdr"          ></div>
+        <div class="villageHdr"        ></div>
+        <div class="trackHdr"          ></div>
+        <div class="streamHdr"         ></div>
+        <div class="totalHdr font-lg   vert-center">Totals</div>
+        <div class="tasksHdr           vert-center">Tasks</div>
+        <div class="forestTasks        vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="grainTasks         vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="villageTasks       vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="trackTasks         vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="streamTasks        vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="tasksTotal font-lg vert-center">0</div>
+        <div class="flagsHdr           vert-center">Flags</div>
+        <div class="forestFlagsBox box-with-hdr">
+          <div class="forestFlagsHdr"></div>
+          <div class="forestFlags vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="grainFlagsBox box-with-hdr">
+          <div class="grainFlagsHdr"></div>
+          <div class="grainFlag vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="villageFlagsBox box-with-hdr">
+          <div class="villageFlagsHdr"></div>
+          <div class="villageFlags vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="longestTrackBox box-with-hdr">
+          <div class="longestTrackHdr font-sm">Longest</div>
+          <div class="longestTrack vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="longestStreamBox box-with-hdr">
+          <div class="longestStreamHdr font-sm">Longest</div>
+          <div class="longestStream vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="flagsTotal font-lg vert-center">0</div>
+        <div class="unlocksBox font-sm">
+            <div class="unlocksHdr">Unlocked</div>
+
+            <label class="custom-chkbox redHeartsChk vert-center">
+              Red Hearts (1/matching edge):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="redHearts vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox circusChk vert-center">
+              Circus (completely surrounded = 10):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="circus vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox signalmanChk vert-center">
+              Signalman (2/Grade Crossing):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="signalman vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox shepherdessChk vert-center">
+              Shepherdess (1/Sheep):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="shepherdess vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox hillChk vert-center">
+              Hill (at distance 2 = 2/Task tile):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="hill vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox constructionSiteChk vert-center">
+              Construction Site (per territory 7+ = 7):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="constructionSite vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox balloonLaunchSiteChk vert-center">
+              Balloon Launch Site (2/distance):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="balloonLaunchSite vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox goldenHeartChk vert-center">
+              Golden Heart (2/matching edge):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="goldenHeart vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox forestCabinChk vert-center">
+              Forest Cabin (<img src="./forest.png"  class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="forestCabin vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox harvestFestivalChk vert-center">
+              Harvest Festival (<img src="./grain.png"   class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="harvestFestival vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox watchtowerChk vert-center">
+              Watchtower (<img src="./village.png" class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="watchtower vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox locomotiveChk vert-center">
+              Locomotive (<img src="./track.png"   class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="locomotive vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox shipChk vert-center">
+              Ship (<img src="./stream.png"  class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="ship vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox trainStationChk vert-center">
+              Train Station:
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="trainStation vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox harborChk vert-center">
+              Harbor:
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="harbor vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+        </div>
+        <div class="unlocksTotal font-lg vert-center"></div>
+        <div class="miscBox"              ></div>
+        <div class="resultsHdr   font-lg vert-center">Result:</div>
+        <div class="results      font-lg vert-center">0</div>
     </div>
     <script src="dr.js" defer></script>
   </body>
