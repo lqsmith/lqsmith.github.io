@@ -6,129 +6,141 @@
     <link rel="stylesheet" href="dr.css" />
   </head>
   <body>
-    <div class="container">
+    <div class="sheet font-md">
+        <div class="gameId"            ></div>
+        <div class="forestHdr"         ></div>
+        <div class="grainHdr"          ></div>
+        <div class="villageHdr"        ></div>
+        <div class="trackHdr"          ></div>
+        <div class="streamHdr"         ></div>
+        <div class="totalHdr font-lg   vert-center">Totals</div>
+        <div class="tasksHdr           vert-center">Tasks</div>
+        <div class="forestTasks        vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="grainTasks         vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="villageTasks       vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="trackTasks         vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="streamTasks        vert-center"><input type="number" class="task" oninput="updateTotals()"></div>
+        <div class="tasksTotal font-lg vert-center">0</div>
+        <div class="flagsHdr           vert-center">Flags</div>
+        <div class="forestFlagsBox box-with-hdr">
+          <div class="forestFlagsHdr"></div>
+          <div class="forestFlags vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="grainFlagsBox box-with-hdr">
+          <div class="grainFlagsHdr"></div>
+          <div class="grainFlag vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="villageFlagsBox box-with-hdr">
+          <div class="villageFlagsHdr"></div>
+          <div class="villageFlags vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="longestTrackBox box-with-hdr">
+          <div class="longestTrackHdr font-sm">Longest</div>
+          <div class="longestTrack vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="longestStreamBox box-with-hdr">
+          <div class="longestStreamHdr font-sm">Longest</div>
+          <div class="longestStream vert-center"><input type="number" class="flag" oninput="updateTotals()"></div>
+        </div>
+        <div class="flagsTotal font-lg vert-center">0</div>
+        <div class="unlocksBox font-sm">
+            <div class="unlocksHdr">Unlocked</div>
 
+            <label class="custom-chkbox redHeartsChk vert-center">
+              Red Hearts (1/matching edge):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="redHearts vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
 
-        <input class="cell rj redHeartsChk                 " type="checkbox"/>
-        <div   class="cell lj chkLabel redHeartsHdr        ">Red Hearts (1/matching edge):            </div>
-        <input class="cell rj circusChk                    " type="checkbox"/>
-        <div   class="cell lj chkLabel circusHdr           ">Circus (completely surrounded = 10):     </div>
-        <input class="cell rj signalmanChk                 " type="checkbox"/>
-        <div   class="cell lj chkLabel signalmanHdr        ">Signalman (2/Grade Crossing):            </div>
-        <input class="cell rj shepherdessChk               " type="checkbox"/>
-        <div   class="cell lj chkLabel shepherdessHdr      ">Shepherdess (1/Sheep)                    </div>
-        <input class="cell rj hillChk                      " type="checkbox"/>
-        <div   class="cell lj chkLabel hillHdr             ">Hill (at distance 2 = 2/Task tile):      </div>
-        <input class="cell rj constructionSiteChk          " type="checkbox"/>
-        <div   class="cell lj chkLabel constructionSiteHdr ">Construction Site (per territory 7+ = 7):</div>
-        <input class="cell rj balloonLaunchSiteChk         " type="checkbox"/>
-        <div   class="cell lj chkLabel balloonLaunchSiteHdr">Balloon Launch Site (2/distance):        </div>
-        <input class="cell rj goldenHeartChk               " type="checkbox"/>
-        <div   class="cell lj chkLabel goldenHeartHdr      ">Golden Heart (2/matching edge):          </div>
-        <input class="cell rj forestCabinChk               " type="checkbox"/>
-        <div   class="cell lj chkLabel forestCabinHdr      ">Forest Cabin     (<img src="./forest.png"  class="img-sm"/>-Tasks):</div>
-        <input class="cell rj harvestFestivalChk           " type="checkbox"/>
-        <div   class="cell lj chkLabel harvestFestivalHdr  ">Harvest Festival (<img src="./grain.png"   class="img-sm"/>-Tasks):</div>
-        <input class="cell rj watchtowerChk                " type="checkbox"/>
-        <div   class="cell lj chkLabel watchtowerHdr       ">Watchtower       (<img src="./village.png" class="img-sm"/>-Tasks):</div>
-        <input class="cell rj locomotiveChk                " type="checkbox"/>
-        <div   class="cell lj chkLabel locomotiveHdr       ">Locomotive       (<img src="./track.png"   class="img-sm"/>-Tasks):</div>
-        <input class="cell rj shipChk                      " type="checkbox"/>
-        <div   class="cell lj chkLabel shipHdr             ">Ship             (<img src="./stream.png"  class="img-sm"/>-Tasks):</div>
-        <input class="cell rj trainStationChk              " type="checkbox"/>
-        <div   class="cell lj chkLabel trainStationHdr     ">Train Station:                           </div>
-        <input class="cell rj harborChk                    " type="checkbox"/>
-        <div   class="cell lj chkLabel harborHdr           ">Harbor:                                  </div>
-<!--
-        <label class="chkContainer">Red Hearts (1/matching edge):
-          <input type="checkbox">
-          <span class="checkmark"></span>
-        </label>
--->
-      
-        <input class="cell rj circusChk                    " type="checkbox"/>
-        <div   class="cell lj chkLabel circusHdr           ">Circus (completely surrounded = 10):     </div>
-        <input class="cell rj signalmanChk                 " type="checkbox"/>
-        <div   class="cell lj chkLabel signalmanHdr        ">Signalman (2/Grade Crossing):            </div>
-        <input class="cell rj shepherdessChk               " type="checkbox"/>
-        <div   class="cell lj chkLabel shepherdessHdr      ">Shepherdess (1/Sheep)                    </div>
-        <input class="cell rj hillChk                      " type="checkbox"/>
-        <div   class="cell lj chkLabel hillHdr             ">Hill (at distance 2 = 2/Task tile):      </div>
-        <input class="cell rj constructionSiteChk          " type="checkbox"/>
-        <div   class="cell lj chkLabel constructionSiteHdr ">Construction Site (per territory 7+ = 7):</div>
-        <input class="cell rj balloonLaunchSiteChk         " type="checkbox"/>
-        <div   class="cell lj chkLabel balloonLaunchSiteHdr">Balloon Launch Site (2/distance):        </div>
-        <input class="cell rj goldenHeartChk               " type="checkbox"/>
-        <div   class="cell lj chkLabel goldenHeartHdr      ">Golden Heart (2/matching edge):          </div>
-        <input class="cell rj forestCabinChk               " type="checkbox"/>
-        <div   class="cell lj chkLabel forestCabinHdr      ">Forest Cabin     (<img src="./forest.png"  class="img-sm"/>-Tasks):</div>
-        <input class="cell rj harvestFestivalChk           " type="checkbox"/>
-        <div   class="cell lj chkLabel harvestFestivalHdr  ">Harvest Festival (<img src="./grain.png"   class="img-sm"/>-Tasks):</div>
-        <input class="cell rj watchtowerChk                " type="checkbox"/>
-        <div   class="cell lj chkLabel watchtowerHdr       ">Watchtower       (<img src="./village.png" class="img-sm"/>-Tasks):</div>
-        <input class="cell rj locomotiveChk                " type="checkbox"/>
-        <div   class="cell lj chkLabel locomotiveHdr       ">Locomotive       (<img src="./track.png"   class="img-sm"/>-Tasks):</div>
-        <input class="cell rj shipChk                      " type="checkbox"/>
-        <div   class="cell lj chkLabel shipHdr             ">Ship             (<img src="./stream.png"  class="img-sm"/>-Tasks):</div>
-        <input class="cell rj trainStationChk              " type="checkbox"/>
-        <div   class="cell lj chkLabel trainStationHdr     ">Train Station:                           </div>
-        <input class="cell rj harborChk                    " type="checkbox"/>
-        <div   class="cell lj chkLabel harborHdr           ">Harbor:                                  </div>
+            <label class="custom-chkbox circusChk vert-center">
+              Circus (completely surrounded = 10):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="circus vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
 
-        <input class="font-s cell        playerNames         " type="text"/>
-        <input class="font-s cell        date                " type="date"/>
+            <label class="custom-chkbox signalmanChk vert-center">
+              Signalman (2/Grade Crossing):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="signalman vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
 
-        <input class="font-m cell task   forestTask          " type="number" oninput="updateTotals()"/>
-        <input class="font-m cell task   grainTask           " type="number" oninput="updateTotals()"/>
-        <input class="font-m cell task   villageTask         " type="number" oninput="updateTotals()"/>
-        <input class="font-m cell task   trackTask           " type="number" oninput="updateTotals()"/>
-        <input class="font-m cell task   streamTask          " type="number" oninput="updateTotals()"/>
+            <label class="custom-chkbox shepherdessChk vert-center">
+              Shepherdess (1/Sheep):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="shepherdess vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
 
-        <input class="font-m cell flag   forestFlags         " type="number" oninput="updateTotals()"/>
-        <input class="font-m cell flag   grainFlags          " type="number" oninput="updateTotals()"/>
-        <input class="font-m cell flag   villageFlags        " type="number" oninput="updateTotals()"/>
-        <input class="font-m cell flag   trackLong           " type="number" oninput="updateTotals()"/>
-        <input class="font-m cell flag   streamLong          " type="number" oninput="updateTotals()"/>
+            <label class="custom-chkbox hillChk vert-center">
+              Hill (at distance 2 = 2/Task tile):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="hill vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
 
-        <input class="font-s cell unlock redHeartsTot        " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock circusTot           " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock signalmanTot        " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock shepherdessTot      " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock hillTot             " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock constructionSiteTot " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock balloonLaunchSiteTot" type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock goldenHeartTot      " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock forestCabinTot      " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock harvestFestivalTot  " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock watchtowerTot       " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock locomotiveTot       " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock shipTot             " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock trainStationTot     " type="number" oninput="updateTotals()"/>
-        <input class="font-s cell unlock harborTot           " type="number" oninput="updateTotals()"/>
+            <label class="custom-chkbox constructionSiteChk vert-center">
+              Construction Site (per territory 7+ = 7):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="constructionSite vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
 
-        <div   class="        cell dark gameID              ">                                                      </div>
-        <div   class="        cell dark forestHdr           ">                                                      </div>
-        <div   class="        cell dark grainHdr            ">                                                      </div>
-        <div   class="        cell dark villageHdr          ">                                                      </div>
-        <div   class="        cell dark trackHdr            ">                                                      </div>
-        <div   class="        cell dark streamHdr           ">                                                      </div>
-        <div   class="font-lw cell dark totHdr              ">Totals                                                </div>
-        <div   class="font-mw cell      taskHdr             ">Tasks&nbsp    <img src="./tasks.png" class="img-med"/></div>
-        <div   class="font-l  cell      totTask             ">                                                      </div>
-        <div   class="font-mw cell      flagHdr             ">Flags&nbsp    <img src="./flags.png" class="img-med"/></div>
-        <div   class="font-l  cell      totFlags            ">                                                      </div>
-        <div   class="        cell      forestFlagHdr       ">                                                      </div>
-        <div   class="        cell      grainFlagHdr        ">                                                      </div>
-        <div   class="        cell      villageFlagHdr      ">                                                      </div>
-        <div   class="font-sh cell      trackLongHdr        ">Longest                                               </div>
-        <div   class="font-sh cell      streamLongHdr       ">Longest                                               </div>
-        <div   class="font-mh cell lj   unlockHdr           ">Unlocked                                              </div>
-        <div   class="font-l  cell      totUnlocks          ">                                                      </div>
-        <div   class="font-mh cell lj   playersHdr          ">Player Names:                                         </div>
-        <div   class="font-mh cell lj   dateHdr             ">Date:                                                 </div>
-        <div   class="font-lw cell      resultHdr           ">Result:                                               </div>
-        <div   class="font-xl cell      resultTot           ">                                                      </div>
+            <label class="custom-chkbox balloonLaunchSiteChk vert-center">
+              Balloon Launch Site (2/distance):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="balloonLaunchSite vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
 
+            <label class="custom-chkbox goldenHeartChk vert-center">
+              Golden Heart (2/matching edge):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="goldenHeart vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox forestCabinChk vert-center">
+              Forest Cabin (<img src="./forest.png"  class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="forestCabin vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox harvestFestivalChk vert-center">
+              Harvest Festival (<img src="./grain.png"   class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="harvestFestival vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox watchtowerChk vert-center">
+              Watchtower (<img src="./village.png" class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="watchtower vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox locomotiveChk vert-center">
+              Locomotive (<img src="./track.png"   class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="locomotive vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox shipChk vert-center">
+              Ship (<img src="./stream.png"  class="img-sm"/>-Tasks):
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="ship vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox trainStationChk vert-center">
+              Train Station:
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="trainStation vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+            <label class="custom-chkbox harborChk vert-center">
+              Harbor:
+              <input type="checkbox"><span class="checkmark"></span>
+            </label>
+            <div class="harbor vert-center"><input type="number" class="border-bottom" oninput="updateTotals()"></div>
+
+        </div>
+        <div class="unlocksTotal font-lg vert-center"></div>
+        <div class="miscBox"              ></div>
+        <div class="resultsHdr   font-lg vert-center">Result:</div>
+        <div class="results      font-lg vert-center">0</div>
     </div>
     <script src="dr.js" defer></script>
   </body>

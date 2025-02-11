@@ -20,7 +20,7 @@ function updateTotals()
   {
     totalTasks += getNum(elem[i].value);
   }
-  elem = document.getElementsByClassName("totTask");
+  elem = document.getElementsByClassName("tasksTotal");
   elem[0].innerHTML = totalTasks;
 
   elem = document.getElementsByClassName("flag");
@@ -28,17 +28,17 @@ function updateTotals()
   {
     totalFlags += getNum(elem[i].value);
   }
-  elem = document.getElementsByClassName("totFlags");
+  elem = document.getElementsByClassName("flagsTotal");
   elem[0].innerHTML = totalFlags;
 
-  elem = document.getElementsByClassName("unlock");
+  elem = document.getElementsByClassName("border-bottom");
   for(let i = 0; i < elem.length; i++)
   {
     totalUnlocks += getNum(elem[i].value);
   }
-  elem = document.getElementsByClassName("totUnlocks");
+  elem = document.getElementsByClassName("unlocksTotal");
   elem[0].innerHTML = totalUnlocks;
 
-  elem = document.getElementsByClassName("resultTot");
+  elem = document.getElementsByClassName("results");
   elem[0].innerHTML = totalTasks + totalFlags + totalUnlocks;
 }
