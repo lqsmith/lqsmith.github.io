@@ -18,8 +18,6 @@ div
 {
   background-color: #858A49;
   text-align: center;
-  text-overflow: ellipsis;
-  overflow: clip;
 }
 
 label
