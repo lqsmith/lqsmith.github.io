@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mighty - The Card Game</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          text-align: center;
+        }
+
+        th {
+          padding: 0.4em;
+          background-color: lightGray;
+        }
+
+        td {
+            font-size: 1.1em;
+            background-color: #d0e8e4;
+        }
+
+        h2 {
+          font-size: 1.2em;
+          font-weight: bold;
+          background-color: #a9cbc9;
+          padding: 0.2em;
+          padding-left: 0.4em;
+        }
+
+        body {
+          background-color: #fecaa7;
+        }
+
+        @media screen and (orientation: portrait) {
+          #mainDiv {
+            column-count: 0;
+            column-gap: 0;
+          }
+        }
+
+        @media screen and (orientation: landscape) {
+          #mainDiv {
+            column-count: 2;
+            column-gap: 0;
+          }
+        }
+
+        @media print and (orientation: portrait) {
+          #mainDiv {
+            column-count: 0;
+            column-gap: 0;
+          }
+        }
+
+        @media print and (orientation: landscape) {
+          #mainDiv {
+            column-count: 2;
+            column-gap: 0;
+          }
+        }
+
+        .parentCard {
+          column-count: 2;
+          column-gap: 1em;
+          margin-left: 1em;
+          margin-right: 1em;
+          display: flex;
+        }
+        
+        .card {
+          page-break-inside: avoid;
+          break-inside: avoid-column;
+          margin: 1em;
+          border: 1px solid black;
+          padding: 1em;
+          padding-top: 0em;
+          background-color: #f1f1f1;
+          border-radius: 1em;
+        }
+
+        @media screen
+        {
+          .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.9);
+          }
+          
+          h2 {
+            border: 1px solid black;
+          }
+        }
+
+        .nomargin {
+            margin: 0;
+        }
+
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head>
+  <body>
+<h1>Mighty Cheat Sheet</h1>
+
+<div id="mainDiv">
+
+<div class="parentCard">
+<div class="card nomargin">
+<h2>Cards</h2>
+  <ul>
+    <li>52 cards + Joker</li>
+    <li>10 cards/player</li>
+    <li>3 cards in kitty</li>
+    <li>A, K, Q, J, & 10 each worth 1 point for a total of 20 points per hand</li>
+  </ul>
+</div>  
+
+<div class="card nomargin">
+<h2>Special Cards</h2>
+  <table>
+    <th>Trump</th>
+    <th>Mighty</th>
+    <th>Ripper</th>
+    <tr>
+      <td>&#9824;</td>
+      <td>A<span style="color:red;">&#9830;</span></td>
+      <td>3&#9827;</td>
+    </tr>
+    <tr>
+      <td>&#9827;</td>
+      <td>A&#9824;</td>
+      <td>3&#9824;</td>
+    </tr>
+    <tr>
+      <td><span style="color:red;">&#9830;</span></td>
+      <td>A&#9824;</td>
+      <td>3&#9827;</td>
+    </tr>
+    <tr>
+      <td><span style="color:red;">&#9829;</span></td>
+      <td>A&#9824;</td>
+      <td>3&#9827;</td>
+    </tr>
+  </table>
+</div>
+</div>
+
+<div class="card">
+<h2>Determining Winner of Trick</h2>
+  <ol>
+    <li>The Mighty</li>
+    <li>The Joker, unless first trick, last trick, or forced by the Ripper</li>
+    <li>Highest trump</li>
+    <li>Highest card of suit led</li>
+  </ol>
+</div>
+
+<div class="card">
+<h2>Mighty</h2>
+  <ul>
+    <li>Can be played on any trick even if you could have followed suit</li>
+    <li>If Mighty's suit is led, the Mighty is considered part of that suit</li>
+    <li>If Mighty is led, its suit counts as the led suit</li>
+  </ul>
+</div>
+
+<div class="card">
+<h2>Joker</h2>
+  <ul>
+    <li>Can be played on any trick even if you could have followed suit</li>
+    <li>If led on first or last trick, the next card played sets the led suit</li>
+    <li>If led any other time, the lead player declares the suit</li>
+  </ul>
+</div>
+
+<div class="card">
+<h2>Ripper</h2>
+  <ul>
+    <li>When led to any trick but the first, leader may optionally require the Joker to be played to that trick</li>
+    <li>The Joker must then be played unless the holder also has the Mighty, in which they have the option to play either card</li>
+    <li>When the Joker is "ripped", the Joker cannot win the trick</li>
+  </ul>
+</div>
+
+<div class="card">
+<h2>Bidding</h2>
+  <ul>
+    <li>Declarer in previous round bids first</li>
+    <li>Minimum bid is 13</li>
+    <li>Bid consists of number of points to take and trump suit or no-trump</li>
+    <li>Suits have no rank, but no-trump bid outranks trump bid of equal points </li>
+    <li>Bidding continues until all but 1 player passes</li>
+    <li>If bidding passes all the away around, dealer redeals</li>
+  </ul>
+</div>
+
+<div class="card">
+<h2>Scoring</h2>
+  <ul>
+    <li>Score for <b>made</b> bid = 2 * (Bid - 13) + (Points Taken - Bid)</li>
+    <li>Score for <b>set</b> bit = Bid - Points Taken</li>
+    <li>Declarer gets &#177; (2 * Score)</li>
+    <li>All other players get &#177; Score</li>
+    <li>Score is doubled if</li>
+    <ul>
+      <li>The bid is no-trump</li>
+      <li>The declarer announces they will play alone</li>
+      <li>Declarer team takes all 20 points</li>
+      <li>Defenders team takes at least 11 points</li>
+    </ul>
+  </ul>
+</div>
+
+<div class="card">
+<h2>Bid Winner/Declarer</h2>
+  <ol>
+    <li>Exchanges kitty</li>
+    <li>Optionally changes the trump suit</li>
+    <ul>
+      <li>If changing trump suit, must increase the bid by at least 2</li>
+      <li>If changing to no-trump, must increase the bid by at least 1</li>
+    </ul>
+    <li>Declares a partner by</li>
+    <ul>
+      <li>Calling any card (including from own hand and play alone)</li>
+      <li>Declaring winner of first trick will be the partner (declarer may win first trick and play alone)</li>
+      <li>Announcing they will play alone</li>
+    </ul>
+    <li>If the final bid is "20 no-trump", optionally requests the suit they would like their partner to lead after winning a trick</li>
+    <li>Leads to the first trick (cannot be a trump)</li>
+  </ol>
+</div>
+
+</div>
+</body>
+ 
+</html>
