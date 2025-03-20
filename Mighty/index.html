@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8" />
-    <title>Mighty - The Card Game</title>
+    <title>Mighty Rules Reference</title>
     <style>
         table, th, td {
           border: 1px solid black;
@@ -10,14 +10,17 @@
           text-align: center;
         }
 
+        span {
+          font-size: 1.3em;
+        }
+
         th {
           padding: 0.4em;
-          background-color: lightGray;
+          background-color: #B0B0B0B0;
         }
 
         td {
-            font-size: 1.1em;
-            background-color: #d0e8e4;
+            background-color: #E0E0E0;
         }
 
         h2 {
@@ -90,15 +93,92 @@
           }
         }
 
+        @media print
+        {
+          .noprint {
+            display: none;
+          }
+        }
+
         .nomargin {
             margin: 0;
         }
 
+        .wide {
+            width: 100%;
+        }
+
+        input, select {
+            box-sizing: border-box;
+            display: table-cell;
+            width: 100%;
+            border: none;
+            text-align: center;
+        }
+
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script>
+        function getNumber(x)
+        {
+            let r = parseInt(x, 10);
+            return r;
+        }
+
+        function doCalc() {
+            let b = getNumber(document.getElementById("bid").value);
+            let p = getNumber(document.getElementById("made").value);
+            let a = getNumber(document.getElementById("alone").value);
+            let t = getNumber(document.getElementById("notrump").value);
+            let m = 1;
+
+            if((b > 12) && (b < 21) && (p > -1) && (p < 21) && (a > -1) && (a < 2) && (t > -1) && (t < 2))
+            {
+                if(p == 20)
+                {
+                    m *= 2;
+                }
+
+                if(p < 10)
+                {
+                    m *= 2;
+                }
+
+                if(t == 1)
+                {
+                    m *= 2;
+                }
+
+                if(a == 1)
+                {
+                    m *= 2;
+                }
+
+
+                if(p < b)
+                {
+                    document.getElementById("dScore").innerHTML = -2 * m * (b - p);
+                    document.getElementById("pScore").innerHTML = -1 * m * (b - p);
+                    document.getElementById("oScore").innerHTML =  1 * m * (b - p);
+                }
+                else
+                {
+                    document.getElementById("dScore").innerHTML =  2 * m * ((b - 13) + (p - 13));
+                    document.getElementById("pScore").innerHTML =  1 * m * ((b - 13) + (p - 13));
+                    document.getElementById("oScore").innerHTML = -1 * m * ((b - 13) + (p - 13));
+                }
+            }
+            else
+            {
+                document.getElementById("dScore").innerHTML = "error";
+                document.getElementById("pScore").innerHTML = "error";
+                document.getElementById("oScore").innerHTML = "error";
+            }
+        }
+    </script>
   </head>
   <body>
-<h1>Mighty Cheat Sheet</h1>
+<h1>Mighty The Card Game - Rules Reference</h1>
 
 <div id="mainDiv">
 
@@ -120,24 +200,24 @@
     <th>Mighty</th>
     <th>Ripper</th>
     <tr>
-      <td>&#9824;</td>
+      <td><span>&#9824;</span></td>
       <td>A<span style="color:red;">&#9830;</span></td>
-      <td>3&#9827;</td>
+      <td>3<span>&#9827;</span></td>
     </tr>
     <tr>
-      <td>&#9827;</td>
-      <td>A&#9824;</td>
-      <td>3&#9824;</td>
+      <td><span>&#9827;</span></td>
+      <td>A<span>&#9824;</span></td>
+      <td>3<span>&#9824;</span></td>
     </tr>
     <tr>
       <td><span style="color:red;">&#9830;</span></td>
-      <td>A&#9824;</td>
-      <td>3&#9827;</td>
+      <td>A<span>&#9824;</span></td>
+      <td>3<span>&#9827;</span></td>
     </tr>
     <tr>
       <td><span style="color:red;">&#9829;</span></td>
-      <td>A&#9824;</td>
-      <td>3&#9827;</td>
+      <td>A<span>&#9824;</span></td>
+      <td>3<span>&#9827;</span></td>
     </tr>
   </table>
 </div>
@@ -193,23 +273,6 @@
 </div>
 
 <div class="card">
-<h2>Scoring</h2>
-  <ul>
-    <li>Score for <b>made</b> bid = 2 * (Bid - 13) + (Points Taken - Bid)</li>
-    <li>Score for <b>set</b> bit = Bid - Points Taken</li>
-    <li>Declarer gets &#177; (2 * Score)</li>
-    <li>All other players get &#177; Score</li>
-    <li>Score is doubled if</li>
-    <ul>
-      <li>The bid is no-trump</li>
-      <li>The declarer announces they will play alone</li>
-      <li>Declarer team takes all 20 points</li>
-      <li>Defenders team takes at least 11 points</li>
-    </ul>
-  </ul>
-</div>
-
-<div class="card">
 <h2>Bid Winner/Declarer</h2>
   <ol>
     <li>Exchanges kitty</li>
@@ -227,6 +290,55 @@
     <li>If the final bid is "20 no-trump", optionally requests the suit they would like their partner to lead after winning a trick</li>
     <li>Leads to the first trick (cannot be a trump)</li>
   </ol>
+</div>
+
+<div class="card">
+<h2>Scoring</h2>
+  <ul>
+    <li>Score for <b>made</b> bid = 2 * (Bid - 13) + (Points Taken - Bid)</li>
+    <li>Score for <b>set</b> bit = Bid - Points Taken</li>
+    <li>Declarer gets &#177; (2 * Score)</li>
+    <li>All other players get &#177; Score</li>
+    <li>Score is doubled if</li>
+    <ul>
+      <li>The bid is no-trump</li>
+      <li>The declarer announces they will play alone</li>
+      <li>Declarer team takes all 20 points</li>
+      <li>Defenders team takes at least 11 points</li>
+    </ul>
+  </ul>
+</div>
+
+<div class="card noprint">
+<h2>Score Calculator</h2>
+
+  <table class="wide">
+    <tr>
+      <td>Points Bid</td>
+      <td>Points Made</td>
+      <td>No Trump?</td>
+      <td>Going Alone?</td>
+    </tr>
+    <tr>
+      <td><input type="number" id="bid" max="20" min="13" value="13" oninput="doCalc()"></td>
+      <td><input type="number" id="made" max="20" min="0" value="0" oninput="doCalc()"></td>
+      <td><select id="notrump" oninput="doCalc()"><option value="0">No</option><option value="1">Yes</option></select></td>
+      <td><select id="alone" oninput="doCalc()"><option value="0">No</option><option value="1">Yes</option></select></td>
+    </tr>
+  </table>
+  <p></p>
+  <table class="wide">
+    <tr>
+      <td>Declarer's Score</td>
+      <td>Partner's Score</td>
+      <td>Defenders' Score</td>
+    </tr>
+    <tr>
+      <td id="dScore">0</td>
+      <td id="pScore">0</td>
+      <td id="oScore">0</td>
+    </tr>
+  </table>
 </div>
 
 </div>
