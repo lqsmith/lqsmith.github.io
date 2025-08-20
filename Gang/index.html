@@ -1,1 +1,91 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random String Display</title>
+</head>
+<body>
+    <h1>
+    <p id="randomStringDisplay">--none--</p>
+    <button onclick="displayRandomSpecialist()">Get Specialist</button>
+    <button onclick="displayRandomChallenge()">Get Challenge</button>
+  </h1>
+    <script>
+        let sIdx = -1;
+        let specialist = [
+                "One of you shows one other player one of your pocket cards.",
+                "One of you shares with everyone the rank (e.g., Royal Flush ) of your current hand.",
+                "After dealing pocket cards, each of you shares with everyone how many face cards (J, Q, K) you have.",
+                "Choose a card value (2 to A). One of you shares with everyone how many pocket cards they have of this value.",
+                "One of you draws one more pocket card from the deck, then discards one of your pocket cards.",
+                "After dealing pocket cards, each of you gives one of your pocket cards to the player left of you.",
+                "One of you takes this card, replacing one of your pocket cards. This card is aJ that does not belong to any suit.",
+                "After dealing pocket cards,each of you shares with everyone the sum of your card values. J, Q, K have a value of 10. A has a value of 11",
+                "After dealing pocket cards, shuffle and redistribute all of the pocket cards.",
+                "One of you gains the following ability: Your hand beats every other hand of the same rank."
+            ];
+
+        let cIdx = -1;
+        let challenge = [
+                "After dealing pocket cards, do not distribute white chips.",
+                "Flip the 1-star chips for Rounds 1, 2, and 3 to the dark side. These chips cannot change owners once distributed.",
+                "If any of the Flop cards (in Round 2) is a J, Q, or K, the player with the white 1-star chip discards their pocket cards and draws new ones.",
+                "Before the final hand is revealed in the Showdown: All others collectively guess one of the hand’s pocket cards (2 to A). If incorrect, this heist fails.",
+                "After the Turn (Round 3), do not distribute orange chips.",
+                "Flip the highest-value chips for Rounds 1, 2, and 3 to the dark side. These chips cannot change owners once distributed.",
+                "If none of the Flop cards (in Round 2) is a J, Q, or K, the player with the highest-value white chip discards their pocket cards and draws new ones.",
+                "At the beginning of each round, discard all previous chips.",
+                "Before the final hand is revealed in the Showdown: All others collectively guess the hand’s ranking (e.g., “Royal Flush ). If incorrect, this heist fails.",
+                "Each player receives three pocket cards instead of two."
+            ];
+
+          function shuffle(array) 
+          {
+            let currentIndex = array.length;
+
+            // While there remain elements to shuffle...
+            while (currentIndex != 0) 
+            {
+
+              // Pick a remaining element...
+              let randomIndex = Math.floor(Math.random() * currentIndex);
+              currentIndex--;
+
+              // And swap it with the current element.
+              [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+          }
+
+        function displayRandomSpecialist() {
+
+            if(sIdx == -1 || sIdx == 9)
+            {
+              shuffle(specialist);
+              sIdx = -1;
+            }
+
+            sIdx++;
+
+            const randomString1 = specialist[sIdx];
+            document.getElementById("randomStringDisplay").textContent = randomString1;
+        }
+
+        function displayRandomChallenge() {
+
+            if(cIdx == -1 || cIdx == 9)
+            {
+              shuffle(challenge);
+              cIdx = -1;
+            }
+
+            cIdx++;
+
+            const randomString2 = challenge[cIdx];
+            document.getElementById("randomStringDisplay").textContent = randomString2;
+        }
+
+    </script>
+</body>
+</html>
