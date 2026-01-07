@@ -252,17 +252,53 @@
       const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
       node.appendChild(title)
       const ul = document.createElement('ul'); ul.className='selection-list'
-      t.extras.slice(0,6).forEach((it,idx)=>{
-        const li = document.createElement('li'); li.textContent = `${idx+1}. ${substitutePlaceholders(it)}`
+      // create placeholder list items
+      const items = t.extras.slice(0,6)
+      items.forEach((it,idx)=>{
+        const li = document.createElement('li')
         ul.appendChild(li)
       })
       node.appendChild(ul)
+      // single roll to choose option; use same roll for %N minute calculations
       const sel = rollDie()
       const chosen = Math.max(1, Math.min(6, sel))
-      const targetLi = ul.children[chosen-1]
-      if (targetLi) targetLi.classList.add('highlight')
-//      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
-//      node.appendChild(note)
+
+      // populate list item texts, substituting placeholders
+      for (let i=0;i<ul.children.length;i++){
+        const li = ul.children[i]
+        const raw = items[i] || ''
+        const sel2 = rollDie()
+        const sel3 = rollDie()
+        // basic substitutions
+        let txt = String(raw).replace(/%M/g, participantM).replace(/%F/g, participantF).replace(/%D/g, String(sel2))
+        // If this item contains a %T<number> token, treat it as a display replacement
+        // and, if it's the chosen item, mark the node to trigger a selection->GOTO.
+        const tMatch = raw.match(/%T(\d+)/)
+        if (tMatch){
+          const targetNum = parseInt(tMatch[1],10)
+          const targetIndex = ((targetNum-1) % tasks.length + tasks.length) % tasks.length
+          const targetTitle = (tasks[targetIndex] && tasks[targetIndex].title) ? tasks[targetIndex].title : `Task ${targetNum}`
+          txt = txt.replace(/%T\d+/, targetTitle)
+          if (i === chosen-1) node.dataset.selectionGoto = String(targetIndex)
+        }
+        // Now expand numeric multipliers (e.g. %3 -> 3 * sel3)
+        txt = txt.replace(/%(\d+)/g, (m,n)=> String(parseInt(n,10) * sel3))
+        li.textContent = `${i+1}. ${txt}`
+        if(i === chosen-1)
+        {
+          li.classList.add('highlight')
+          // Attach timer only if the chosen raw text has a numeric %N and is NOT a %T token
+          if (!raw.match(/%T(\d+)/)){
+            const m = raw.match(/%(\d+)/)
+            if (m){
+              const minutes = parseInt(m[1],10) * sel3
+              attachTimer(node, null, false, minutes * 60)
+            }
+          }
+        }
+      }
+      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
+      node.appendChild(note)
     } else {
       node.textContent = 'Unknown task type: '+t.type
     }
@@ -328,6 +364,45 @@
     })
   }
 
+  // Follow selection-initiated GOTO or GOTO tile chains starting from the currentIndex.
+  // This will pause briefly when a selection indicates a GOTO, slide to the target,
+  // then follow any GOTO tiles found at the destination (animating each hop).
+  async function followGotoChain(container){
+    const n = tasks.length
+    if (!n) return
+    const pauseOnGotoMs = 1500
+    // If the displayed node indicates a selection-initiated GOTO, follow it first
+    const disp = container.querySelector('.panel-child')
+    if (disp && disp.dataset && disp.dataset.selectionGoto){
+      const targetIndex = parseInt(disp.dataset.selectionGoto,10)
+      if (!isNaN(targetIndex) && targetIndex !== currentIndex){
+        await new Promise(r=>setTimeout(r,pauseOnGotoMs))
+        const extraSteps = (targetIndex - currentIndex + n) % n
+        if (extraSteps > 0){
+          await performTrackSlide(container, currentIndex, extraSteps)
+          currentIndex = targetIndex
+        }
+      }
+    }
+
+    // Now follow any GOTO tiles starting from currentIndex
+    let stepsFollowed = 0
+    while (stepsFollowed < n){
+      const gtask = tasks[currentIndex]
+      if (!gtask || gtask.type !== 'GOTO') break
+      const raw = (gtask.extras && gtask.extras[0]) ? gtask.extras[0] : null
+      const targetNum = raw !== null ? parseInt(raw,10) : NaN
+      if (isNaN(targetNum)) break
+      const targetIndex = ((targetNum-1) % n + n) % n
+      const extraSteps = (targetIndex - currentIndex + n) % n
+      if (extraSteps === 0) break
+      await performTrackSlide(container, currentIndex, extraSteps)
+      currentIndex = targetIndex
+      stepsFollowed++
+      await new Promise(r=>setTimeout(r,300))
+    }
+  }
+
   function renderCurrentTask(container){
     const t = tasks[currentIndex]
     if (!t) {
@@ -370,17 +445,46 @@
       const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
       newNode.appendChild(title)
       const ul = document.createElement('ul'); ul.className='selection-list'
-      t.extras.slice(0,6).forEach((it,idx)=>{
-        const li = document.createElement('li'); li.textContent = `${idx+1}. ${substitutePlaceholders(it)}`
-        ul.appendChild(li)
-      })
+      const items = t.extras.slice(0,6)
+      items.forEach(()=>{ const li = document.createElement('li'); ul.appendChild(li) })
       newNode.appendChild(ul)
       const sel = rollDie()
       const chosen = Math.max(1, Math.min(6, sel))
-      const targetLi = ul.children[chosen-1]
-      if (targetLi) targetLi.classList.add('highlight')
-      //const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
-      //newNode.appendChild(note)
+      // populate list entries; for chosen item compute %N -> minutes using sel and show timer if present
+      for (let i=0;i<ul.children.length;i++){
+        const li = ul.children[i]
+        const raw = items[i] || ''
+        const sel2 = rollDie()
+        const sel3 = rollDie()
+        // basic substitutions
+        let txt = String(raw).replace(/%M/g, participantM).replace(/%F/g, participantF).replace(/%D/g, String(sel2))
+        // If this item contains a %T<number> token, replace it with the target title
+        // for display. If it's the chosen item, also mark dataset.selectionGoto.
+        const tMatch = raw.match(/%T(\d+)/)
+        if (tMatch){
+          const targetNum = parseInt(tMatch[1],10)
+          const targetIndex = ((targetNum-1) % tasks.length + tasks.length) % tasks.length
+          const targetTitle = (tasks[targetIndex] && tasks[targetIndex].title) ? tasks[targetIndex].title : `Task ${targetNum}`
+          txt = txt.replace(/%T\d+/, targetTitle)
+          if (i === chosen-1) newNode.dataset.selectionGoto = String(targetIndex)
+        }
+        // Now expand numeric multipliers (e.g. %3 -> 3 * sel3)
+        txt = txt.replace(/%(\d+)/g,(m,n)=> String(parseInt(n,10) * sel3))
+        li.textContent = `${i+1}. ${txt}`
+        if (i === chosen-1){
+          li.classList.add('highlight')
+          // Attach timer only if chosen raw contains a numeric %N and NOT a %T token
+          if (!raw.match(/%T(\d+)/)){
+            const m = raw.match(/%(\d+)/)
+            if (m){
+              const minutes = parseInt(m[1],10) * sel3
+              attachTimer(newNode, null, false, minutes * 60)
+            }
+          }
+        }
+      }
+      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
+      newNode.appendChild(note)
     } else {
       newNode.textContent = 'Unknown task type: '+t.type
     }
@@ -515,31 +619,8 @@
       // increment only the current final destination (will be updated if GOTOs follow)
       let finalIndex = currentIndex
       let finalTask = tasks[finalIndex]
-      // increment visit for the landed task only after resolving GOTO chain final destination
-      const pauseOnGotoMs = 1500
-      if (finalTask && finalTask.type === 'GOTO'){
-        // pause on the GOTO tile
-        await new Promise(r=>setTimeout(r,pauseOnGotoMs))
-        // follow chain, animating continuous slides for each hop
-        let stepsFollowed = 0
-        while (stepsFollowed < n){
-          const gtask = tasks[finalIndex]
-          if (!gtask || gtask.type !== 'GOTO') break
-          const raw = (gtask.extras && gtask.extras[0]) ? gtask.extras[0] : null
-          const targetNum = raw !== null ? parseInt(raw,10) : NaN
-          if (isNaN(targetNum)) break
-          const targetIndex = ((targetNum-1) % n + n) % n
-          const extraSteps = (targetIndex - finalIndex + n) % n
-          if (extraSteps === 0) break
-          // animate the extra steps continuously
-          await performTrackSlide(container, finalIndex, extraSteps)
-          finalIndex = targetIndex
-          currentIndex = finalIndex
-          stepsFollowed++
-          // small pause before following next GOTO
-          await new Promise(r=>setTimeout(r,300))
-        }
-      }
+      // Resolve any selection->GOTO or GOTO tile chains starting from currentIndex
+      await followGotoChain(container)
       // final destination is currentIndex / finalIndex
       tasks[currentIndex].visits = (tasks[currentIndex].visits||0)+1
       // ensure the displayed node is the current one (build/render if needed)

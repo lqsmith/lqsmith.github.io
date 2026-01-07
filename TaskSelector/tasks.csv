@@ -2,7 +2,23 @@
 Welcome,#ffd966,BASIC,Welcome to the Task Rotator! %M and %F, ,,,,,,
 Walk,#a4c2f4,VISIT_COUNT,Visit walk %2,M,,,,,,
 Stretch,#f4cccc,VISIT_TIME,Stretch for %1 minutes,F,,,,,,
-Choice,#c9daf8,SELECTION,Choose an action,M,Do 1 push-up,Do 5 jumping jacks,Take a sip of water,Sing a line of a song,Do a silly pose,Tell a joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %D push-up,Do %D jumping jacks,Take a %D sip of water,Sing a %D line of a song,Do a %D silly pose,Tell a %D joke
 CountIt,#b6d7a8,COUNT,You rolled %D times!,F,,,,,,
 MinuteTimer,#93c47d,TIME,Hold plank for %D minutes,M,,,,,,
 GoToOne,#f9cb9c,GOTO,Go to task 1,M,1,,,,,
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
