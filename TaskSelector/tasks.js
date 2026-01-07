@@ -1,685 +1,596 @@
-// Task Selector main script
-(function(){
-  const BOARD_SIZE = 11;
-  const PERIMETER_COUNT = (BOARD_SIZE*4) - 4; // 40 for 11x11
-  const board = document.getElementById('board');
-  const centerTitle = document.getElementById('centerTitle');
-  const centerActivity = document.getElementById('centerActivity');
-  const csvInput = document.getElementById('csvFile');
-  const selectBtn = document.getElementById('selectTask');
-  const dieA = document.getElementById('dieA');
-  const dieB = document.getElementById('dieB');
+// Task Rotator main JS
+(() => {
+  const main = document.getElementById('mainarea')
+  const statusLeft = document.getElementById('status-left')
+  const statusCenter = document.getElementById('status-center')
+  const statusRight = document.getElementById('status-right')
+  const csvInput = document.getElementById('csvfile')
 
-  let cells = []; // length PERIMETER_COUNT
-  let visits = new Array(PERIMETER_COUNT).fill(0);
-  let currentIndex = 0; // start top-left visited
+  let tasks = []
+  let currentIndex = 0
+  let participantM = ''
+  let participantF = ''
+  let maxVisits = 5
+  let animating = false
+  let lastCsvName = ''
 
-  function idxToCoord(i){
-    const n = BOARD_SIZE;
-    if(i < n) return {r:0, c:i}; // top row
-    i -= n;
-    if(i < n-1) return {r: 1 + i, c: n-1}; // right col (excluding top)
-    i -= (n-1);
-    if(i < n-1) return {r: n-1, c: n-2 - i}; // bottom row (excluding bottom-right)
-    i -= (n-1);
-    return {r: n-2 - i, c:0}; // left col (excluding top and bottom)
-  }
-
-  function createPerimeterDOM(){
-    board.innerHTML = '';
-    // create empty placeholders for full grid so center display aligns
-    for(let r=0;r<BOARD_SIZE;r++){
-      for(let c=0;c<BOARD_SIZE;c++){
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.style.gridRowStart = r+1;
-        cell.style.gridColumnStart = c+1;
-        // check if perimeter
-        if(isPerimeter(r,c)){
-          const idx = coordToIdx(r,c);
-          cell.dataset.idx = idx;
-          // title bar
-          const title = document.createElement('div');
-          title.className = 'title';
-          title.textContent = '';
-          cell.appendChild(title);
-          const content = document.createElement('div');
-          content.className = 'content';
-          const houses = document.createElement('div');
-          houses.className = 'houses';
-          houses.textContent = '';
-          content.appendChild(houses);
-          cell.appendChild(content);
-          cell.addEventListener('click', ()=>{ moveToIndex(parseInt(cell.dataset.idx)); });
-        } else {
-          cell.classList.add('hidden-cell');
-        }
-        board.appendChild(cell);
-      }
+  // Render a die as inline SVG. If `value` is falsy, render an empty die face.
+  function dieSVG(value){
+    const size = 64
+    const r = 6
+    const positions = {
+      1: [[0.5,0.5]],
+      2: [[0.25,0.25],[0.75,0.75]],
+      3: [[0.25,0.25],[0.5,0.5],[0.75,0.75]],
+      4: [[0.25,0.25],[0.25,0.75],[0.75,0.25],[0.75,0.75]],
+      5: [[0.25,0.25],[0.25,0.75],[0.5,0.5],[0.75,0.25],[0.75,0.75]],
+      6: [[0.25,0.2],[0.25,0.5],[0.25,0.8],[0.75,0.2],[0.75,0.5],[0.75,0.8]]
     }
-  }
-
-  function isPerimeter(r,c){
-    const n=BOARD_SIZE;
-    return r===0 || r===n-1 || c===0 || c===n-1;
-  }
-
-  function coordToIdx(r,c){
-    const n=BOARD_SIZE;
-    if(r===0) return c;
-    if(c===n-1) return (n) + (r-1);
-    if(r===n-1) return (n) + (n-1) + (n-2 - c);
-    // left col
-    return (n) + (n-1) + (n-1) + (n-2 - r);
-  }
-
-  function renderCells(){
-    const cellDivs = board.querySelectorAll('.cell');
-    cellDivs.forEach(div => {
-      if(!div.dataset.idx) return;
-      const idx = parseInt(div.dataset.idx);
-      const data = cells[idx] || {};
-      const titleDiv = div.querySelector('.title');
-      titleDiv.textContent = data.title || `Cell ${idx+1}`;
-      const bg = data.color || '#666';
-      titleDiv.style.background = bg;
-      // set contrasting text color based on title bar background
-      try{ titleDiv.style.color = getContrastColor(bg); } catch(e){ titleDiv.style.color = '#fff'; }
-      const houses = div.querySelector('.houses');
-      // only show visit count for times_per_visit and minutes_per_visit cells
-      if((data.type === 'times_per_visit' || data.type === 'minutes_per_visit') && visits[idx] > 0){
-        houses.textContent = String(visits[idx]);
-      } else {
-        houses.textContent = '';
-      }
-      div.classList.remove('highlight');
-      if(idx === currentIndex) div.classList.add('highlight');
-    });
-  }
-
-  function repeatIcon(icon, n){
-    if(n<=0) return '';
-    // cap icons for display based on the visit cap input (default 10)
-    const cap = getVisitCap();
-    const show = Math.min(n, cap);
-    return icon.repeat(show);
-  }
-
-  function getVisitCap(){
-    let cap = 10;
-    try{
-      const el = document.getElementById('visitCap');
-      if(el){
-        const v = parseInt(el.value, 10);
-        if(!isNaN(v) && v > 0) cap = v;
-      }
-    }catch(e){}
-    return cap;
-  }
-
-  function escapeHtml(str){
-    if(str == null) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  }
-
-  function getContrastColor(cssColor){
-    // Accepts hex (#rgb or #rrggbb), rgb(...) or named color.
-    // Returns '#000' or '#fff' for best contrast using YIQ formula.
-    function rgbFromCss(c){
-      c = (c||'').trim();
-      if(!c) return null;
-      if(c[0] === '#'){
-        // expand shorthand
-        if(c.length === 4){
-          const r = c[1]; const g = c[2]; const b = c[3];
-          c = '#' + r + r + g + g + b + b;
-        }
-        const bigint = parseInt(c.slice(1),16);
-        if(isNaN(bigint)) return null;
-        return {r: (bigint>>16)&255, g: (bigint>>8)&255, b: bigint&255};
-      }
-      if(c.startsWith('rgb')){
-        const vals = c.replace(/[^0-9,]/g,'').split(',').map(v=>parseInt(v.trim()));
-        if(vals.length>=3) return {r:vals[0], g:vals[1], b:vals[2]};
-      }
-      // fallback: attempt to compute via temporary element for named colors
-      try{
-        const el = document.createElement('div');
-        el.style.display = 'none';
-        el.style.color = c;
-        document.body.appendChild(el);
-        const cs = getComputedStyle(el).color;
-        document.body.removeChild(el);
-        if(cs.startsWith('rgb')){
-          const vals = cs.replace(/[^0-9,]/g,'').split(',').map(v=>parseInt(v.trim()));
-          if(vals.length>=3) return {r:vals[0], g:vals[1], b:vals[2]};
-        }
-      }catch(e){ /* ignore */ }
-      return null;
+    if (!value) {
+      return `<svg viewBox="0 0 64 64" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="60" height="60" rx="8" fill="white" stroke="#aaa"/></svg>`
     }
-
-    const rgb = rgbFromCss(cssColor) || {r:107,g:140,b:255};
-    const yiq = ((rgb.r*299) + (rgb.g*587) + (rgb.b*114)) / 1000;
-    return (yiq >= 128) ? '#000' : '#fff';
+    const pts = positions[value] || positions[1]
+    const circles = pts.map(p => `<circle cx="${Math.round(p[0]*size)}" cy="${Math.round(p[1]*size)}" r="${r}" fill="#111"/>`).join('')
+    return `<svg viewBox="0 0 64 64" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="60" height="60" rx="8" fill="white" stroke="#aaa"/>${circles}</svg>`
   }
 
-  function moveToIndex(newIdx){
-    // immediate move without animation
-    currentIndex = newIdx % PERIMETER_COUNT;
-    visits[currentIndex]++;
-    renderCells();
-    performCell(cells[currentIndex], currentIndex);
+  function renderDie(el, value){
+    el.innerHTML = dieSVG(value)
+    el.setAttribute('role','img')
+    el.setAttribute('aria-label', value ? `Die ${value}` : 'Die')
   }
 
-  async function performCell(cell, idx){
-    const visitsCount = visits[idx];
-    // stop any running timer when changing cells (hide timer on cell change)
-    stopTimer(true);
-    // type handling
-    // types: basic, times_per_visit, minutes_per_visit, six_choice_die, single_times_die, single_minutes_die, move_to
-    const type = (cell && cell.type) || 'basic';
-    let activityText = '';
-    // base value for %T substitutions (number of times or minutes)
-    let tBase = undefined;
-    let sixChoice = null;
-    let sixAlts = null;
-    if(type === 'basic'){
-      activityText = cell.activity || 'Do: ' + (cell.title||'Task');
-    } else if(type === 'times_per_visit'){
-      activityText = `${cell.activity || 'Do activity'}`;
-      tBase = visitsCount;
-    } else if(type === 'minutes_per_visit'){
-      activityText = `${cell.activity || 'Do activity'}`;
-      tBase = visitsCount;
-    } else if(type === 'six_choice_die'){
-      const choice = rollDie(6);
-      sixChoice = choice; // 1-based
-      sixAlts = cell.alts || [];
-      activityText = cell.activity || 'Choose an option';
-    } else if(type === 'single_times_die'){
-      const n = rollDie(6);
-      activityText = `${cell.activity || 'Do activity'}`;
-      tBase = n;
-    } else if(type === 'single_minutes_die'){
-      const n = rollDie(6);
-      activityText = `${cell.activity || 'Do activity'}`;
-      tBase = n;
-    } else if(type === 'move_to'){
-      activityText = `${cell.activity || 'Move to another cell'}`;
-      // if cell.target defined, jump to it after a short pause
-      if(typeof cell.target === 'number'){
-        setTimeout(()=>{
-          animateJumpTo(cell.target);
-        }, 700);
-      }
+  function showConfigView() {
+    statusLeft.innerHTML = ''
+    statusCenter.innerHTML = ''
+    statusRight.innerHTML = ''
+    main.innerHTML = ''
+    const panel = document.createElement('div')
+    panel.className = 'panel'
+
+    const html = `
+      <div class="config">
+        <div class="config-row"><label class="label">CSV Tasks File</label>
+          <button id="chooseCsv" class="btn">Choose CSV File</button>
+          <span id="csvname" style="margin-left:8px;color:#666"></span>
+        </div>
+        <div class="config-row"><label class="label">Participant 1 Name</label>
+          <input id="p1" type="text" placeholder="Participant 1"></div>
+        <div class="config-row"><label class="label">Participant 2 Name</label>
+          <input id="p2" type="text" placeholder="Participant 2"></div>
+        <div class="config-row"><label class="label">Max visits per VISIT task</label>
+          <input id="maxv" type="number" min="1" value="5"></div>
+        <div class="config-row"><button id="beginBtn" class="btn">Begin</button></div>
+      </div>`
+
+    panel.innerHTML = html
+    main.appendChild(panel)
+
+    document.getElementById('chooseCsv').addEventListener('click', ()=> csvInput.click())
+    // avoid attaching multiple listeners if config view is shown repeatedly
+    try{ csvInput.removeEventListener('change', handleCSVSelected) }catch(e){}
+    csvInput.addEventListener('change', handleCSVSelected)
+    // show previously selected CSV name so user doesn't need to reselect
+    const csvnameEl = document.getElementById('csvname')
+    if (csvnameEl) csvnameEl.textContent = lastCsvName || (tasks.length ? 'Loaded' : '')
+    document.getElementById('beginBtn').addEventListener('click', () => {
+      participantM = document.getElementById('p1').value || 'Player 1'
+      participantF = document.getElementById('p2').value || 'Player 2'
+      maxVisits = parseInt(document.getElementById('maxv').value,10) || 5
+      if (!tasks.length) { alert('Please choose a CSV tasks file first.'); return }
+      currentIndex = 0
+      renderTaskView()
+    })
+  }
+
+  function handleCSVSelected(e){
+    const f = e.target.files[0]
+    if (!f) return
+    lastCsvName = f.name
+    const csvnameEl = document.getElementById('csvname')
+    if (csvnameEl) csvnameEl.textContent = f.name
+    const reader = new FileReader()
+    reader.onload = ()=>{
+      tasks = parseCSV(reader.result)
+      // initialize visit counts
+      tasks.forEach(t=>t.visits=0)
     }
-    // helper: substitute %T and %T<number> tokens with the appropriate count
-    // substitute %T tokens and also return the last calculated numeric %T value
-    function substituteT(s){
-      if(!s || typeof s !== 'string') return {text: s || '', lastT: undefined};
-      // fallback base when undefined
-      const base = (typeof tBase === 'number') ? tBase : visitsCount;
-      const V = visitsCount;
-      const N = (typeof tBase === 'number') ? tBase : 0; // die result or base
-      let lastT = undefined;
-
-      // safe evaluator for simple arithmetic expressions using variables T, V, N
-      function safeEval(expr){
-        if(!expr || typeof expr !== 'string') return null;
-        // allow digits, whitespace, T, V, N, parentheses and arithmetic operators
-        if(!/^[0-9\sTVNtvn+\-*/().]+$/.test(expr)) return null;
-        try{
-          // eslint-disable-next-line no-new-func
-          const fn = new Function('T','V','N', 'return (' + expr + ')');
-          const res = fn(base, V, N);
-          if(typeof res !== 'number' || !isFinite(res)) return null;
-          return Math.round(res);
-        }catch(e){
-          return null;
-        }
-      }
-
-      const replaced = s.replace(/%T(?:\(([^)]+)\)|(\d+))?/g, (m, exprGroup, numGroup) => {
-        let val = undefined;
-        if(exprGroup){
-          const ev = safeEval(exprGroup);
-          val = (ev === null) ? base : ev;
-        } else if(numGroup){
-          const mul = parseInt(numGroup,10) || 1;
-          val = base * mul;
-        } else {
-          val = base;
-        }
-        lastT = val;
-        return String(val);
-      });
-
-      return {text: replaced, lastT: lastT};
-    }
-
-    // substitute player names (%M -> player A, %F -> player B) in title and activity
-    function getPlayerNames(){
-      const a = (document.getElementById('playerA') && document.getElementById('playerA').value) || 'Player A';
-      const b = (document.getElementById('playerB') && document.getElementById('playerB').value) || 'Player B';
-      return {A: a, B: b};
-    }
-    function substituteNames(s){
-      if(!s || typeof s !== 'string') return s || '';
-      const p = getPlayerNames();
-      return s.replace(/%M/g, p.A).replace(/%F/g, p.B);
-    }
-
-    // First substitute %T, then substitute names so names can appear in expansions
-    const rawTitle = cell && cell.title ? cell.title : `Cell ${idx+1}`;
-    const titleResult = substituteT(rawTitle);
-    const activityResult = substituteT(activityText);
-    const titleStr = titleResult.text;
-    const activityStr = activityResult.text;
-    const lastT = (typeof activityResult.lastT === 'number') ? activityResult.lastT : ((typeof titleResult.lastT === 'number') ? titleResult.lastT : undefined);
-    centerTitle.textContent = substituteNames(titleStr);
-    // For six_choice_die show a numbered list with the chosen item highlighted
-    if(type === 'six_choice_die'){
-      const listItems = [];
-      for(let i=0;i<6;i++){
-        const rawAlt = sixAlts[i] || `Option ${i+1}`;
-        const altT = substituteT(rawAlt).text;
-        const altWithNames = substituteNames(altT);
-        const isSelected = (sixChoice === (i+1));
-        const li = `<li class="choice-item ${isSelected? 'choice-selected':''}">${escapeHtml(altWithNames)}</li>`;
-        listItems.push(li);
-      }
-      const html = `<ol class="choice-list">${listItems.join('')}</ol>`;
-      centerActivity.innerHTML = html;
-    } else {
-      centerActivity.textContent = substituteNames(activityStr);
-    }
-    // show house icons across the top of the center area for each visit
-    const centerHouses = document.getElementById('centerHouses');
-    if(centerHouses){
-      const cellType = (cell && cell.type) || '';
-      if((cellType === 'times_per_visit' || cellType === 'minutes_per_visit') && visitsCount > 0){
-        centerHouses.textContent = repeatIcon('🏠', visitsCount);
-      } else {
-        centerHouses.textContent = '';
-      }
-    }
-    // determine timer start based on most recent %T calculation (activity then title), fall back to tBase or visits
-    const effectiveT = (typeof lastT === 'number') ? lastT : (typeof tBase === 'number' ? tBase : visitsCount);
-    if(type === 'minutes_per_visit' || type === 'single_minutes_die'){
-      showTimer(effectiveT * 60);
-    }
-
-    // check cap and show completion overlay if visits reached cap (for relevant types)
-    const cap = getVisitCap();
-    if((cell && (cell.type === 'times_per_visit' || cell.type === 'minutes_per_visit')) && visitsCount >= cap){
-      const owner = cell.owner || '';
-      showCompletionOverlay(owner);
-    }
-  }
-
-  // Timer state
-  let timerInterval = null;
-  let timerRemaining = 0; // seconds
-  let timerInitial = 0;
-
-  function formatTimeSec(sec){
-    sec = Math.max(0, Math.floor(sec));
-    const m = Math.floor(sec/60).toString().padStart(2,'0');
-    const s = (sec%60).toString().padStart(2,'0');
-    return `${m}:${s}`;
-  }
-
-  function showTimer(seconds){
-    const wrap = document.getElementById('timerWrap');
-    const disp = document.getElementById('timerDisplay');
-    if(!wrap || !disp) return;
-    timerInitial = Math.max(0, Math.floor(seconds));
-    timerRemaining = timerInitial;
-    disp.textContent = formatTimeSec(timerRemaining);
-    wrap.style.display = '';
-    // set button states
-    document.getElementById('timerStart').disabled = false;
-    document.getElementById('timerPause').disabled = true;
-    document.getElementById('timerStop').disabled = false;
-  }
-
-  function updateTimerDisplay(){
-    const disp = document.getElementById('timerDisplay');
-    if(!disp) return;
-    disp.textContent = formatTimeSec(timerRemaining);
-  }
-
-  function startTimer(){
-    if(timerInterval) return; // already running
-    if(timerRemaining <= 0) timerRemaining = timerInitial;
-    document.getElementById('timerStart').disabled = true;
-    document.getElementById('timerPause').disabled = false;
-    document.getElementById('timerStop').disabled = false;
-    timerInterval = setInterval(()=>{
-      timerRemaining -= 1;
-      updateTimerDisplay();
-      if(timerRemaining <= 0){
-        // timer expired: stop ticking, keep timer visible, flash and play alert
-        if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-        timerRemaining = 0;
-        updateTimerDisplay();
-        // visual flash
-        const disp = document.getElementById('timerDisplay');
-        if(disp){
-          disp.classList.remove('timer-flash');
-          // trigger reflow to restart animation
-          void disp.offsetWidth;
-          disp.classList.add('timer-flash');
-        }
-        // audible alert
-        playBeep();
-        // adjust buttons
-        document.getElementById('timerStart').disabled = true;
-        document.getElementById('timerPause').disabled = true;
-        document.getElementById('timerStop').disabled = false;
-      }
-    }, 1000);
-  }
-
-  function pauseTimer(){
-    if(!timerInterval) return;
-    clearInterval(timerInterval);
-    timerInterval = null;
-    document.getElementById('timerStart').disabled = false;
-    document.getElementById('timerPause').disabled = true;
-  }
-
-  function stopTimer(hide = false){
-    if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-    // Do not reset remaining/initial unless explicitly hiding (cell change)
-    if(hide){
-      timerRemaining = 0;
-      timerInitial = 0;
-    }
-    const wrap = document.getElementById('timerWrap');
-    if(wrap && hide) wrap.style.display = 'none';
-    // update buttons
-    const startBtn = document.getElementById('timerStart');
-    const pauseBtn = document.getElementById('timerPause');
-    if(startBtn) startBtn.disabled = false;
-    if(pauseBtn) pauseBtn.disabled = true;
-  }
-
-  function resetTimer(){
-    // reset to initial value and pause (do not hide)
-    timerRemaining = timerInitial;
-    updateTimerDisplay();
-    if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-    document.getElementById('timerStart').disabled = false;
-    document.getElementById('timerPause').disabled = true;
-  }
-
-  function playBeep(){
-    try{
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = 'sine';
-      o.frequency.value = 880;
-      g.gain.value = 0.0001;
-      o.connect(g);
-      g.connect(ctx.destination);
-      const now = ctx.currentTime;
-      g.gain.exponentialRampToValueAtTime(0.2, now + 0.01);
-      o.start(now);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
-      o.stop(now + 0.9);
-      // close context after short delay
-      setTimeout(()=>{ try{ ctx.close(); }catch(e){} }, 1200);
-    }catch(e){ /* ignore if audio not allowed */ }
-  }
-
-  // Completion overlay utilities
-  function createCompletionOverlay(){
-    if(document.getElementById('completeOverlay')) return;
-    const back = document.createElement('div');
-    back.id = 'completeOverlay';
-    back.className = 'overlay-backdrop';
-    back.style.display = 'none';
-    const panel = document.createElement('div');
-    panel.className = 'overlay-panel';
-    panel.innerHTML = `<h3 id="overlayTitle">All tasks complete</h3><p id="overlayText">All tasks complete for player</p><div><button id="overlayDismiss">Reset & Close</button></div>`;
-    back.appendChild(panel);
-    document.body.appendChild(back);
-    document.getElementById('overlayDismiss').addEventListener('click', ()=>{
-      hideCompletionOverlay();
-      // reset visits and move to top-left
-      resetAllVisitsAndReturnHome();
-    });
-  }
-
-  function showCompletionOverlay(owner){
-    createCompletionOverlay();
-    const back = document.getElementById('completeOverlay');
-    const title = document.getElementById('overlayTitle');
-    const text = document.getElementById('overlayText');
-    let playerLabel = 'Player';
-    if(owner){
-      const a = (document.getElementById('playerA') && document.getElementById('playerA').value) || 'Player A';
-      const b = (document.getElementById('playerB') && document.getElementById('playerB').value) || 'Player B';
-      if(owner.toUpperCase() === 'A' || owner.toUpperCase() === 'M') playerLabel = a;
-      else if(owner.toUpperCase() === 'B' || owner.toUpperCase() === 'F') playerLabel = b;
-    }
-    if(title) title.textContent = 'All tasks complete';
-    if(text) text.textContent = `All tasks complete for ${playerLabel}.`;
-    if(back) back.style.display = 'flex';
-  }
-
-  function hideCompletionOverlay(){
-    const back = document.getElementById('completeOverlay');
-    if(back) back.style.display = 'none';
-  }
-
-  function resetAllVisitsAndReturnHome(){
-    // stop timers
-    stopTimer(true);
-    for(let i=0;i<visits.length;i++) visits[i] = 0;
-    currentIndex = 0;
-    renderCells();
-    performCell(cells[currentIndex], currentIndex);
-  }
-
-  // wire timer buttons
-  (function wireTimerButtons(){
-    document.addEventListener('DOMContentLoaded', ()=>{
-      const s = document.getElementById('timerStart');
-      const p = document.getElementById('timerPause');
-      const t = document.getElementById('timerStop');
-      const r = document.getElementById('timerReset');
-      if(s) s.addEventListener('click', startTimer);
-      if(p) p.addEventListener('click', pauseTimer);
-      if(t) t.addEventListener('click', ()=>{ stopTimer(false); updateTimerDisplay(); });
-      if(r) r.addEventListener('click', resetTimer);
-    });
-    // in case DOM already loaded
-    const s = document.getElementById('timerStart');
-    const p = document.getElementById('timerPause');
-    const t = document.getElementById('timerStop');
-    const r = document.getElementById('timerReset');
-    if(s) s.addEventListener('click', startTimer);
-    if(p) p.addEventListener('click', pauseTimer);
-    if(t) t.addEventListener('click', ()=>{ stopTimer(false); updateTimerDisplay(); });
-    if(r) r.addEventListener('click', resetTimer);
-  })();
-
-  function rollDie(sides){
-    return Math.floor(Math.random()*sides)+1;
-  }
-
-  function animateDice(targetA, targetB, ms=800){
-    return new Promise(res=>{
-      const start = Date.now();
-      const iv = setInterval(()=>{
-        dieA.textContent = rollDie(6);
-        dieB.textContent = rollDie(6);
-        if(Date.now() - start >= ms){
-          clearInterval(iv);
-          dieA.textContent = targetA;
-          dieB.textContent = targetB;
-          res();
-        }
-      },80);
-    });
-  }
-
-  async function animateSelection(steps){
-    // animate moving highlight along perimeter steps
-    let idx = currentIndex;
-    const delay = 120;
-    for(let s=1;s<=steps;s++){
-      idx = (idx+1) % PERIMETER_COUNT;
-      highlightIndex(idx);
-      await wait(delay);
-    }
-    // done
-    currentIndex = idx;
-    visits[currentIndex]++;
-    renderCells();
-    performCell(cells[currentIndex], currentIndex);
-  }
-
-  function highlightIndex(idx){
-    const prev = board.querySelector('.highlight');
-    if(prev) prev.classList.remove('highlight');
-    const el = board.querySelector(`[data-idx='${idx}']`);
-    if(el) el.classList.add('highlight');
-  }
-
-  function wait(ms){return new Promise(r=>setTimeout(r,ms));}
-
-  async function doSelectTask(){
-    // roll two dice with animation, then advance that many cells along the perimeter
-    const a = rollDie(6), b = rollDie(6);
-    await animateDice(a,b,900);
-    const sum = a + b;
-    await animateSelection(sum);
-  }
-
-  async function animateJumpTo(targetIdx){
-    // animate stepping along to the target from currentIndex
-    targetIdx = ((targetIdx % PERIMETER_COUNT)+PERIMETER_COUNT)%PERIMETER_COUNT;
-    let steps = (targetIdx - currentIndex + PERIMETER_COUNT) % PERIMETER_COUNT;
-    if(steps === 0) return; // already there
-    await animateSelection(steps);
+    reader.readAsText(f)
   }
 
   function parseCSV(text){
-    // simplistic CSV parse supporting quoted fields
-    // ignore empty lines and comment lines that start with '#'
-    const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l.length>0 && !l.startsWith('#'));
-    const rows = [];
-    for(const line of lines){
-      const row = [];
-      let cur='';
-      let inQ=false;
-      for(let i=0;i<line.length;i++){
-        const ch = line[i];
-        if(ch === '"') { inQ = !inQ; continue; }
-        if(ch === ',' && !inQ){ row.push(cur); cur=''; } else cur+=ch;
-      }
-      row.push(cur);
-      rows.push(row);
+    const rows = []
+    // simple CSV parser handling quoted fields
+    let cur = ''
+    let row = []
+    let inQuotes = false
+    for (let i=0;i<text.length;i++){
+      const ch = text[i]
+      if (ch==='"') { inQuotes = !inQuotes }
+      else if (ch===',' && !inQuotes) { row.push(cur); cur=''}
+      else if ((ch==='\n' || ch==='\r') && !inQuotes) {
+        if (cur!==''||row.length) { row.push(cur); rows.push(row); row=[]; cur=''}
+      } else { cur+=ch }
     }
-    return rows;
+    if (cur!==''||row.length) { row.push(cur); rows.push(row) }
+    // map rows to tasks: title,color,type,description,owner, extras...
+    // ignore comment lines that start with '#' in the first cell (after trimming)
+    return rows.filter(r=>{
+      if (!r || r.length===0) return false
+      const first = (r[0]||'').toString().trim()
+      if (first.startsWith('#')) return false
+      return true
+    }).map(r=>{
+      const [title=color,type,desc,owner] = [r[0]||'', r[2]||'', r[3]||'', r[4]||'']
+      // But because columns shift, interpret properly:
+      // r[0]=title, r[1]=color, r[2]=type, r[3]=description, r[4]=owner, r[5+]=extras
+      const t = {
+        title: (r[0]||'').trim(),
+        color: (r[1]||'#ffffff').trim(),
+        type: ((r[2]||'BASIC').trim()).toUpperCase(),
+        description: (r[3]||'').trim(),
+        owner: (r[4]||'').trim(),
+        extras: r.slice(5).map(s=>s.trim()),
+        visits: 0
+      }
+      return t
+    })
   }
 
-  function loadFromRows(rows){
-    // expected columns (flexible): title,color,type,activity,alt1..alt6,target
-    const out = [];
-    for(let i=0;i<PERIMETER_COUNT;i++){
-      const r = rows[i] || [];
-      const title = r[0]||`Cell ${i+1}`;
-      const color = r[1] || '#6b8cff';
-      const type = (r[2] || 'basic').trim();
-      const activity = r[3] || '';
-      const alts = r.slice(4,10).map(x=>x||'').filter(x=>x!=='');
-      let target = undefined;
-      if(r[10]){
-        const v = parseInt(r[10]);
-        if(!isNaN(v)) target = v;
-      }
-      // optional owner/player indicator in column 11 (A/B/M/F)
-      const ownerRaw = (r[11] || '').toString().trim();
-      let owner = '';
-      if(ownerRaw){
-        const o = ownerRaw.toUpperCase();
-        if(o === 'A' || o === 'M') owner = 'A';
-        else if(o === 'B' || o === 'F') owner = 'B';
-      }
-      out.push({title, color, type, activity, alts, target, owner});
-    }
-    cells = out;
-    visits = new Array(PERIMETER_COUNT).fill(0);
-    currentIndex = 0;
-    renderCells();
-    // initial visit top-left
-    visits[currentIndex]++;
-    renderCells();
-    performCell(cells[currentIndex], currentIndex);
+  function renderTaskView(){
+    statusLeft.innerHTML = ''
+    statusCenter.innerHTML = ''
+    statusRight.innerHTML = ''
+    // status controls
+    const rollBtn = document.createElement('button')
+    rollBtn.className = 'btn'
+    rollBtn.textContent = 'Roll'
+    const resetBtn = document.createElement('button')
+    resetBtn.className = 'btn'
+    resetBtn.textContent = 'Reset'
+    const diceA = document.createElement('div')
+    const diceB = document.createElement('div')
+    diceA.className='dice'; diceB.className='dice'
+    // start with random faces when first shown
+    renderDie(diceA, rollDie()); renderDie(diceB, rollDie())
+    // Left: Reset button (left-justified). Center: left empty. Right: Roll + dice.
+    statusLeft.appendChild(resetBtn)
+    statusRight.appendChild(rollBtn)
+    statusRight.appendChild(diceA)
+    statusRight.appendChild(diceB)
+
+    rollBtn.addEventListener('click', ()=> doRoll(diceA,diceB,rollBtn,resetBtn))
+    resetBtn.addEventListener('click', ()=> doReset())
+
+    main.innerHTML = ''
+    const container = document.createElement('div')
+    container.className = 'panel'
+    main.appendChild(container)
+
+    renderCurrentTask(container)
   }
 
-  csvInput.addEventListener('change', (ev)=>{
-    const f = ev.target.files && ev.target.files[0];
-    if(!f) return;
-    const reader = new FileReader();
-    reader.onload = ()=>{
-      const rows = parseCSV(reader.result || '');
-      loadFromRows(rows);
-    };
-    reader.readAsText(f);
-  });
+  // Animate replacing the current panel child with a new node: old slides left, new slides in from right
+  function animateReplace(container, newNode){
+    const old = container.querySelector('.panel-child')
+    newNode.classList.add('panel-child')
+    // ensure the new node can scroll within the panel
+    newNode.style.width = '100%'
+    newNode.style.height = '100%'
+    newNode.style.boxSizing = 'border-box'
+    newNode.style.overflow = 'auto'
 
-  selectBtn.addEventListener('click', ()=>{
-    selectBtn.disabled = true;
-    doSelectTask().finally(()=> selectBtn.disabled = false);
-  });
-
-  // init empty/perimeter DOM
-  createPerimeterDOM();
-
-  // Move the existing center display into the board grid so it sits in the interior
-  (function placeCenterDisplay(){
-    const center = document.getElementById('centerDisplay');
-    if(!center) return;
-    // append into grid so grid positioning applies
-    board.appendChild(center);
-    // ensure it spans the interior 9x9 (columns 2..10, rows 2..10)
-    center.style.gridColumnStart = '2';
-    center.style.gridColumnEnd = '11';
-    center.style.gridRowStart = '2';
-    center.style.gridRowEnd = '11';
-  })();
-
-  // If there's a built-in CSV file in workspace, try to fetch it as default
-  fetch('tasks.csv').then(r=>{
-    if(!r.ok) throw new Error('no default');
-    return r.text();
-  }).then(txt=>{
-    const rows = parseCSV(txt);
-    loadFromRows(rows);
-  }).catch(()=>{
-    // build default placeholder cells so UI is usable
-    const placeholder = [];
-    for(let i=0;i<PERIMETER_COUNT;i++){
-      const t = `Task ${i+1}`;
-      const c = ['#6b8cff','#ff8a65','#7bd389','#ffd166','#a29bfe','#ff6bcb','#6bd3ff'][i%7];
-      const typeList = ['basic','times_per_visit','minutes_per_visit','six_choice_die','single_times_die','single_minutes_die','move_to'];
-      const ty = typeList[i%7];
-      const row = [t,c,ty,`Activity for ${t}`];
-      // add some alt choices for six_choice_die
-      if(ty==='six_choice_die'){
-        row.push('A','B','C','D','E','F');
-      }
-      // move_to sample targets
-      if(ty==='move_to') row[10] = (i+3) % PERIMETER_COUNT;
-      placeholder.push(row);
+    // If there's no existing child, just insert the new node
+    if (!old){
+      container.innerHTML = ''
+      container.appendChild(newNode)
+      return
     }
-    loadFromRows(placeholder);
-  });
 
+    // Build a track containing the old and new nodes side-by-side
+    const track = document.createElement('div')
+    track.className = 'panel-track'
+    // ensure children are full-width
+    old.style.flex = '0 0 100%'
+    newNode.style.flex = '0 0 100%'
+    track.appendChild(old)
+    track.appendChild(newNode)
+
+    // place track into the container
+    container.innerHTML = ''
+    container.appendChild(track)
+
+    // force layout then animate track translating left to reveal newNode
+    track.getBoundingClientRect()
+    track.style.transform = 'translateX(-100%)'
+//lqms    
+    track.style.transitionDuration = '1ms'
+
+    const cleanup = () => {
+      // remove track and leave newNode as single child
+      if (track.parentNode) track.parentNode.removeChild(track)
+      newNode.style.flex = ''
+      container.innerHTML = ''
+      container.appendChild(newNode)
+      track.removeEventListener('transitionend', cleanup)
+    }
+    track.addEventListener('transitionend', cleanup)
+  }
+
+  // Build a DOM node for a given task (same structure used by renderCurrentTask)
+  function buildTaskNode(t){
+    const node = document.createElement('div')
+    if (!t) { node.textContent = 'No task'; return node }
+    const type = t.type
+    if (type==='BASIC' || type==='COUNT' || type==='TIME' || type==='GOTO'){
+      node.style.background = t.color
+      const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
+      const desc = document.createElement('div'); desc.className='task-desc'
+      if (type==='TIME'){
+        const d = rollDie()
+        desc.innerHTML = substitutePlaceholders(t.description, d)
+        node.appendChild(title); node.appendChild(desc)
+        attachTimer(node, t, false, d * 60)
+      } else if (type==='COUNT'){
+        const d = rollDie()
+        desc.innerHTML = substitutePlaceholders(t.description, d)
+        node.appendChild(title); node.appendChild(desc)
+      } else {
+        desc.innerHTML = substitutePlaceholders(t.description)
+        node.appendChild(title); node.appendChild(desc)
+      }
+    } else if (type==='VISIT_COUNT' || type==='VISIT_TIME'){
+      node.style.background = '#eee'
+      const bar = document.createElement('div'); bar.className='title-bar'; bar.style.background = t.color; bar.textContent = t.title
+      const visitsRow = document.createElement('div'); visitsRow.className='visits-row'
+      for (let i=0;i<t.visits;i++){ const h=document.createElement('div'); h.className='house'; h.textContent='🏠'; visitsRow.appendChild(h) }
+      const desc = document.createElement('div'); desc.className='task-desc'; desc.innerHTML=substitutePlaceholdersVisit(t)
+      node.appendChild(bar); node.appendChild(visitsRow); node.appendChild(desc)
+      if (type==='VISIT_TIME') attachTimer(node, t, true)
+    } else if (type==='SELECTION'){
+      node.style.background = t.color
+      const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
+      node.appendChild(title)
+      const ul = document.createElement('ul'); ul.className='selection-list'
+      t.extras.slice(0,6).forEach((it,idx)=>{
+        const li = document.createElement('li'); li.textContent = `${idx+1}. ${substitutePlaceholders(it)}`
+        ul.appendChild(li)
+      })
+      node.appendChild(ul)
+      const sel = rollDie()
+      const chosen = Math.max(1, Math.min(6, sel))
+      const targetLi = ul.children[chosen-1]
+      if (targetLi) targetLi.classList.add('highlight')
+      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
+      node.appendChild(note)
+    } else {
+      node.textContent = 'Unknown task type: '+t.type
+    }
+    return node
+  }
+
+  // Perform a continuous track slide of `steps` steps starting from startIndex.
+  // Returns a Promise that resolves when the slide completes and the container has been updated.
+  function performTrackSlide(container, startIndex, steps){
+    return new Promise((resolve)=>{
+      const n = tasks.length
+      if (!n || steps<=0){ resolve(); return }
+      // current visible node
+      const current = container.querySelector('.panel-child') || buildTaskNode(tasks[startIndex])
+      // ensure current is a panel-child and attached
+      if (!current.parentNode) {
+        current.classList.add('panel-child')
+        container.appendChild(current)
+      }
+      // create track
+      const track = document.createElement('div'); track.className='panel-track'
+      // move current into track (remove from container)
+      if (current.parentNode === container) container.removeChild(current)
+      current.style.flex = '0 0 100%'
+      track.appendChild(current)
+      // append nodes for each intermediate step
+      const nodes = []
+      for (let s=1;s<=steps;s++){
+        const idx = (startIndex + s) % n
+        const node = buildTaskNode(tasks[idx])
+        // ensure padding and shared styles apply during slide
+        node.classList.add('panel-child')
+        node.style.flex = '0 0 100%'
+        nodes.push(node)
+        track.appendChild(node)
+      }
+      // insert track into container
+      container.innerHTML = ''
+      container.appendChild(track)
+      // force layout
+      track.getBoundingClientRect()
+      // set duration proportional to steps
+      // slower per-step timing for a more leisurely continuous slide
+      const perStepMs = 1000
+      track.style.transition = `transform ${Math.max(200, perStepMs*steps)}ms cubic-bezier(.22,.9,.28,1)`
+      // translate to reveal final node
+      requestAnimationFrame(()=> track.style.transform = `translateX(-${100*steps}%)`)
+
+      const onEnd = ()=>{
+        // cleanup: leave only the final node in container
+        const finalNode = nodes[nodes.length-1]
+        if (finalNode){
+          finalNode.classList.add('panel-child')
+        }
+        // remove track
+        if (track.parentNode) track.parentNode.removeChild(track)
+        container.innerHTML = ''
+        if (finalNode) container.appendChild(finalNode)
+        track.removeEventListener('transitionend', onEnd)
+        resolve()
+      }
+      track.addEventListener('transitionend', onEnd)
+    })
+  }
+
+  function renderCurrentTask(container){
+    const t = tasks[currentIndex]
+    if (!t) {
+      // create a simple empty node
+      const empty = document.createElement('div')
+      empty.textContent = 'No task'
+      animateReplace(container, empty)
+      return
+    }
+    // handle types — build a new content node, then animateReplace into container
+    const type = t.type
+    const newNode = document.createElement('div')
+    if (type==='BASIC' || type==='COUNT' || type==='TIME' || type==='GOTO'){
+      newNode.style.background = t.color
+      const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
+      const desc = document.createElement('div'); desc.className='task-desc'
+      if (type==='TIME'){
+        const d = rollDie()
+        desc.innerHTML = substitutePlaceholders(t.description, d)
+        newNode.appendChild(title); newNode.appendChild(desc)
+        attachTimer(newNode, t, false, d * 60)
+      } else if (type==='COUNT'){
+        const d = rollDie()
+        desc.innerHTML = substitutePlaceholders(t.description, d)
+        newNode.appendChild(title); newNode.appendChild(desc)
+      } else {
+        desc.innerHTML = substitutePlaceholders(t.description)
+        newNode.appendChild(title); newNode.appendChild(desc)
+      }
+    } else if (type==='VISIT_COUNT' || type==='VISIT_TIME'){
+      newNode.style.background = '#eee'
+      const bar = document.createElement('div'); bar.className='title-bar'; bar.style.background = t.color; bar.textContent = t.title
+      const visitsRow = document.createElement('div'); visitsRow.className='visits-row'
+      for (let i=0;i<t.visits;i++){ const h=document.createElement('div'); h.className='house'; h.textContent='🏠'; visitsRow.appendChild(h) }
+      const desc = document.createElement('div'); desc.className='task-desc'; desc.innerHTML=substitutePlaceholdersVisit(t)
+      newNode.appendChild(bar); newNode.appendChild(visitsRow); newNode.appendChild(desc)
+      if (type==='VISIT_TIME') attachTimer(newNode, t, true)
+    } else if (type==='SELECTION'){
+      newNode.style.background = t.color
+      const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
+      newNode.appendChild(title)
+      const ul = document.createElement('ul'); ul.className='selection-list'
+      t.extras.slice(0,6).forEach((it,idx)=>{
+        const li = document.createElement('li'); li.textContent = `${idx+1}. ${substitutePlaceholders(it)}`
+        ul.appendChild(li)
+      })
+      newNode.appendChild(ul)
+      const sel = rollDie()
+      const chosen = Math.max(1, Math.min(6, sel))
+      const targetLi = ul.children[chosen-1]
+      if (targetLi) targetLi.classList.add('highlight')
+      //const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
+      //newNode.appendChild(note)
+    } else {
+      newNode.textContent = 'Unknown task type: '+t.type
+    }
+
+    // perform the animated replace
+    animateReplace(container, newNode)
+  }
+
+  // substitute placeholders. If `roll` is provided it will be used for %D replacements
+  function substitutePlaceholders(s, roll=null){
+    if (!s) return ''
+    let out = String(s)
+    out = out.replace(/%M/g, participantM).replace(/%F/g, participantF)
+    if (out.match(/%D/)){
+      const val = (roll !== null) ? roll : rollDie()
+      out = out.replace(/%D/g, String(val))
+    }
+    // replace bare %N with the literal N (visit-handling uses a separate function)
+    out = out.replace(/%(\d+)/g, (m,n)=>{ return (parseInt(n,10)).toString() })
+    return out
+  }
+
+  function substitutePlaceholdersVisit(t){
+    let s = t.description||''
+    // %N where N is number like %3 -> multiply by visits
+    s = s.replace(/%(\d+)/g,(m,n)=>{ return (parseInt(n,10)* (t.visits||0)).toString() })
+    s = s.replace(/%M/g, participantM).replace(/%F/g, participantF)
+    return s
+  }
+
+  // attachTimer: if initialSeconds is provided, use it; otherwise compute from task and visitTime
+  function attachTimer(container, task, visitTime=false, initialSeconds=null){
+    const timerWrap = document.createElement('div'); timerWrap.style.marginTop='12px'
+    const display = document.createElement('div'); display.textContent = '00:00'; display.style.fontSize='28px'; display.style.marginBottom='8px'
+    const start = document.createElement('button'); start.className='btn'; start.textContent='Start'
+    const pause = document.createElement('button'); pause.className='btn'; pause.textContent='Pause'
+    const reset = document.createElement('button'); reset.className='btn'; reset.textContent='Reset'
+    start.style.marginRight='6px'
+    pause.style.marginRight='6px'
+    timerWrap.appendChild(display); timerWrap.appendChild(start); timerWrap.appendChild(pause); timerWrap.appendChild(reset)
+    container.appendChild(timerWrap)
+
+    let totalSeconds = (initialSeconds !== null) ? initialSeconds : computeTimerSeconds(task, visitTime)
+    let remaining = totalSeconds
+    let timerId = null
+
+    function updateDisplay(){
+      const mm = String(Math.floor(remaining/60)).padStart(2,'0')
+      const ss = String(remaining%60).padStart(2,'0')
+      display.textContent = `${mm}:${ss}`
+    }
+    updateDisplay()
+
+    start.addEventListener('click', ()=>{
+      if (timerId) return
+      const startTs = Date.now()
+      timerId = setInterval(()=>{
+        remaining--
+        if (remaining<=0){ clearInterval(timerId); timerId=null; remaining=0; updateDisplay(); onTimerExpire(container) }
+        else updateDisplay()
+      },1000)
+    })
+    pause.addEventListener('click', ()=>{ if (timerId){ clearInterval(timerId); timerId=null } })
+    reset.addEventListener('click', ()=>{ if (timerId){ clearInterval(timerId); timerId=null } remaining=totalSeconds; updateDisplay() })
+  }
+
+  function computeTimerSeconds(task, visitTime){
+    if (visitTime){ // find %N multiplier in description -> interpreted as minutes per visit
+      const m = (task.description||'').match(/%(\d+)/)
+      const n = m?parseInt(m[1],10):1
+      return n * (task.visits||0) * 60
+    }
+    // TIME: %D single die (minutes)
+    const d = rollDie()
+    return d * 60
+  }
+
+  function onTimerExpire(container){
+    // flash and beep: play a beep for each animation iteration
+    const flashCount = 3
+    const iterMs = 800
+    container.classList.add('flash')
+    for (let i=0;i<flashCount;i++){
+      setTimeout(()=>{
+        try{ beep() }catch(e){}
+      }, i * iterMs)
+    }
+    // remove flash class after animation completes (with small padding)
+    setTimeout(()=>container.classList.remove('flash'), flashCount * iterMs + 200)
+  }
+
+  function beep(){
+    try{
+      const ctx = new (window.AudioContext||window.webkitAudioContext)()
+      const o = ctx.createOscillator(); const g = ctx.createGain()
+      o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(ctx.destination); g.gain.value=0.05
+      o.start(); setTimeout(()=>{ o.stop(); ctx.close() },400)
+    }catch(e){ console.log('beep failed',e) }
+  }
+
+  function rollDie(){ return 1 + Math.floor(Math.random()*6) }
+
+  async function doRoll(dA,dB,rollBtn,resetBtn){
+    if (animating) return
+    animating = true
+    rollBtn.disabled = true; resetBtn.disabled=true
+    // animate dice for 1s
+    const dur = 1000
+    const start = Date.now()
+    const intv = setInterval(()=>{ renderDie(dA, 1+Math.floor(Math.random()*6)); renderDie(dB, 1+Math.floor(Math.random()*6)) },80)
+    await new Promise(r=>setTimeout(r,dur))
+    clearInterval(intv)
+    const v1 = rollDie(); const v2 = rollDie(); renderDie(dA,v1); renderDie(dB,v2)
+    const total = v1+v2
+    // animate moving through tasks
+    await animateAdvance(total)
+    animating = false
+    rollBtn.disabled=false; resetBtn.disabled=false
+  }
+
+  function animateAdvance(steps){
+    return new Promise(async (resolve)=>{
+      const container = document.querySelector('#mainarea .panel')
+      if (!container) { resolve(); return }
+      const n = tasks.length
+      const startIndex = currentIndex
+      // perform one continuous track slide for the dice steps
+      await performTrackSlide(container, startIndex, steps)
+      // update currentIndex to final
+      currentIndex = (startIndex + steps) % n
+      // After the slide, handle visit count and potential GOTO chaining
+      // increment only the current final destination (will be updated if GOTOs follow)
+      let finalIndex = currentIndex
+      let finalTask = tasks[finalIndex]
+      // increment visit for the landed task only after resolving GOTO chain final destination
+      const pauseOnGotoMs = 1500
+      if (finalTask && finalTask.type === 'GOTO'){
+        // pause on the GOTO tile
+        await new Promise(r=>setTimeout(r,pauseOnGotoMs))
+        // follow chain, animating continuous slides for each hop
+        let stepsFollowed = 0
+        while (stepsFollowed < n){
+          const gtask = tasks[finalIndex]
+          if (!gtask || gtask.type !== 'GOTO') break
+          const raw = (gtask.extras && gtask.extras[0]) ? gtask.extras[0] : null
+          const targetNum = raw !== null ? parseInt(raw,10) : NaN
+          if (isNaN(targetNum)) break
+          const targetIndex = ((targetNum-1) % n + n) % n
+          const extraSteps = (targetIndex - finalIndex + n) % n
+          if (extraSteps === 0) break
+          // animate the extra steps continuously
+          await performTrackSlide(container, finalIndex, extraSteps)
+          finalIndex = targetIndex
+          currentIndex = finalIndex
+          stepsFollowed++
+          // small pause before following next GOTO
+          await new Promise(r=>setTimeout(r,300))
+        }
+      }
+      // final destination is currentIndex / finalIndex
+      tasks[currentIndex].visits = (tasks[currentIndex].visits||0)+1
+      // ensure the displayed node is the current one (build/render if needed)
+      renderCurrentTask(container)
+      // check for reaching max for VISIT types on the ultimate currentIndex
+      const t = tasks[currentIndex]
+      if ((t.type==='VISIT_COUNT'||t.type==='VISIT_TIME') && t.visits>=maxVisits){
+        showFinishView(t)
+      }
+      resolve()
+    })
+  }
+
+  function showFinishView(task){
+    // Hide status bar contents while the completion page is shown
+    try{ statusLeft.innerHTML = ''; statusCenter.innerHTML = ''; statusRight.innerHTML = '' }catch(e){}
+    main.innerHTML = ''
+    const panel = document.createElement('div'); panel.className='panel centered'
+    const ownerName = mapOwnerToName(task.owner)
+    const h = document.createElement('div'); h.className='task-title'; h.textContent = `${ownerName} has completed all their tasks!`
+    const btn = document.createElement('button'); btn.className='btn'; btn.textContent='Finish'
+    btn.addEventListener('click', ()=>{ resetAllVisits(); showConfigView() })
+    panel.appendChild(h); panel.appendChild(btn)
+    main.appendChild(panel)
+  }
+
+  function mapOwnerToName(owner){
+    if (!owner) return ''
+    const o = owner.trim().toUpperCase()
+    if (o==='M' || o==='%M') return participantM
+    if (o==='F' || o==='%F') return participantF
+    return owner
+  }
+
+  function resetAllVisits(){ tasks.forEach(t=>t.visits=0); currentIndex=0 }
+
+  function doReset(){
+    if (!confirm('Reset all visit counts and return to configuration?')) return
+    resetAllVisits()
+    showConfigView()
+  }
+
+  // initial
+  showConfigView()
+/*
+  // populate sample file input if tasks.csv exists by fetching it
+  (async ()=>{
+    try{
+      const r = await fetch('tasks.csv')
+      if (r.ok){ const txt = await r.text(); tasks = parseCSV(txt); tasks.forEach(t=>t.visits=0) }
+    }catch(e){}
+  })()
+*/
 })();

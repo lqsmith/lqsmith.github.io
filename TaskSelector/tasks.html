@@ -3,42 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Task Selector</title>
-  <link rel="stylesheet" href="tasks.css" />
+  <title>Task Rotator</title>
+  <link rel="stylesheet" href="tasks.css">
 </head>
 <body>
-  <header class="title-bar">Task Selector</header>
-
-  <div class="button-bar">
-    <input id="csvFile" type="file" accept=".csv" />
-    <input id="playerA" class="player-name" type="text" placeholder="Player A" />
-    <input id="playerB" class="player-name" type="text" placeholder="Player B" />
-    <label for="visitCap" class="visit-cap-label">Cap:</label>
-    <input id="visitCap" class="visit-cap" type="number" min="1" value="10" title="Maximum icons to display for visits" />
-    <button id="selectTask">Select Task</button>
-    <div id="diceArea" class="dice-area" aria-hidden="true">
-      <div class="die" id="dieA">🎲</div>
-      <div class="die" id="dieB">🎲</div>
-    </div>
+  <div id="titlebar">Task Rotator</div>
+  <main id="mainarea">
+    <!-- Configuration view and task view are swapped inside here -->
+  </main>
+  <div id="statusbar">
+    <div id="status-left"></div>
+    <div id="status-center"></div>
+    <div id="status-right"></div>
   </div>
 
-  <main class="board-wrap">
-    <div id="board" class="board"></div>
-    <div id="centerDisplay" class="center-display">
-      <div id="centerHouses" class="center-houses" aria-hidden="true"></div>
-      <h2 id="centerTitle">Welcome</h2>
-      <div id="centerActivity" class="center-activity">Select or load a CSV to begin.</div>
-      <div id="timerWrap" class="timer-wrap" style="display:none">
-        <div id="timerDisplay" class="timer-display">00:00</div>
-        <div class="timer-controls">
-          <button id="timerStart">Start</button>
-          <button id="timerPause">Pause</button>
-          <button id="timerStop">Stop</button>
-          <button id="timerReset">Reset</button>
-        </div>
-      </div>
-    </div>
-  </main>
+  <input id="csvfile" type="file" accept=".csv" style="display:none">
 
   <script src="tasks.js"></script>
 </body>

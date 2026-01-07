@@ -1,43 +1,8 @@
-#Title,Color,Type,Activity,Alt1,Alt2,Alt3,Alt4,Alt5,Alt6,Target,Owner
-Start,white,basic,Say hello,,,,,,,,
-Pushups,white,times_per_visit,%M Do %T2 pushups,,,,,,,,A
-Stretch,white,minutes_per_visit,%F Stretch your body %T3,,,,,,,,A
-Choice1,white,six_choice_die,Choose an option,Sing a song,Do 5 jumping jacks,Hold a plank 30s,Draw for 2 minutes,Do 10 squats,Tell a joke,,
-RepeatRoll,white,single_times_die,Repeat this %T4 times,,,,,,,,
-MinuteRoll,white,single_minutes_die,Do this for %T minutes,,,,,,,,
-Hop,white,move_to,Move to target,,,,,,,1,
-Start,white,basic,Say hello,,,,,,,,
-Pushups,white,times_per_visit,%M Do %T2 pushups,,,,,,,,B
-Stretch,white,minutes_per_visit,%F Stretch your body %T3,,,,,,,,B
-Choice1,white,six_choice_die,Choose an option,Sing a song,Do 5 jumping jacks,Hold a plank 30s,Draw for 2 minutes,Do 10 squats,Tell a joke,,
-RepeatRoll,white,single_times_die,Repeat this %T4 times,,,,,,,,
-MinuteRoll,white,single_minutes_die,Do this for %T minutes,,,,,,,,
-Hop,white,move_to,Move to target,,,,,,,2,
-Start,white,basic,Say hello,,,,,,,,
-Pushups,white,times_per_visit,%M Do %T2 pushups,,,,,,,,A
-Stretch,white,minutes_per_visit,%F Stretch your body %T3,,,,,,,,A
-Choice1,white,six_choice_die,Choose an option,Sing a song,Do 5 jumping jacks,Hold a plank 30s,Draw for 2 minutes,Do 10 squats,Tell a joke,,
-RepeatRoll,white,single_times_die,Repeat this %T4 times,,,,,,,,
-MinuteRoll,white,single_minutes_die,Do this for %T minutes,,,,,,,,
-Hop,white,move_to,Move to target,,,,,,,3,
-Start,white,basic,Say hello,,,,,,,,
-Pushups,white,times_per_visit,%M Do %T2 pushups,,,,,,,,B
-Stretch,white,minutes_per_visit,%F Stretch your body %T3,,,,,,,,B
-Choice1,white,six_choice_die,Choose an option,Sing a song,Do 5 jumping jacks,Hold a plank 30s,Draw for 2 minutes,Do 10 squats,Tell a joke,,
-RepeatRoll,white,single_times_die,Repeat this %T4 times,,,,,,,,
-MinuteRoll,white,single_minutes_die,Do this for %T minutes,,,,,,,,
-Hop,white,move_to,Move to target,,,,,,,4,
-Start,white,basic,Say hello,,,,,,,,
-Pushups,white,times_per_visit,%M Do %T2 pushups,,,,,,,,A
-Stretch,white,minutes_per_visit,%F Stretch your body %T3,,,,,,,,A
-Choice1,white,six_choice_die,Choose an option,Sing a song,Do 5 jumping jacks,Hold a plank 30s,Draw for 2 minutes,Do 10 squats,Tell a joke,,
-RepeatRoll,white,single_times_die,Repeat this %T4 times,,,,,,,,
-MinuteRoll,white,single_minutes_die,Do this for %T minutes,,,,,,,,
-Hop,white,move_to,Move to target,,,,,,,5,
-Start,white,basic,Say hello,,,,,,,,
-Pushups,white,times_per_visit,%M Do %T2 pushups,,,,,,,,B
-Stretch,white,minutes_per_visit,%F Stretch your body %T3,,,,,,,,B
-Choice1,white,six_choice_die,Choose an option,Sing a song,Do 5 jumping jacks,Hold a plank 30s,Draw for 2 minutes,Do 10 squats,Tell a joke,,
-RepeatRoll,white,single_times_die,Repeat this %T4 times,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,S
+# title, color, type, description, owner, extras[1...6]
+Welcome,#ffd966,BASIC,Welcome to the Task Rotator! %M and %F, ,,,,,,
+Walk,#a4c2f4,VISIT_COUNT,Visit walk %2,M,,,,,,
+Stretch,#f4cccc,VISIT_TIME,Stretch for %1 minutes,F,,,,,,
+Choice,#c9daf8,SELECTION,Choose an action,M,Do 1 push-up,Do 5 jumping jacks,Take a sip of water,Sing a line of a song,Do a silly pose,Tell a joke
+CountIt,#b6d7a8,COUNT,You rolled %D times!,F,,,,,,
+MinuteTimer,#93c47d,TIME,Hold plank for %D minutes,M,,,,,,
+GoToOne,#f9cb9c,GOTO,Go to task 1,M,1,,,,,
