@@ -297,8 +297,8 @@
           }
         }
       }
-      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
-      node.appendChild(note)
+//      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
+//      node.appendChild(note)
     } else {
       node.textContent = 'Unknown task type: '+t.type
     }
@@ -483,8 +483,8 @@
           }
         }
       }
-      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
-      newNode.appendChild(note)
+//      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
+//      newNode.appendChild(note)
     } else {
       newNode.textContent = 'Unknown task type: '+t.type
     }
