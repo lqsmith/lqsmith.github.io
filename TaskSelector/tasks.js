@@ -261,8 +261,8 @@
       const chosen = Math.max(1, Math.min(6, sel))
       const targetLi = ul.children[chosen-1]
       if (targetLi) targetLi.classList.add('highlight')
-      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
-      node.appendChild(note)
+//      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
+//      node.appendChild(note)
     } else {
       node.textContent = 'Unknown task type: '+t.type
     }
