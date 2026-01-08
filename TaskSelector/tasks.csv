@@ -1,24 +1,8 @@
-# title, color, type, description, owner, extras[1...6]
-Welcome,#ffd966,BASIC,Welcome to the Task Rotator! %M and %F, ,,,,,,
-Walk,#a4c2f4,VISIT_COUNT,Visit walk %2,M,,,,,,
-Stretch,#f4cccc,VISIT_TIME,Stretch for %1 minutes,F,,,,,,
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %D push-up,Do %D jumping jacks,Take a %D sip of water,Sing a %D line of a song,Do a %D silly pose,Tell a %D joke
-CountIt,#b6d7a8,COUNT,You rolled %D times!,F,,,,,,
-MinuteTimer,#93c47d,TIME,Hold plank for %D minutes,M,,,,,,
-GoToOne,#f9cb9c,GOTO,Go to task 1,M,1,,,,,
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
-Choice,#c9daf8,SELECTION,Choose an action,M,Do %T4 push-up %F,Do %T5 jumping jacks %M,Take a %T6 sip of water,Sing a %T3 line of a song,Do a %T2 silly,Tell a %4 joke
+# Type,Title,Title Color,Description,Desc Color,Color,BG Image,Owner,Extra 1,Extra 2,Extra 3,Extra 4,Extra 5,Extra 6
+BASIC,A basic task,,Can substiture participants name with a percent sign followed by M or F. Can also substiture a random die result with a percent sign followed by D,,,,,,,,,,
+VISIT_COUNT,A counted task,black,A task that will be performed multiple times based on how many times this task has been visited. The visit count will be multiplied by the number that immediately follows a percent sign.  Can also use a percent sign followed by an F or M to substiture the participant's names.,,,,M,,,,,,
+VISIT_TIME,Task 4 - VISIT_TIME,black,A task that will be performed multiple minutes based on how many times this task has been visited. The visit count will be multiplied by the number that immediately follows a percent sign.  Can also use a percent sign followed by an F or M to substiture the participant's names.,,,,F,,,,,,
+SELECTION,Task 5 - SELECTION,,Can substiture participants name with a percent sign followed by M or F. Can also substiture a random die result with a percent sign followed by D,,,,,In the individual selections you can use the following characters after a percent sign:,M or F for a substitute of the participants' names,D for a die roll,"Tx, where x is a task number. If this selection is picked, the state will automatically advance to that particular task",any number. That number will be multiplied by a single die roll and the result used as the starting value for a timer,Yet another task
+COUNT,Task 7 - COUNT,,Can substiture participants name with a percent sign followed by M or F. Can also substiture a random die result with a percent sign followed by D,,,,,,,,,,
+TIME,Task 8 - TIME,,Can substiture participants name with a percent sign followed by M or F. Can also substiture a random die result with a percent sign followed by D. The result of the die roll will be used a the basis for a timer,,,,,,,,,,
+GOTO,Task 9 - GOTO,,"Can substiture participants name with a percent sign followed by M or F. Can also substiture a random die result with a percent sign followed by D. The value listed in the ""Extra 1"" column will automatically become the next active task",,,,,1,,,,,

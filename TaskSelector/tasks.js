@@ -13,6 +13,14 @@
   let maxVisits = 5
   let animating = false
   let lastCsvName = ''
+  // whether movement is determined by rolling two dice (sum) or always advance one step
+  let useDiceMovement = true
+  // whether to stop/pause when passing through task 1 (index 0)
+  let stopAtTask1 = false
+  // if a previous roll was paused at task 1, this stores the remaining steps to perform
+  let pendingMoveRemaining = 0
+  // whether the last-loaded CSV parsed into a valid tasks array
+  let tasksValid = false
 
   // Render a die as inline SVG. If `value` is falsy, render an empty die face.
   function dieSVG(value){
@@ -35,6 +43,7 @@
   }
 
   function renderDie(el, value){
+    if (!el) return
     el.innerHTML = dieSVG(value)
     el.setAttribute('role','img')
     el.setAttribute('aria-label', value ? `Die ${value}` : 'Die')
@@ -50,6 +59,13 @@
 
     const html = `
       <div class="config">
+        <div class="config-row"><label class="label">Movement Mode</label>
+          <label><input type="radio" name="movementMode" id="movementModeDice" value="dice"> Use two dice (sum of both)</label>
+          <label style="margin-left:12px"><input type="radio" name="movementMode" id="movementModeStep" value="step"> Always advance one step</label>
+        </div>
+        <div class="config-row"><label class="label">Task 1 Behavior</label>
+          <label><input type="checkbox" id="stopAtTask1"> Stop when passing through Task 1 and resume on Move</label>
+        </div>
         <div class="config-row"><label class="label">CSV Tasks File</label>
           <button id="chooseCsv" class="btn">Choose CSV File</button>
           <span id="csvname" style="margin-left:8px;color:#666"></span>
@@ -67,20 +83,42 @@
     main.appendChild(panel)
 
     document.getElementById('chooseCsv').addEventListener('click', ()=> csvInput.click())
-    // avoid attaching multiple listeners if config view is shown repeatedly
     try{ csvInput.removeEventListener('change', handleCSVSelected) }catch(e){}
     csvInput.addEventListener('change', handleCSVSelected)
-    // show previously selected CSV name so user doesn't need to reselect
     const csvnameEl = document.getElementById('csvname')
-    if (csvnameEl) csvnameEl.textContent = lastCsvName || (tasks.length ? 'Loaded' : '')
+    if (csvnameEl) csvnameEl.textContent = lastCsvName || (tasks.length ? (tasksValid ? 'Loaded' : 'Invalid') : '')
+    // Prefill participant names and max visits so Reset doesn't clear them
+    try{ const p1 = document.getElementById('p1'); if (p1) p1.value = participantM || '' }catch(e){}
+    try{ const p2 = document.getElementById('p2'); if (p2) p2.value = participantF || '' }catch(e){}
+    try{ const mv = document.getElementById('maxv'); if (mv) mv.value = (maxVisits && Number(maxVisits)) ? String(maxVisits) : '5' }catch(e){}
     document.getElementById('beginBtn').addEventListener('click', () => {
       participantM = document.getElementById('p1').value || 'Player 1'
       participantF = document.getElementById('p2').value || 'Player 2'
       maxVisits = parseInt(document.getElementById('maxv').value,10) || 5
+      try{
+        const useDiceEl = document.getElementById('movementModeDice')
+        useDiceMovement = useDiceEl ? useDiceEl.checked : true
+      }catch(e){}
+      try{
+        const stopEl = document.getElementById('stopAtTask1')
+        stopAtTask1 = stopEl ? Boolean(stopEl.checked) : false
+      }catch(e){}
       if (!tasks.length) { alert('Please choose a CSV tasks file first.'); return }
+      if (!tasksValid){ alert('The selected tasks file appears invalid. Please choose a valid CSV.'); return }
       currentIndex = 0
       renderTaskView()
     })
+    // disable begin if no valid tasks loaded
+    try{ const beginBtnEl = document.getElementById('beginBtn'); if (beginBtnEl) beginBtnEl.disabled = (!tasksValid || !tasks.length) }catch(e){}
+    try{
+      const md = document.getElementById('movementModeDice')
+      const ms = document.getElementById('movementModeStep')
+      if (md && ms){ md.checked = useDiceMovement; ms.checked = !useDiceMovement }
+    }catch(e){}
+    try{
+      const s = document.getElementById('stopAtTask1')
+      if (s) s.checked = stopAtTask1
+    }catch(e){}
   }
 
   function handleCSVSelected(e){
@@ -94,6 +132,14 @@
       tasks = parseCSV(reader.result)
       // initialize visit counts
       tasks.forEach(t=>t.visits=0)
+      // validate parsed tasks
+      const v = validateTasks(tasks)
+      tasksValid = v.valid
+      // update UI begin button if visible
+      try{ const beginBtn = document.getElementById('beginBtn'); if (beginBtn) beginBtn.disabled = !tasksValid }catch(e){}
+      if (!tasksValid){
+        alert('Invalid CSV file:\n' + v.errors.join('\n'))
+      }
     }
     reader.readAsText(f)
   }
@@ -113,7 +159,7 @@
       } else { cur+=ch }
     }
     if (cur!==''||row.length) { row.push(cur); rows.push(row) }
-    // map rows to tasks: title,color,type,description,owner, extras...
+    // map rows to tasks: Type,Title,Title Color,Description,Desc Color,Color,BG Image,Owner,Extras...
     // ignore comment lines that start with '#' in the first cell (after trimming)
     return rows.filter(r=>{
       if (!r || r.length===0) return false
@@ -121,20 +167,44 @@
       if (first.startsWith('#')) return false
       return true
     }).map(r=>{
-      const [title=color,type,desc,owner] = [r[0]||'', r[2]||'', r[3]||'', r[4]||'']
-      // But because columns shift, interpret properly:
-      // r[0]=title, r[1]=color, r[2]=type, r[3]=description, r[4]=owner, r[5+]=extras
+      // New column order:
+      // r[0]=type, r[1]=title, r[2]=titleColor, r[3]=description, r[4]=descColor,
+      // r[5]=color, r[6]=bgImage, r[7]=owner, r[8+]=extras
       const t = {
-        title: (r[0]||'').trim(),
-        color: (r[1]||'#ffffff').trim(),
-        type: ((r[2]||'BASIC').trim()).toUpperCase(),
+        type: ((r[0]||'BASIC').trim()).toUpperCase(),
+        title: (r[1]||'').trim(),
+        titleColor: (r[2]||'').trim(),
         description: (r[3]||'').trim(),
-        owner: (r[4]||'').trim(),
-        extras: r.slice(5).map(s=>s.trim()),
+        descColor: (r[4]||'').trim(),
+        color: (r[5]||'#ffffff').trim(),
+        bgImage: (r[6]||'').trim(),
+        owner: (r[7]||'').trim(),
+        extras: r.slice(8).map(s=>s.trim()),
         visits: 0
       }
       return t
     })
+  }
+
+  // Validate parsed tasks for obvious problems. Returns {valid:boolean, errors:[]}
+  function validateTasks(ts){
+    const errs = []
+    if (!Array.isArray(ts) || ts.length===0){ errs.push('No tasks found in file'); return {valid:false, errors:errs} }
+    const allowed = new Set(['BASIC','COUNT','TIME','GOTO','VISIT_COUNT','VISIT_TIME','SELECTION'])
+    for (let i=0;i<ts.length;i++){
+      const t = ts[i]
+      const label = t && t.title ? `"${t.title}" (row ${i+1})` : `row ${i+1}`
+      if (!t.title || String(t.title).trim()==='') errs.push(`${label}: missing title`)
+      if (!t.type || !allowed.has(t.type)) errs.push(`${label}: invalid type "${t.type}"`)
+      if (t.type === 'SELECTION'){
+        if (!t.extras || t.extras.length===0) errs.push(`${label}: SELECTION task requires at least one option`)
+      }
+      if (t.type === 'GOTO'){
+        const raw = (t.extras && t.extras[0]) ? t.extras[0] : null
+        if (raw !== null && raw !== '' && isNaN(parseInt(raw,10))) errs.push(`${label}: GOTO target must be a number`) 
+      }
+    }
+    return { valid: errs.length===0, errors: errs }
   }
 
   function renderTaskView(){
@@ -144,20 +214,22 @@
     // status controls
     const rollBtn = document.createElement('button')
     rollBtn.className = 'btn'
-    rollBtn.textContent = 'Roll'
+    rollBtn.textContent = 'Move'
     const resetBtn = document.createElement('button')
     resetBtn.className = 'btn'
     resetBtn.textContent = 'Reset'
-    const diceA = document.createElement('div')
-    const diceB = document.createElement('div')
-    diceA.className='dice'; diceB.className='dice'
-    // start with random faces when first shown
-    renderDie(diceA, rollDie()); renderDie(diceB, rollDie())
-    // Left: Reset button (left-justified). Center: left empty. Right: Roll + dice.
+    let diceA = null, diceB = null
+    if (useDiceMovement){
+      diceA = document.createElement('div')
+      diceB = document.createElement('div')
+      diceA.className='dice'; diceB.className='dice'
+      // start with random faces when first shown
+      renderDie(diceA, rollDie()); renderDie(diceB, rollDie())
+    }
+    // Left: Reset button (left-justified). Center: left empty. Right: Move + dice.
     statusLeft.appendChild(resetBtn)
     statusRight.appendChild(rollBtn)
-    statusRight.appendChild(diceA)
-    statusRight.appendChild(diceB)
+    if (useDiceMovement){ statusRight.appendChild(diceA); statusRight.appendChild(diceB) }
 
     rollBtn.addEventListener('click', ()=> doRoll(diceA,diceB,rollBtn,resetBtn))
     resetBtn.addEventListener('click', ()=> doReset())
@@ -223,9 +295,19 @@
     if (!t) { node.textContent = 'No task'; return node }
     const type = t.type
     if (type==='BASIC' || type==='COUNT' || type==='TIME' || type==='GOTO'){
-      node.style.background = t.color
+      node.style.backgroundColor = t.color
+      // move any background image into the description area so it's centered there
+      // and scaled to fit while preserving aspect ratio
       const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
+      if (t.titleColor) title.style.color = t.titleColor
       const desc = document.createElement('div'); desc.className='task-desc'
+      if (t.descColor) desc.style.color = t.descColor
+      if (t.bgImage){
+        desc.style.backgroundImage = `url('${t.bgImage}')`
+        desc.style.backgroundSize = 'contain'
+        desc.style.backgroundPosition = 'center'
+        desc.style.backgroundRepeat = 'no-repeat'
+      }
       if (type==='TIME'){
         const d = rollDie()
         desc.innerHTML = substitutePlaceholders(t.description, d)
@@ -240,18 +322,46 @@
         node.appendChild(title); node.appendChild(desc)
       }
     } else if (type==='VISIT_COUNT' || type==='VISIT_TIME'){
-      node.style.background = '#eee'
-      const bar = document.createElement('div'); bar.className='title-bar'; bar.style.background = t.color; bar.textContent = t.title
+      node.style.backgroundColor = '#eee'
+      const bar = document.createElement('div'); bar.className='title-bar'; bar.style.backgroundColor = t.color; bar.textContent = t.title
+      if (t.titleColor) bar.style.color = t.titleColor
       const visitsRow = document.createElement('div'); visitsRow.className='visits-row'
       for (let i=0;i<t.visits;i++){ const h=document.createElement('div'); h.className='house'; h.textContent='🏠'; visitsRow.appendChild(h) }
       const desc = document.createElement('div'); desc.className='task-desc'; desc.innerHTML=substitutePlaceholdersVisit(t)
+      if (t.descColor) desc.style.color = t.descColor
+      if (t.bgImage){
+        desc.style.backgroundImage = `url('${t.bgImage}')`
+        desc.style.backgroundSize = 'contain'
+        desc.style.backgroundPosition = 'center'
+        desc.style.backgroundRepeat = 'no-repeat'
+      }
       node.appendChild(bar); node.appendChild(visitsRow); node.appendChild(desc)
       if (type==='VISIT_TIME') attachTimer(node, t, true)
     } else if (type==='SELECTION'){
-      node.style.background = t.color
+      node.style.backgroundColor = t.color
+      // move image into the description/list area for SELECTION
       const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
+      if (t.titleColor) title.style.color = t.titleColor
       node.appendChild(title)
+
+      // single roll to choose option; use same roll for %N minute calculations
+      const sel = rollDie()
+      const chosen = Math.max(1, Math.min(6, sel))
+
+      // description shown above the list
+      const desc = document.createElement('div'); desc.className = 'task-desc'
+      if (t.descColor) desc.style.color = t.descColor
+      desc.innerHTML = substitutePlaceholders(t.description, sel)
+      node.appendChild(desc)
+
       const ul = document.createElement('ul'); ul.className='selection-list'
+      if (t.descColor) ul.style.color = t.descColor
+      if (t.bgImage){
+        ul.style.backgroundImage = `url('${t.bgImage}')`
+        ul.style.backgroundSize = 'contain'
+        ul.style.backgroundPosition = 'center'
+        ul.style.backgroundRepeat = 'no-repeat'
+      }
       // create placeholder list items
       const items = t.extras.slice(0,6)
       items.forEach((it,idx)=>{
@@ -259,9 +369,6 @@
         ul.appendChild(li)
       })
       node.appendChild(ul)
-      // single roll to choose option; use same roll for %N minute calculations
-      const sel = rollDie()
-      const chosen = Math.max(1, Math.min(6, sel))
 
       // populate list item texts, substituting placeholders
       for (let i=0;i<ul.children.length;i++){
@@ -297,8 +404,6 @@
           }
         }
       }
-//      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
-//      node.appendChild(note)
     } else {
       node.textContent = 'Unknown task type: '+t.type
     }
@@ -406,19 +511,26 @@
   function renderCurrentTask(container){
     const t = tasks[currentIndex]
     if (!t) {
-      // create a simple empty node
       const empty = document.createElement('div')
       empty.textContent = 'No task'
       animateReplace(container, empty)
       return
     }
-    // handle types — build a new content node, then animateReplace into container
+
     const type = t.type
     const newNode = document.createElement('div')
     if (type==='BASIC' || type==='COUNT' || type==='TIME' || type==='GOTO'){
-      newNode.style.background = t.color
+      newNode.style.backgroundColor = t.color
       const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
+      if (t.titleColor) title.style.color = t.titleColor
       const desc = document.createElement('div'); desc.className='task-desc'
+      if (t.descColor) desc.style.color = t.descColor
+      if (t.bgImage){
+        desc.style.backgroundImage = `url('${t.bgImage}')`
+        desc.style.backgroundSize = 'contain'
+        desc.style.backgroundPosition = 'center'
+        desc.style.backgroundRepeat = 'no-repeat'
+      }
       if (type==='TIME'){
         const d = rollDie()
         desc.innerHTML = substitutePlaceholders(t.description, d)
@@ -433,33 +545,54 @@
         newNode.appendChild(title); newNode.appendChild(desc)
       }
     } else if (type==='VISIT_COUNT' || type==='VISIT_TIME'){
-      newNode.style.background = '#eee'
-      const bar = document.createElement('div'); bar.className='title-bar'; bar.style.background = t.color; bar.textContent = t.title
+      newNode.style.backgroundColor = '#eee'
+      const bar = document.createElement('div'); bar.className='title-bar'; bar.style.backgroundColor = t.color; bar.textContent = t.title
+      if (t.titleColor) bar.style.color = t.titleColor
       const visitsRow = document.createElement('div'); visitsRow.className='visits-row'
       for (let i=0;i<t.visits;i++){ const h=document.createElement('div'); h.className='house'; h.textContent='🏠'; visitsRow.appendChild(h) }
       const desc = document.createElement('div'); desc.className='task-desc'; desc.innerHTML=substitutePlaceholdersVisit(t)
+      if (t.descColor) desc.style.color = t.descColor
+      if (t.bgImage){
+        desc.style.backgroundImage = `url('${t.bgImage}')`
+        desc.style.backgroundSize = 'contain'
+        desc.style.backgroundPosition = 'center'
+        desc.style.backgroundRepeat = 'no-repeat'
+      }
       newNode.appendChild(bar); newNode.appendChild(visitsRow); newNode.appendChild(desc)
       if (type==='VISIT_TIME') attachTimer(newNode, t, true)
     } else if (type==='SELECTION'){
-      newNode.style.background = t.color
+      newNode.style.backgroundColor = t.color
       const title = document.createElement('div'); title.className='task-title'; title.textContent = t.title
+      if (t.titleColor) title.style.color = t.titleColor
       newNode.appendChild(title)
+
+      // single roll to choose option; use same roll for %N minute calculations
+      const sel = rollDie()
+      const chosen = Math.max(1, Math.min(6, sel))
+
+      // description shown above the list
+      const desc = document.createElement('div'); desc.className = 'task-desc'
+      if (t.descColor) desc.style.color = t.descColor
+      desc.innerHTML = substitutePlaceholders(t.description, sel)
+      newNode.appendChild(desc)
+
       const ul = document.createElement('ul'); ul.className='selection-list'
+      if (t.descColor) ul.style.color = t.descColor
+      if (t.bgImage){
+        ul.style.backgroundImage = `url('${t.bgImage}')`
+        ul.style.backgroundSize = 'contain'
+        ul.style.backgroundPosition = 'center'
+        ul.style.backgroundRepeat = 'no-repeat'
+      }
       const items = t.extras.slice(0,6)
       items.forEach(()=>{ const li = document.createElement('li'); ul.appendChild(li) })
       newNode.appendChild(ul)
-      const sel = rollDie()
-      const chosen = Math.max(1, Math.min(6, sel))
-      // populate list entries; for chosen item compute %N -> minutes using sel and show timer if present
       for (let i=0;i<ul.children.length;i++){
         const li = ul.children[i]
         const raw = items[i] || ''
         const sel2 = rollDie()
         const sel3 = rollDie()
-        // basic substitutions
         let txt = String(raw).replace(/%M/g, participantM).replace(/%F/g, participantF).replace(/%D/g, String(sel2))
-        // If this item contains a %T<number> token, replace it with the target title
-        // for display. If it's the chosen item, also mark dataset.selectionGoto.
         const tMatch = raw.match(/%T(\d+)/)
         if (tMatch){
           const targetNum = parseInt(tMatch[1],10)
@@ -468,12 +601,10 @@
           txt = txt.replace(/%T\d+/, targetTitle)
           if (i === chosen-1) newNode.dataset.selectionGoto = String(targetIndex)
         }
-        // Now expand numeric multipliers (e.g. %3 -> 3 * sel3)
         txt = txt.replace(/%(\d+)/g,(m,n)=> String(parseInt(n,10) * sel3))
         li.textContent = `${i+1}. ${txt}`
         if (i === chosen-1){
           li.classList.add('highlight')
-          // Attach timer only if chosen raw contains a numeric %N and NOT a %T token
           if (!raw.match(/%T(\d+)/)){
             const m = raw.match(/%(\d+)/)
             if (m){
@@ -483,13 +614,10 @@
           }
         }
       }
-//      const note = document.createElement('div'); note.style.marginTop='8px'; note.textContent=`Selected: ${chosen}`
-//      newNode.appendChild(note)
     } else {
       newNode.textContent = 'Unknown task type: '+t.type
     }
 
-    // perform the animated replace
     animateReplace(container, newNode)
   }
 
@@ -591,14 +719,30 @@
     if (animating) return
     animating = true
     rollBtn.disabled = true; resetBtn.disabled=true
-    // animate dice for 1s
-    const dur = 1000
-    const start = Date.now()
-    const intv = setInterval(()=>{ renderDie(dA, 1+Math.floor(Math.random()*6)); renderDie(dB, 1+Math.floor(Math.random()*6)) },80)
-    await new Promise(r=>setTimeout(r,dur))
-    clearInterval(intv)
-    const v1 = rollDie(); const v2 = rollDie(); renderDie(dA,v1); renderDie(dB,v2)
-    const total = v1+v2
+    // If there's a pending remaining move (paused at Task 1), resume that instead
+    if (pendingMoveRemaining && pendingMoveRemaining > 0){
+      const total = pendingMoveRemaining
+      pendingMoveRemaining = 0
+      // perform the remaining movement
+      await animateAdvance(total)
+      animating = false
+      rollBtn.disabled=false; resetBtn.disabled=false
+      return
+    }
+
+    let total = 1
+    if (useDiceMovement){
+      // animate dice for 1s
+      const dur = 1000
+      const intv = setInterval(()=>{ renderDie(dA, 1+Math.floor(Math.random()*6)); renderDie(dB, 1+Math.floor(Math.random()*6)) },80)
+      await new Promise(r=>setTimeout(r,dur))
+      clearInterval(intv)
+      const v1 = rollDie(); const v2 = rollDie(); renderDie(dA,v1); renderDie(dB,v2)
+      total = v1+v2
+    } else {
+      // stepping mode: always advance one
+      total = 1
+    }
     // animate moving through tasks
     await animateAdvance(total)
     animating = false
@@ -611,7 +755,35 @@
       if (!container) { resolve(); return }
       const n = tasks.length
       const startIndex = currentIndex
-      // perform one continuous track slide for the dice steps
+      // If stop-at-Task-1 is enabled, and the movement would pass through task index 0
+      // (i.e. visit it before the final landing), then stop at task 1 first and
+      // remember the remaining steps to be performed when the user presses Move.
+      if (stopAtTask1 && n>0 && steps>0){
+        const stepsToTask1 = (0 - startIndex + n) % n
+        // only treat this as "passing through" if Task 1 would be reached before
+        // the final landing (strictly less than total steps)
+        if (stepsToTask1 > 0 && stepsToTask1 < steps){
+          // slide only up to Task 1
+          await performTrackSlide(container, startIndex, stepsToTask1)
+          // update current index to Task 1
+          currentIndex = (startIndex + stepsToTask1) % n
+          // set pending remaining steps for the next Move
+          pendingMoveRemaining = steps - stepsToTask1
+          // count this visit
+          tasks[currentIndex].visits = (tasks[currentIndex].visits||0)+1
+          // render the paused-at-Task-1 node
+          renderCurrentTask(container)
+          // check for VISIT max at Task 1
+          const tt = tasks[currentIndex]
+          if ((tt.type==='VISIT_COUNT'||tt.type==='VISIT_TIME') && tt.visits>=maxVisits){
+            showFinishView(tt)
+          }
+          resolve()
+          return
+        }
+      }
+
+      // perform one continuous track slide for the dice steps (normal case)
       await performTrackSlide(container, startIndex, steps)
       // update currentIndex to final
       currentIndex = (startIndex + steps) % n
