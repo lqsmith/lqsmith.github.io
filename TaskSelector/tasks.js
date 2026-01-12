@@ -59,23 +59,23 @@
 
     const html = `
       <div class="config">
-        <div class="config-row"><label class="label">Movement Mode</label>
-          <label><input type="radio" name="movementMode" id="movementModeDice" value="dice"> Use two dice (sum of both)</label>
-          <label style="margin-left:12px"><input type="radio" name="movementMode" id="movementModeStep" value="step"> Always advance one step</label>
-        </div>
-        <div class="config-row"><label class="label">Task 1 Behavior</label>
-          <label><input type="checkbox" id="stopAtTask1"> Stop when passing through Task 1 and resume on Move</label>
-        </div>
-        <div class="config-row"><label class="label">CSV Tasks File</label>
-          <button id="chooseCsv" class="btn">Choose CSV File</button>
+        <div class="config-row"><label class="label">Tasks File</label>
+          <button id="chooseCsv" class="btn">Choose Tasks File</button>
           <span id="csvname" style="margin-left:8px;color:#666"></span>
         </div>
-        <div class="config-row"><label class="label">Participant 1 Name</label>
-          <input id="p1" type="text" placeholder="Participant 1"></div>
-        <div class="config-row"><label class="label">Participant 2 Name</label>
-          <input id="p2" type="text" placeholder="Participant 2"></div>
-        <div class="config-row"><label class="label">Max visits per VISIT task</label>
+        <div class="config-row"><label class="label">Male Player's Name</label>
+          <input id="p1" type="text" placeholder="John"></div>
+        <div class="config-row"><label class="label">Female Player's Name</label>
+          <input id="p2" type="text" placeholder="Jane"></div>
+        <div class="config-row"><label class="label">Number of Houses Required to Win</label>
           <input id="maxv" type="number" min="1" value="5"></div>
+        <div class="config-row"><label class="label">Movement Mode</label>
+          <label><input type="radio" name="movementMode" id="movementModeDice" value="dice"> Use dice</label>
+          <label style="margin-left:12px"><input type="radio" name="movementMode" id="movementModeStep" value="step"> One space per turn</label>
+        </div>
+        <div class="config-row"><label class="label">Passing Go</label>
+          <label><input type="checkbox" id="stopAtTask1"> Do not pause when passing Go</label>
+        </div>
         <div class="config-row"><button id="beginBtn" class="btn">Begin</button></div>
       </div>`
 
@@ -92,8 +92,8 @@
     try{ const p2 = document.getElementById('p2'); if (p2) p2.value = participantF || '' }catch(e){}
     try{ const mv = document.getElementById('maxv'); if (mv) mv.value = (maxVisits && Number(maxVisits)) ? String(maxVisits) : '5' }catch(e){}
     document.getElementById('beginBtn').addEventListener('click', () => {
-      participantM = document.getElementById('p1').value || 'Player 1'
-      participantF = document.getElementById('p2').value || 'Player 2'
+      participantM = document.getElementById('p1').value || 'John'
+      participantF = document.getElementById('p2').value || 'Jane'
       maxVisits = parseInt(document.getElementById('maxv').value,10) || 5
       try{
         const useDiceEl = document.getElementById('movementModeDice')
@@ -101,10 +101,10 @@
       }catch(e){}
       try{
         const stopEl = document.getElementById('stopAtTask1')
-        stopAtTask1 = stopEl ? Boolean(stopEl.checked) : false
+        stopAtTask1 = stopEl ? (!Boolean(stopEl.checked)) : false
       }catch(e){}
-      if (!tasks.length) { alert('Please choose a CSV tasks file first.'); return }
-      if (!tasksValid){ alert('The selected tasks file appears invalid. Please choose a valid CSV.'); return }
+      if (!tasks.length) { alert('Please choose a tasks file first.'); return }
+      if (!tasksValid){ alert('The selected tasks file appears invalid. Please choose a valid file.'); return }
       currentIndex = 0
       renderTaskView()
     })
@@ -303,10 +303,10 @@
       const desc = document.createElement('div'); desc.className='task-desc'
       if (t.descColor) desc.style.color = t.descColor
       if (t.bgImage){
-        desc.style.backgroundImage = `url('${t.bgImage}')`
-        desc.style.backgroundSize = 'contain'
-        desc.style.backgroundPosition = 'center'
-        desc.style.backgroundRepeat = 'no-repeat'
+        node.style.backgroundImage = `url('${t.bgImage}')`
+        node.style.backgroundSize = 'contain'
+        node.style.backgroundPosition = 'center'
+        node.style.backgroundRepeat = 'no-repeat'
       }
       if (type==='TIME'){
         const d = rollDie()
@@ -330,10 +330,10 @@
       const desc = document.createElement('div'); desc.className='task-desc'; desc.innerHTML=substitutePlaceholdersVisit(t)
       if (t.descColor) desc.style.color = t.descColor
       if (t.bgImage){
-        desc.style.backgroundImage = `url('${t.bgImage}')`
-        desc.style.backgroundSize = 'contain'
-        desc.style.backgroundPosition = 'center'
-        desc.style.backgroundRepeat = 'no-repeat'
+        node.style.backgroundImage = `url('${t.bgImage}')`
+        node.style.backgroundSize = 'contain'
+        node.style.backgroundPosition = 'center'
+        node.style.backgroundRepeat = 'no-repeat'
       }
       node.appendChild(bar); node.appendChild(visitsRow); node.appendChild(desc)
       if (type==='VISIT_TIME') attachTimer(node, t, true)
@@ -357,10 +357,10 @@
       const ul = document.createElement('ul'); ul.className='selection-list'
       if (t.descColor) ul.style.color = t.descColor
       if (t.bgImage){
-        ul.style.backgroundImage = `url('${t.bgImage}')`
-        ul.style.backgroundSize = 'contain'
-        ul.style.backgroundPosition = 'center'
-        ul.style.backgroundRepeat = 'no-repeat'
+        node.style.backgroundImage = `url('${t.bgImage}')`
+        node.style.backgroundSize = 'contain'
+        node.style.backgroundPosition = 'center'
+        node.style.backgroundRepeat = 'no-repeat'
       }
       // create placeholder list items
       const items = t.extras.slice(0,6)
@@ -526,10 +526,10 @@
       const desc = document.createElement('div'); desc.className='task-desc'
       if (t.descColor) desc.style.color = t.descColor
       if (t.bgImage){
-        desc.style.backgroundImage = `url('${t.bgImage}')`
-        desc.style.backgroundSize = 'contain'
-        desc.style.backgroundPosition = 'center'
-        desc.style.backgroundRepeat = 'no-repeat'
+        newNode.style.backgroundImage = `url('${t.bgImage}')`
+        newNode.style.backgroundSize = 'contain'
+        newNode.style.backgroundPosition = 'center'
+        newNode.style.backgroundRepeat = 'no-repeat'
       }
       if (type==='TIME'){
         const d = rollDie()
@@ -553,10 +553,10 @@
       const desc = document.createElement('div'); desc.className='task-desc'; desc.innerHTML=substitutePlaceholdersVisit(t)
       if (t.descColor) desc.style.color = t.descColor
       if (t.bgImage){
-        desc.style.backgroundImage = `url('${t.bgImage}')`
-        desc.style.backgroundSize = 'contain'
-        desc.style.backgroundPosition = 'center'
-        desc.style.backgroundRepeat = 'no-repeat'
+        newNode.style.backgroundImage = `url('${t.bgImage}')`
+        newNode.style.backgroundSize = 'contain'
+        newNode.style.backgroundPosition = 'center'
+        newNode.style.backgroundRepeat = 'no-repeat'
       }
       newNode.appendChild(bar); newNode.appendChild(visitsRow); newNode.appendChild(desc)
       if (type==='VISIT_TIME') attachTimer(newNode, t, true)
@@ -579,10 +579,10 @@
       const ul = document.createElement('ul'); ul.className='selection-list'
       if (t.descColor) ul.style.color = t.descColor
       if (t.bgImage){
-        ul.style.backgroundImage = `url('${t.bgImage}')`
-        ul.style.backgroundSize = 'contain'
-        ul.style.backgroundPosition = 'center'
-        ul.style.backgroundRepeat = 'no-repeat'
+        newNode.style.backgroundImage = `url('${t.bgImage}')`
+        newNode.style.backgroundSize = 'contain'
+        newNode.style.backgroundPosition = 'center'
+       	newNode.style.backgroundRepeat = 'no-repeat'
       }
       const items = t.extras.slice(0,6)
       items.forEach(()=>{ const li = document.createElement('li'); ul.appendChild(li) })
@@ -812,7 +812,7 @@
     main.innerHTML = ''
     const panel = document.createElement('div'); panel.className='panel centered'
     const ownerName = mapOwnerToName(task.owner)
-    const h = document.createElement('div'); h.className='task-title'; h.textContent = `${ownerName} has completed all their tasks!`
+    const h = document.createElement('div'); h.className='task-title'; h.textContent = `${ownerName} wins!`
     const btn = document.createElement('button'); btn.className='btn'; btn.textContent='Finish'
     btn.addEventListener('click', ()=>{ resetAllVisits(); showConfigView() })
     panel.appendChild(h); panel.appendChild(btn)
@@ -830,7 +830,7 @@
   function resetAllVisits(){ tasks.forEach(t=>t.visits=0); currentIndex=0 }
 
   function doReset(){
-    if (!confirm('Reset all visit counts and return to configuration?')) return
+    if (!confirm('Reset the game and return to the configuration page?')) return
     resetAllVisits()
     showConfigView()
   }
