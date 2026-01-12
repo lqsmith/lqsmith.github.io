@@ -34,7 +34,7 @@ input[type=text],input[type=number],select,textarea{padding:8px;border:1px solid
 
 .selection-list{list-style:none;padding:0;margin:0}
 .selection-list li{padding:10px;border:1px solid rgba(0,0,0,0.06);margin-bottom:6px;border-radius:4px}
-.selection-list li.highlight{outline:3px solid rgba(0,0,0,0.12);background:rgba(255,255,255,0.7)}
+.selection-list li.highlight{outline:3px solid rgba(0,0,0,0.12);background:rgba(255,255,255,0.9)}
 
 .flash{animation:flash 800ms ease-in-out 3}
 @keyframes flash{0%{filter:brightness(1)}50%{filter:brightness(1.7)}100%{filter:brightness(1)}}
