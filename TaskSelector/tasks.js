@@ -447,8 +447,8 @@
       track.getBoundingClientRect()
       // set duration proportional to steps
       // slower per-step timing for a more leisurely continuous slide
-      const perStepMs = 1000
-      track.style.transition = `transform ${Math.max(200, perStepMs*steps)}ms cubic-bezier(.22,.9,.28,1)`
+      const perStepMs = 400
+      track.style.transition = `transform ${Math.max(200, perStepMs*steps)}ms cubic-bezier(0.1,0,.7,1)`
       // translate to reveal final node
       requestAnimationFrame(()=> track.style.transform = `translateX(-${100*steps}%)`)
 
