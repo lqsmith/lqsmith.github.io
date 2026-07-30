@@ -437,7 +437,7 @@ this.wordle = this.wordle ||
                 {
                     var a = document.querySelector("body");
 // LQMS        
-	alert("1. adding t local strorage:  name = " + j + " value = " + JSON.stringify(e));
+//	alert("1. adding t local strorage:  name = " + j + " value = " + JSON.stringify(e));
                     e && !a.classList.contains("nightmode") ? a.classList.add("nightmode") : a.classList.remove("nightmode"), this.isDarkTheme = e, window.localStorage.setItem(j, JSON.stringify(e))
                 }
             },
@@ -447,7 +447,7 @@ this.wordle = this.wordle ||
                 {
                     var a = document.querySelector("body");
 // LQMS  
-      	alert("2. adding t local strorage:  name = " + S + " value = " + JSON.stringify(e));
+//      	alert("2. adding t local strorage:  name = " + S + " value = " + JSON.stringify(e));
                     e && !a.classList.contains("colorblind") ? a.classList.add("colorblind") : a.classList.remove("colorblind"), this.isColorBlindTheme = e, window.localStorage.setItem(S, JSON.stringify(e))
                 }
             },
@@ -1103,7 +1103,7 @@ this.wordle = this.wordle ||
         ! function(e)
         {
 //LQMS   
-     	alert("3. adding t local strorage:  name = " + wa + " value = " + JSON.stringify(e));
+//     	alert("3. adding t local strorage:  name = " + wa + " value = " + JSON.stringify(e));
             window.localStorage.setItem(wa, JSON.stringify(e))
         }(va(a, e))
     }
