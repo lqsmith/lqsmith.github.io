@@ -1,4 +1,4 @@
-window.localStorage.clear();
+//window.localStorage.clear();
 
 this.wordle = this.wordle ||
 {}, this.wordle.bundle = function(e)
